@@ -1,0 +1,35 @@
+name: Sync Fork Main Branch
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天晚上0点执行
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the fork
+        uses: actions/checkout@v2
+        with:
+          repository: 'NewbieAndy/NVimConfig'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: checkout main
+        run: git checkout main
+
+      - name: Add upstream
+        run: git remote add upstream https://github.com/LazyVim/LazyVim.git
+
+      - name: Fetch upstream
+        run: git fetch upstream main
+
+      - name: Merge upstream changes into main
+        run: git merge upstream/main
+
+      - name: git status
+        run: git status
+
+      - name: Push changes to main
+        run: git push origin main
