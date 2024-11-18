@@ -17,6 +17,7 @@ vim.opt.rtp:prepend(lazypath)
 
 --加载通用设置
 require("config.options")
+_G.GlobalUtil = require("utils")
 
 require("lazy").setup({
   spec = {
@@ -52,7 +53,6 @@ require("lazy").setup({
     },
   },
 })
-_G.GlobalUtil = require("utils")
 
 local M = {}
 GlobalUtil.config = M

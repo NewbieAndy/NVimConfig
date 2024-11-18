@@ -1,14 +1,4 @@
 return {
-  {
-    "folke/which-key.nvim",
-    opts = {
-      spec = {
-        { "<BS>", desc = "Decrement Selection", mode = "x" },
-        { "<c-space>", desc = "Increment Selection", mode = { "x", "n" } },
-      },
-    },
-  },
-
   -- Treesitter is a new parser generator tool that we can
   -- use in Neovim to power faster and more accurate
   -- syntax highlighting.
@@ -16,7 +6,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     version = false, -- last release is way too old and doesn't work on Windows
     build = ":TSUpdate",
-    event = {  "BufReadPost", "BufNewFile", "BufWritePre" , "VeryLazy" },
+    event = { "BufReadPost", "BufNewFile", "BufWritePre", "VeryLazy" },
     lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
     init = function(plugin)
       -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
@@ -85,9 +75,7 @@ return {
     },
     ---@param opts TSConfig
     config = function(_, opts)
-      if type(opts.ensure_installed) == "table" then
         opts.ensure_installed = GlobalUtil.dedup(opts.ensure_installed)
-      end
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
@@ -127,7 +115,7 @@ return {
   -- Automatically add closing tags for HTML and JSX
   {
     "windwp/nvim-ts-autotag",
-    event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+    event = {"BufReadPost", "BufNewFile", "BufWritePre" },
     opts = {},
   },
 }
