@@ -13,14 +13,19 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     os.exit(1)
   end
 end
+--添加rtp
 vim.opt.rtp:prepend(lazypath)
 
---加载通用设置
-require("config.options")
-_G.GlobalUtil = require("utils")
+--设置leader
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
+--全局工具
+_G.GlobalUtil = require("utils")
+--启动插件
 require("lazy").setup({
   spec = {
+    
     -- import your plugins
     { import = "plugins" },
   },
@@ -53,6 +58,8 @@ require("lazy").setup({
     },
   },
 })
+--加载通用设置
+require("config.options")
 
 local M = {}
 GlobalUtil.config = M
@@ -156,7 +163,6 @@ M.icons = {
       "Method",
       "Module",
       "Namespace",
-      -- "Package", -- remove package since luals uses it for control flow structures
       "Property",
       "Struct",
       "Trait",

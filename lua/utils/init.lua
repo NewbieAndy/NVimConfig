@@ -2,20 +2,20 @@ local LazyUtil = require("lazy.core.util")
 
 ---@class utils: LazyUtilCore
 ---@field config LazyVimConfig
----@field ui util.ui
----@field lsp util.lsp
----@field root util.root
----@field terminal util.terminal
----@field format util.format
----@field plugin utils.plugin
----@field extras util.extras
----@field inject util.inject
+---@field ui utils.ui
+---@field lsp utils.lsp
+---@field root utils.root
+---@field terminal utils.terminal
+---@field format utils.format
+---@field plugin utilss.plugin
+---@field extras utils.extras
+---@field inject utils.inject
 ---@field news util.news
----@field json util.json
----@field lualine util.lualine
----@field mini util.mini
----@field pick util.pick
----@field cmp util.cmp
+---@field json utils.json
+---@field lualine utils.lualine
+---@field mini utils.mini
+---@field pick utils.pick
+---@field cmp utils.cmp
 local M = {}
 
 setmetatable(M, {

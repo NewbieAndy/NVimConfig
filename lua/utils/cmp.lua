@@ -4,6 +4,14 @@ local M = {}
 ---@alias utils.cmp.Action fun():boolean?
 ---@type table<string, utils.cmp.Action>
 M.actions = {
+  -- ai_accept action
+  ai_accept = function()
+    if require("copilot.suggestion").is_visible() then
+      GlobalUtil.create_undo()
+      require("copilot.suggestion").accept()
+      return true
+    end
+  end,
   -- Native Snippets
   snippet_forward = function()
     if vim.snippet.active({ direction = 1 }) then

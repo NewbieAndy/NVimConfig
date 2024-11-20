@@ -70,6 +70,13 @@ return{
               cond = require("lazy.status").has_updates,
               color = function() return GlobalUtil.ui.fg("Special") end,
             },
+            GlobalUtil.lualine.status(GlobalUtil.config.icons.kinds.Copilot, function()
+              local clients = package.loaded["copilot"] and GlobalUtil.lsp.get_clients({ name = "copilot", bufnr = 0 }) or {}
+              if #clients > 0 then
+                local status = require("copilot.api").status.data.status
+                return (status == "InProgress" and "pending") or (status == "Warning" and "error") or "ok"
+              end
+            end),
             {
               "diff",
               symbols = {

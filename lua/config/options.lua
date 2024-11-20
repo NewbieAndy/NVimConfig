@@ -1,9 +1,4 @@
-local global = vim.g
 local option = vim.opt
-
-global.mapleader = " "
-global.maplocalleader = " "
-
 
  -- 启用自动写入
 option.autowrite = true
@@ -44,6 +39,7 @@ option.number = true
 option.pumblend = 10
 option.pumheight = 10
 option.relativenumber = true
+
 option.ruler = false -- Disable the default ruler
 option.scrolloff = 4 -- Lines of context
 option.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
@@ -59,6 +55,7 @@ option.spelllang = { "en" }
 option.splitbelow = true -- Put new windows below current
 option.splitkeep = "screen"
 option.splitright = true -- Put new windows right of current
+
 option.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
 option.tabstop = 2 -- Number of spaces tabs count for
 option.termguicolors = true -- True color support
@@ -66,6 +63,7 @@ option.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to
 option.undofile = true
 option.undolevels = 10000
 option.updatetime = 200 -- Save swap file and trigger CursorHold
+
  -- Allow cursor to move where there is no text in visual block mode
 option.virtualedit = "block"
  -- Command-line completion mode
