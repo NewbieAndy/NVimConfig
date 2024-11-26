@@ -29,6 +29,24 @@ function M.extra_idx(name)
   end
 end
 
+function M.lazy_file()
+  -- Add support for the LazyFile event
+  local Event = require("lazy.core.handler.event")
+
+  Event.mappings.LazyFile = { id = "LazyFile", event = M.lazy_file_events }
+  Event.mappings["User LazyFile"] = Event.mappings.LazyFile
+end
+
+function M.fix_imports()
+  Plugin.Spec.import = GlobalUtil.inject.args(Plugin.Spec.import, function(_, spec)
+    local dep = M.deprecated_extras[spec and spec.import]
+    if dep then
+      dep = dep .. "\n" .. "Please remove the extra from `lazyvim.json` to hide this warning."
+      GlobalUtil.warn(dep, { title = "LazyVim", once = true, stacktrace = true, stacklevel = 6 })
+      return false
+    end
+  end)
+end
 
 function M.fix_renames()
   Plugin.Spec.add = GlobalUtil.inject.args(Plugin.Spec.add, function(self, plugin)

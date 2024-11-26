@@ -1,3 +1,4 @@
+-- 未处理
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -72,14 +73,25 @@ return {
             group_index = 1,
             priority = 100,
           },
-          { name = "lazydev" },
-          { name = "nvim_lsp" },
-          { name = "path" },
-          { name = "buffer" },
-          { name = "snippets" }),
+          { name = "lazydev",
+            group_index = 0,
+
+         },
+          { name = "nvim_lsp" ,
+            group_index = 1,
+        },
+          { name = "path" ,
+            group_index = 1,
+        },
+          { name = "buffer" ,
+            group_index = 1,
+        },
+          { name = "snippets",
+            group_index = 1,
+        }),
         formatting = {
           format = function(entry, item)
-            local icons = GlobalUtil.config.icons.kinds
+            local icons = GlobalUtil.icons.kinds
             if icons[item.kind] then
               item.kind = icons[item.kind] .. item.kind
             end

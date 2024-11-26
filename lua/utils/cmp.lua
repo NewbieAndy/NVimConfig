@@ -109,11 +109,6 @@ function M.add_missing_snippet_docs(window)
 end
 
 function M.visible()
-  ---@module 'blink.cmp'
-  local blink = package.loaded["blink.cmp"]
-  if blink then
-    return blink.windows and blink.windows.autocomplete.win:is_open()
-  end
   ---@module 'cmp'
   local cmp = package.loaded["cmp"]
   if cmp then
@@ -177,10 +172,6 @@ end
 
 ---@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
 function M.setup(opts)
-  for _, source in ipairs(opts.sources) do
-    source.group_index = source.group_index or 1
-  end
-
   local parse = require("cmp.utils.snippet").parse
   require("cmp.utils.snippet").parse = function(input)
     local ok, ret = pcall(parse, input)

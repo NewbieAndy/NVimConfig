@@ -1,3 +1,4 @@
+-- 未处理
 return {
     {
         "nvim-telescope/telescope.nvim",
@@ -77,7 +78,7 @@ return {
                 "<leader>ss",
                 function()
                   require("telescope.builtin").lsp_document_symbols({
-                    -- symbols = GlobalUtil.config.get_kind_filter(),
+                    symbols = GlobalUtil.get_kind_filter(),
                   })
                 end,
                 desc = "Goto Symbol",
@@ -86,7 +87,7 @@ return {
                 "<leader>sS",
                 function()
                   require("telescope.builtin").lsp_dynamic_workspace_symbols({
-                    -- symbols = GlobalUtil.config.get_kind_filter(),
+                    symbols = GlobalUtil.get_kind_filter(),
                   })
                 end,
                 desc = "Goto Symbol (Workspace)",
@@ -95,7 +96,25 @@ return {
           end,
           opts = function()
             local actions = require("telescope.actions")
-      
+            local function flash(prompt_bufnr)
+              require("flash").jump({
+                pattern = "^",
+                label = { after = { 0, 0 } },
+                search = {
+                  mode = "search",
+                  exclude = {
+                    function(win)
+                      return vim.bo[vim.api.nvim_win_get_buf(win)].filetype ~= "TelescopeResults"
+                    end,
+                  },
+                },
+                action = function(match)
+                  local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+                  picker:set_selection(match.pos[1] - 1)
+                end,
+              })
+            end
+
             local function find_command()
               if 1 == vim.fn.executable("rg") then
                 return { "rg", "--files", "--color", "never", "-g", "!.git" }
@@ -143,6 +162,7 @@ return {
                     -- ["<a-t>"] = open_with_trouble,
                     -- ["<a-i>"] = find_files_no_ignore,
                     -- ["<a-h>"] = find_files_with_hidden,
+                    ["<c-s>"] = flash,
                     ["<D-k>"] = actions.preview_scrolling_up,
                     ["<D-j>"] = actions.preview_scrolling_down,
                     ["<D-h>"] = actions.preview_scrolling_left,
@@ -153,6 +173,7 @@ return {
                     ["<M-k>"] = actions.results_scrolling_right,
                   },
                   n = {
+                    s = flash ,
                     ["q"] = actions.close,
                     ["<D-k>"] = actions.preview_scrolling_up,
                     ["<D-j>"] = actions.preview_scrolling_down,

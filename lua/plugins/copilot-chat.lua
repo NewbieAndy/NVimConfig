@@ -1,3 +1,4 @@
+-- 未处理
 local M = {}
 
 ---@param kind string
@@ -20,12 +21,10 @@ return {
     branch = "canary",
     cmd = "CopilotChat",
     opts = function()
-      local user = vim.env.USER or "User"
-      user = user:sub(1, 1):upper() .. user:sub(2)
       return {
         auto_insert_mode = true,
         show_help = true,
-        question_header = "  " .. user .. " ",
+        question_header = "  Me ",
         answer_header = "  Copilot ",
         window = {
           width = 0.4,
