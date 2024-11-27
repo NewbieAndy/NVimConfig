@@ -74,6 +74,11 @@ function M.cwd()
   return M.realpath(vim.uv.cwd()) or ""
 end
 
+function M.cwd_basename()
+  local cwd = M.cwd()
+  return vim.fn.fnamemodify(cwd, ":t")
+end
+
 function M.realpath(path)
   if path == "" or path == nil then
     return nil

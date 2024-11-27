@@ -49,6 +49,7 @@ M.icons = {
     removed  = " ",
   },
   kinds = {
+    Apple         = " ",
     Array         = " ",
     Boolean       = "󰨙 ",
     Class         = " ",
