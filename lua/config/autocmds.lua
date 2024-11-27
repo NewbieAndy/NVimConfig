@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave","TextChanged", "FocusLost" }, {
       end
     end,
   })
-  
+--
   -- y复制是高亮
   vim.api.nvim_create_autocmd("TextYankPost", {
     group = augroup("highlight_yank"),

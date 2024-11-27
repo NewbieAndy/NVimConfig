@@ -197,9 +197,4 @@ function M.git()
   return ret
 end
 
----@param opts? {hl_last?: string}
-function M.pretty_path(opts)
-  return ""
-end
-
 return M
