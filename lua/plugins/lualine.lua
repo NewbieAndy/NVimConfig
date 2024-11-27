@@ -1,6 +1,4 @@
--- 未处理
 local M = {}
-M.count = 0
 
 ---@return {fg?:string}?
 function M.fg(name)
@@ -40,55 +38,6 @@ function M.format(component, text, hl_group)
   return component:format_hl(lualine_hl_group) .. text .. component:get_default_hl()
 end
 
----@param opts? {relative: "cwd"|"root", modified_hl: string?, directory_hl: string?, filename_hl: string?, modified_sign: string?, readonly_icon: string?, length: number?}
-function M.pretty_path(opts)
-  opts = {
-    modified_hl = "MatchParen",
-    directory_hl = "",
-    filename_hl = "Bold",
-    modified_sign = "",
-    readonly_icon = " 󰌾 ",
-    length = 3,
-  }
-
-  return function(self)
-    local path = vim.fn.expand("%:p") --[[@as string]]
-    if path == "" then
-      return ""
-    end
-
-    path = GlobalUtil.norm(path)
-    local cwd = GlobalUtil.root.cwd()
-    path = path:sub(#cwd + 2)
-
-    local sep = package.config:sub(1, 1)
-    local parts = vim.split(path, "[\\/]")
-
-    if #parts > opts.length then
-      parts = { parts[1], "…", unpack(parts, #parts - opts.length + 2, #parts) }
-    end
-
-    if opts.modified_hl and vim.bo.modified then
-      parts[#parts] = parts[#parts] .. opts.modified_sign
-      parts[#parts] = M.format(self, parts[#parts], opts.modified_hl)
-    else
-      parts[#parts] = M.format(self, parts[#parts], opts.filename_hl)
-    end
-
-    local dir = ""
-    if #parts > 1 then
-      dir = table.concat({ unpack(parts, 1, #parts - 1) }, sep)
-      dir = M.format(self, dir .. sep, opts.directory_hl)
-    end
-
-    local readonly = ""
-    if vim.bo.readonly then
-      readonly = M.format(self, opts.readonly_icon, opts.modified_hl)
-    end
-    return dir .. parts[#parts] .. readonly
-  end
-end
-
 return {
   {
     "nvim-lualine/lualine.nvim",
@@ -121,12 +70,26 @@ return {
           component_separators = "",
         },
         sections = {
+          --模式
           lualine_a = { "mode" },
+          --分支
           lualine_b = { "branch" },
-
           lualine_c = {
-            { "filetype",     icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-            { function()
+            {
+              "diagnostics",
+              symbols = {
+                error = icons.diagnostics.Error,
+                warn = icons.diagnostics.Warn,
+                info = icons.diagnostics.Info,
+                hint = icons.diagnostics.Hint,
+              },
+              --只显示警告和错误
+              sections = { 'error', 'warn' },
+            },
+            --文件类型
+            { "filetype",  icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+            --文件路径
+            { function(self)
               local modified_hl = "MatchParen"
               local length = 3
               local path = vim.fn.expand("%:p") --[[@as string]]
@@ -163,51 +126,41 @@ return {
                 readonly = M.format(self, " 󰌾 ", modified_hl)
               end
               return dir .. parts[#parts] .. readonly
-            end },
-            { M.pretty_path() },
+            end }
           },
           lualine_x = {
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.command.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-              color = function() return M.fg("Statement") end,
-            },
-            -- stylua: ignore
-            {
-              function() return require("noice").api.status.mode.get() end,
-              cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-              color = function() return M.fg("Constant") end,
-            },
             -- stylua: ignore
             {
               function() return "  " .. require("dap").status() end,
               cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
               color = function() return M.fg("Debug") end,
             },
-            -- stylua: ignore
-            {
-              require("lazy.status").updates,
-              cond = require("lazy.status").has_updates,
-              color = function() return M.fg("Special") end,
-            },
             {
               -- copilot ICON
-              function() return GlobalUtil.icons.kinds.Copilot end,
+              function()
+                local icon = GlobalUtil.config.icons.kinds.Copilot
+                local status = require("copilot.api").status.data
+                return icon .. (status.message or "")
+              end,
               --加载了copilot显示
               cond = function()
-                local clients = package.loaded["copilot"] and GlobalUtil.lsp.get_clients({ name = "copilot", bufnr = 0 })
-                return clients ~= nil and #clients > 0
+                if not package.loaded["copilot"] then
+                  return
+                end
+                local ok, clients = pcall(GlobalUtil.lsp.get_clients, { name = "copilot", bufnr = 0 })
+                if not ok then
+                  return false
+                end
+                return ok and #clients > 0
               end,
               color = function()
-                local statusData = require("copilot.api").status.data
-                local status = statusData.status
-                local statusMsg = statusData.message
-                vim.notify("copilot status:" .. vim.inspect(statusData))
-                --根据copilot状态取ICON颜色
-                local fg_name = (status == nil and "DiagnosticError") or (status == "InProgress" and "DiagnosticWarn") or
-                    (status == "Warning" and "DiagnosticError") or "Special"
-                return M.fg(fg_name)
+                if not package.loaded["copilot"] then
+                  return
+                end
+                --API状态
+                local status = require("copilot.api").status.data
+                return M.fg((status == nil and "DiagnosticError") or (status.status == "InProgress" and "DiagnosticWarn") or
+                  (status.status == "Warning" and "DiagnosticError") or "Special")
               end,
             },
             {
@@ -230,13 +183,12 @@ return {
             },
           },
           lualine_y = {
-            { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
-            { "location", padding = { left = 0, right = 1 } },
+            { "fileformat" },
+            { "encoding", padding = { left = 0, right = 1 } },
           },
           lualine_z = {
-            function()
-              return " " .. os.date("%R")
-            end,
+            { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
+            { "location", padding = { left = 0, right = 1 } },
           },
         },
         extensions = { "neo-tree", "lazy" },
