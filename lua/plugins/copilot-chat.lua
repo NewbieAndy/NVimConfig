@@ -7,7 +7,7 @@ function M.pick(kind)
     local actions = require("CopilotChat.actions")
     local items = actions[kind .. "_actions"]()
     if not items then
-      LazyVim.warn("No " .. kind .. " found on the current line")
+      GlobalUtil.warn("No " .. kind .. " found on the current line")
       return
     end
     local ok = pcall(require, "fzf-lua")

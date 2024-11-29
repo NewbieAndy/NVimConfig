@@ -19,10 +19,6 @@ return {
       require("nvim-treesitter.query_predicates")
     end,
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-    keys = {
-      { "<c-space>", desc = "Increment Selection" },
-      { "<bs>",      desc = "Decrement Selection", mode = "x" },
-    },
     opts_extend = { "ensure_installed" },
     ---@type TSConfig
     ---@diagnostic disable-next-line: missing-fields

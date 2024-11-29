@@ -90,7 +90,7 @@ map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
 
 -- formatting
 map({ "n", "v" }, "<leader>cf", function()
-  LazyVim.format({ force = true })
+  GlobalUtil.format({ force = true })
 end, { desc = "Format" })
 
 -- diagnostic
@@ -116,12 +116,7 @@ GlobalUtil.format.snacks_toggle():map("<leader>uf")
 GlobalUtil.format.snacks_toggle(true):map("<leader>uF")
 Snacks.toggle.option("spell", { name = "Spelling"}):map("<leader>us")
 Snacks.toggle.option("wrap", {name = "Wrap"}):map("<leader>uw")
-Snacks.toggle.option("relativenumber", { name = "Relative Number"}):map("<leader>uL")
-Snacks.toggle.diagnostics():map("<leader>ud")
-Snacks.toggle.line_number():map("<leader>ul")
 Snacks.toggle.option("conceallevel", {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map("<leader>uc")
-Snacks.toggle.treesitter():map("<leader>uT")
-Snacks.toggle.option("background", { off = "light", on = "dark" , name = "Dark Background"}):map("<leader>ub")
 if vim.lsp.inlay_hint then
   Snacks.toggle.inlay_hints():map("<leader>uh")
 end
@@ -146,8 +141,7 @@ map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 
 -- floating terminal
-map("n", "<leader>t", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
-map("n", "<leader>ft", function() Snacks.terminal(nil, { cwd = GlobalUtil.root() }) end, { desc = "Terminal (Root Dir)" })
+map("n", "<leader>t",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root(),env = {win = "float"} }) end, { desc = "Terminal (Root Dir)" })
 map("n", "<c-/>",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root() }) end, { desc = "Terminal (Root Dir)" })
 map("n", "<c-_>",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root() }) end, { desc = "which_key_ignore" })
 

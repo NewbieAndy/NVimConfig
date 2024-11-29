@@ -73,60 +73,70 @@ return {
           --模式
           lualine_a = { "mode" },
           --分支
-          lualine_b = { "branch" },
+          lualine_b = {
+            { "branch" },
+          },
           lualine_c = {
-            {
-              "diagnostics",
-              symbols = {
-                error = icons.diagnostics.Error,
-                warn = icons.diagnostics.Warn,
-                info = icons.diagnostics.Info,
-                hint = icons.diagnostics.Hint,
-              },
-              --只显示警告和错误
-              sections = { 'error', 'warn' },
-            },
             --文件类型
-            { "filetype",  icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-            --文件路径
-            { function(self)
-              local modified_hl = "MatchParen"
-              local length = 3
-              local path = vim.fn.expand("%:p") --[[@as string]]
-              if path == "" then
-                return ""
+            { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+            {
+              function()
+                -- 当前文件类型
+                local filetype = vim.bo.filetype
+                if filetype ~= "python" then
+                  return ""
+                end
+                local venv_name = require('venv-selector').get_active_venv()
+                return venv_name
+                -- if venv_name ~= nil then
+                --   return string.gsub(venv_name, '.*/pypoetry/virtualenvs/', '(poetry) ')
+                -- else
+                --   venv_name = 'venv'
+                -- end
+                -- return venv_name
               end
+            },
+            -- 文件路径
+            {
+              function(self)
+                local modified_hl = "MatchParen"
+                local length = 3
+                local path = vim.fn.expand("%:p") --[[@as string]]
+                if path == "" then
+                  return ""
+                end
 
-              path = GlobalUtil.norm(path)
-              local cwd = GlobalUtil.root.cwd()
-              path = path:sub(#cwd + 2)
+                path = GlobalUtil.norm(path)
+                local cwd = GlobalUtil.root.cwd()
+                path = path:sub(#cwd + 2)
 
-              local sep = package.config:sub(1, 1)
-              local parts = vim.split(path, "[\\/]")
+                local sep = package.config:sub(1, 1)
+                local parts = vim.split(path, "[\\/]")
 
-              if #parts > length then
-                parts = { parts[1], "…", unpack(parts, #parts - length + 2, #parts) }
+                if #parts > length then
+                  parts = { parts[1], "…", unpack(parts, #parts - length + 2, #parts) }
+                end
+
+                if modified_hl and vim.bo.modified then
+                  parts[#parts] = parts[#parts]
+                  parts[#parts] = M.format(self, parts[#parts], modified_hl)
+                else
+                  parts[#parts] = M.format(self, parts[#parts], "Bold")
+                end
+
+                local dir = ""
+                if #parts > 1 then
+                  dir = table.concat({ unpack(parts, 1, #parts - 1) }, sep)
+                  dir = M.format(self, dir .. sep, "")
+                end
+
+                local readonly = ""
+                if vim.bo.readonly then
+                  readonly = M.format(self, " 󰌾 ", modified_hl)
+                end
+                return dir .. parts[#parts] .. readonly
               end
-
-              if modified_hl and vim.bo.modified then
-                parts[#parts] = parts[#parts]
-                parts[#parts] = M.format(self, parts[#parts], modified_hl)
-              else
-                parts[#parts] = M.format(self, parts[#parts], "Bold")
-              end
-
-              local dir = ""
-              if #parts > 1 then
-                dir = table.concat({ unpack(parts, 1, #parts - 1) }, sep)
-                dir = M.format(self, dir .. sep, "")
-              end
-
-              local readonly = ""
-              if vim.bo.readonly then
-                readonly = M.format(self, " 󰌾 ", modified_hl)
-              end
-              return dir .. parts[#parts] .. readonly
-            end }
+            }
           },
           lualine_x = {
             -- stylua: ignore
@@ -138,7 +148,7 @@ return {
             {
               -- copilot ICON
               function()
-                local icon = GlobalUtil.config.icons.kinds.Copilot
+                local icon = GlobalUtil.icons.kinds.Copilot
                 local status = require("copilot.api").status.data
                 return icon .. (status.message or "")
               end,
@@ -181,10 +191,21 @@ return {
                 end
               end,
             },
+            {
+              "diagnostics",
+              symbols = {
+                error = icons.diagnostics.Error,
+                warn = icons.diagnostics.Warn,
+                info = icons.diagnostics.Info,
+                hint = icons.diagnostics.Hint,
+              },
+              --只显示警告和错误
+              sections = { 'error', 'warn' },
+            },
           },
           lualine_y = {
             { "fileformat" },
-            { "encoding", padding = { left = 0, right = 1 } },
+            { "encoding",  padding = { left = 0, right = 1 } },
           },
           lualine_z = {
             { "progress", separator = " ",                  padding = { left = 1, right = 0 } },

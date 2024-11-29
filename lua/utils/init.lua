@@ -7,9 +7,7 @@ local LazyUtil = require("lazy.core.util")
 ---@field root utils.root
 ---@field format utils.format
 ---@field plugin utils.plugin
----@field lualine utils.lualine
 ---@field mini utils.mini
----@field pick utils.pick
 ---@field cmp utils.cmp
 local M = {}
 
