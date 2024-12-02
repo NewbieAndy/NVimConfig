@@ -4,10 +4,6 @@ return {
 		"lukas-reineke/indent-blankline.nvim",
 		event = { "BufReadPost", "BufNewFile", "BufWritePre" },
 		opts = function()
-			local a = {
-				a = "a",
-				b = "a",
-			}
 			return {
 				indent = {
 					char = "│",
