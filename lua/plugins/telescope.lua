@@ -1,4 +1,3 @@
--- 未处理
 return {
   {
     "nvim-telescope/telescope.nvim",
@@ -33,13 +32,14 @@ return {
       local builtin = require("telescope.builtin");
       return {
         { "<leader><space>", require("telescope.builtin").find_files, desc = "搜索文件" },
+        { "<leader>f", require("telescope.builtin").find_files, desc = "搜索文件" },
         { '<leader>"', builtin.registers, desc = "Registers" },
         { "<leader>/", builtin.current_buffer_fuzzy_find, desc = "Buffer" },
         { "<leader>:", "<cmd>Telescope command_history<cr>", desc = "History Commands" },
         { "<leader>fs", builtin.live_grep, desc = "Grep (Root Dir)" },
         { "<leader>fb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "切换 Buffer" },
         { "<leader>fg", "<cmd>Telescope git_files<cr>", desc = "Find Files (git-files)" },
-        { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
+        { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Recent" },
         { "<leader>gc", require("telescope.builtin").git_commits, desc = "Git Commits" },
         { "<leader>gs", "<cmd>Telescope git_status<CR>", desc = "Git Status" },
         -- search
@@ -167,18 +167,14 @@ return {
               ["<a-t>"] = open_with_trouble,
               -- ["<a-i>"] = find_files_no_ignore,
               -- ["<a-h>"] = find_files_with_hidden,
-              ["<D-k>"] = actions.preview_scrolling_up,
-              ["<D-j>"] = actions.preview_scrolling_down,
-              ["<D-h>"] = actions.preview_scrolling_left,
-              ["<D-l>"] = actions.preview_scrolling_right,
-              ["<PageUp>"] = actions.results_scrolling_up,
-              ["<PageDown>"] = actions.results_scrolling_down,
-              ["<M-f>"] = actions.results_scrolling_left,
-              ["<M-k>"] = actions.results_scrolling_right,
+              ["<CMD-k>"] = actions.preview_scrolling_up,
+              ["<CMD-j>"] = actions.preview_scrolling_down,
+              ["<CMD-h>"] = actions.preview_scrolling_left,
+              ["<CMD-l>"] = actions.preview_scrolling_right,
               ["<c-s>"] = flash
             },
             n = {
-              s = flash,
+              ["s"] = flash,
               ["q"] = actions.close,
               ["<D-k>"] = actions.preview_scrolling_up,
               ["<D-j>"] = actions.preview_scrolling_down,
