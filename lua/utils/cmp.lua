@@ -172,6 +172,7 @@ end
 
 ---@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
 function M.setup(opts)
+  vim.notify("Setting up cmp opts:" .. vim.inspect(opts), "info", { title = "DDDBUG" })
   local parse = require("cmp.utils.snippet").parse
   require("cmp.utils.snippet").parse = function(input)
     local ok, ret = pcall(parse, input)
@@ -182,6 +183,7 @@ function M.setup(opts)
   end
 
   local cmp = require("cmp")
+  vim.notify("Setting up cmp setup opts:" .. vim.inspect(opts), "info", { title = "DDDBUG" })
   cmp.setup(opts)
   cmp.event:on("confirm_done", function(event)
     if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then

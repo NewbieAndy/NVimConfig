@@ -45,6 +45,8 @@ require("lazy").setup({
     },
   },
 })
+--延迟通知
+GlobalUtil.lazy_notify()
 --加载通用设置
 require("config.options")
 --加载自动命令
