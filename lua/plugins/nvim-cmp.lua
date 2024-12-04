@@ -30,15 +30,6 @@ return {
 				end,
 			},
 		},
-		-- Not all LSP servers add brackets when completing a function.
-		-- To better deal with this, LazyVim adds a custom option to cmp,
-		-- that you can configure. For example:
-		--
-		-- ```lua
-		-- opts = {
-		--   auto_brackets = { "python" }
-		-- }
-		-- ```
 		opts = function()
 			vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
 			local cmp = require("cmp")
@@ -67,25 +58,16 @@ return {
 					end,
 					["<CR>"] = cmp.mapping(function(fallback)
 						GlobalUtil.create_undo()
-						if require("copilot.suggestion").is_visible() then
-							vim.notify("Copilot suggestions are visible", "info")
-							require("copilot.suggestion").accept()
-						elseif cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-							vim.notify("CMP suggestions are visible", "info")
+						if cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
 							cmp.confirm({
 								select = true,
 								behavior = cmp.ConfirmBehavior.Insert,
 							})
 						--有代码片段触发代码片段
 						elseif vim.snippet.active({ direction = 1 }) then
-							vim.notify("Snippets are visible", "info")
 							vim.schedule(function()
 								vim.snippet.jump(1)
 							end)
-						--光标前有字符，没有弹出窗口则呼出窗口
-						elseif has_words_before() then
-							vim.notify("CMP suggestions are not visible", "info")
-							cmp.complete()
 						else
 							fallback()
 						end
@@ -93,23 +75,19 @@ return {
 					["<Tab>"] = cmp.mapping(function(fallback)
 						GlobalUtil.create_undo()
 						if require("copilot.suggestion").is_visible() then
-							vim.notify("Copilot suggestions are visible", "info")
 							require("copilot.suggestion").accept()
 						elseif cmp.core.view:visible() or vim.fn.pumvisible() == 1 then
-							vim.notify("CMP suggestions are visible", "info")
 							cmp.confirm({
 								select = true,
 								behavior = cmp.ConfirmBehavior.Insert,
 							})
 						--有代码片段触发代码片段
 						elseif vim.snippet.active({ direction = 1 }) then
-							vim.notify("Snippets are visible", "info")
 							vim.schedule(function()
 								vim.snippet.jump(1)
 							end)
 						--光标前有字符，没有弹出窗口则呼出窗口
 						elseif has_words_before() then
-							vim.notify("CMP suggestions are not visible", "info")
 							cmp.complete()
 						else
 							fallback()

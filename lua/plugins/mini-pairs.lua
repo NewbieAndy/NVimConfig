@@ -1,4 +1,3 @@
--- 未处理
 return{
     {
         "echasnovski/mini.pairs",
@@ -19,5 +18,4 @@ return{
           GlobalUtil.mini.pairs(opts)
         end,
       },
-    
 }
