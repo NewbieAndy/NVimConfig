@@ -1,4 +1,3 @@
--- 未处理
 return {
 	{
 		"folke/todo-comments.nvim",
@@ -92,8 +91,7 @@ return {
 				end,
 				desc = "Previous Todo Comment",
 			},
-			{ "<leader>ft", "<cmd>TodoTelescope<cr>", desc = "Todo" },
-			{ "<leader>fT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", desc = "Todo/Fix/Fixme" },
+			{ "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
 		},
 	},
 	-- comments

@@ -49,7 +49,7 @@ return {
         vim.o.statusline = " "
       else
         -- hide the statusline on the starter page
-        vim.o.laststatus = 3
+        vim.o.laststatus = 0
       end
     end,
     opts = function()
@@ -65,7 +65,7 @@ return {
         options = {
           theme = "auto",
           globalstatus = vim.o.laststatus == 3,
-          disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter" } },
+          disabled_filetypes = { statusline = { "snacks_dashboard", "alpha", "ministarter" } },
           section_separators = "",
           component_separators = "",
         },
