@@ -1,19 +1,4 @@
 --未处理
-local M = {}
-
----@param kind string
-function M.pick(kind)
-  return function()
-    local actions = require("CopilotChat.actions")
-    local items = actions[kind .. "_actions"]()
-    if not items then
-      GlobalUtil.warn("No " .. kind .. " found on the current line")
-      return
-    end
-    require("CopilotChat.integrations.telescope").pick(items)
-  end
-end
-
 return {
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -33,8 +18,8 @@ return {
       }
     end,
     keys = {
-      { "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
-      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
+      { "<c-s>",     "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
+      { "<leader>a", "",     desc = "+ai",        mode = { "n", "v" } },
       {
         "<leader>aa",
         function()
@@ -62,8 +47,15 @@ return {
         desc = "Quick Chat (CopilotChat)",
         mode = { "n", "v" },
       },
-      -- Show prompts actions with telescope
-      { "<leader>ap", M.pick("prompt"), desc = "Prompt Actions (CopilotChat)", mode = { "n", "v" } },
+      {
+        "<leader>ap",
+        function()
+          local actions = require("CopilotChat.actions")
+          require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+        end,
+        desc = "Prompt Actions (CopilotChat)",
+        mode = { "n", "v" }
+      }
     },
     config = function(_, opts)
       local chat = require("CopilotChat")
@@ -80,17 +72,16 @@ return {
     end,
   },
 
-  -- Edgy integration
-  {
-    "folke/edgy.nvim",
-    optional = true,
-    opts = function(_, opts)
-      opts.right = opts.right or {}
-      table.insert(opts.right, {
-        ft = "copilot-chat",
-        title = "Copilot Chat",
-        size = { width = 50 },
-      })
-    end,
-  },
+  -- {
+  --   "folke/edgy.nvim",
+  --   optional = true,
+  --   opts = function(_, opts)
+  --     opts.right = opts.right or {}
+  --     table.insert(opts.right, {
+  --       ft = "copilot-chat",
+  --       title = "Copilot Chat",
+  --       size = { width = 50 },
+  --     })
+  --   end,
+  -- },
 }

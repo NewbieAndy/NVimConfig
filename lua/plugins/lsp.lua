@@ -2,16 +2,13 @@
 local M = {}
 
 function M.getKeys()
+    local builtin = require("telescope.builtin")
     return {
         { "<leader>cl", "<cmd>LspInfo<cr>",                                                                     desc = "Lsp Info" },
-        -- { "gd",         vim.lsp.buf.definition,                             desc = "Goto Definition",            has = "definition" },
-        { "gd",         function() require("telescope.builtin").lsp_definitions({ reuse_win = true }) end,      desc = "Goto Definition",            has = "definition" },
-        -- { "gr",         vim.lsp.buf.references,                             desc = "References",                 nowait = true },
+        { "gd",         function() builtin.lsp_definitions({ reuse_win = true }) end,      desc = "Goto Definition",            has = "definition" },
         { "gr",         "<cmd>Telescope lsp_references<cr>",                                                    desc = "References",                 nowait = true },
-        -- { "gI",         vim.lsp.buf.implementation,                         desc = "Goto Implementation" },
-        { "gI",         function() require("telescope.builtin").lsp_implementations({ reuse_win = true }) end,  desc = "Goto Implementation" },
-        -- { "gy",         vim.lsp.buf.type_definition,                        desc = "Goto T[y]pe Definition" },
-        { "gy",         function() require("telescope.builtin").lsp_type_definitions({ reuse_win = true }) end, desc = "Goto T[y]pe Definition" },
+        { "gI",         function() builtin.lsp_implementations({ reuse_win = true }) end,  desc = "Goto Implementation" },
+        { "gy",         function() builtin.lsp_type_definitions({ reuse_win = true }) end, desc = "Goto T[y]pe Definition" },
         { "gD",         vim.lsp.buf.declaration,                                                                desc = "Goto Declaration" },
         { "K",          function() return vim.lsp.buf.hover() end,                                              desc = "Hover" },
         { "gK",         function() return vim.lsp.buf.signature_help() end,                                     desc = "Signature Help",             has = "signatureHelp" },
@@ -252,7 +249,7 @@ return {
                         },
                     },
                 },
-                pyright={enabled=true},
+                pyright = { enabled = true },
                 --tailwindcss
                 tailwindcss = {
                     -- exclude a filetype from the default_config
@@ -261,9 +258,9 @@ return {
                     filetypes_include = {},
                     -- to fully override the default_config, change the below
                     -- filetypes = {}
-                  },
-                  --toml
-                  taplo = {},
+                },
+                --toml
+                taplo = {},
             },
             -- you can do any additional lsp server setup here
             -- return true if you don't want this server to be setup with lspconfig
@@ -291,30 +288,30 @@ return {
                 tailwindcss = function(_, opts)
                     local tw = GlobalUtil.lsp.get_raw_config("tailwindcss")
                     opts.filetypes = opts.filetypes or {}
-          
+
                     -- Add default filetypes
                     vim.list_extend(opts.filetypes, tw.default_config.filetypes)
-          
+
                     -- Remove excluded filetypes
                     --- @param ft string
                     opts.filetypes = vim.tbl_filter(function(ft)
-                      return not vim.tbl_contains(opts.filetypes_exclude or {}, ft)
+                        return not vim.tbl_contains(opts.filetypes_exclude or {}, ft)
                     end, opts.filetypes)
-          
+
                     -- Additional settings for Phoenix projects
                     opts.settings = {
-                      tailwindCSS = {
-                        includeLanguages = {
-                          elixir = "html-eex",
-                          eelixir = "html-eex",
-                          heex = "html-eex",
+                        tailwindCSS = {
+                            includeLanguages = {
+                                elixir = "html-eex",
+                                eelixir = "html-eex",
+                                heex = "html-eex",
+                            },
                         },
-                      },
                     }
-          
+
                     -- Add additional filetypes
                     vim.list_extend(opts.filetypes, opts.filetypes_include or {})
-                  end,
+                end,
             },
         },
         ---@param opts PluginLspOpts
@@ -456,7 +453,7 @@ return {
             ensure_installed = {
                 "stylua",
                 "shfmt",
-                "java-debug-adapter", 
+                "java-debug-adapter",
                 "java-test",
                 "js-debug-adapter"
             },

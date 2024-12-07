@@ -85,6 +85,7 @@ map("n", "<leader>L", "<cmd>Lazy<cr>", { desc = "Lazy" })
 
 -- new file
 map("n", "<leader>fn", "<cmd>enew<cr>", { desc = "New File" })
+map("n", "<leader>ft", "<cmd>FTSelect<cr>", { desc = "Change Filetype" })
 map({ "n", "v" }, "<leader>fr", function()
 	local grug = require("grug-far")
 	local ext = vim.bo.buftype == "" and vim.fn.expand("%:e")
