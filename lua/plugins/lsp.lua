@@ -19,20 +19,20 @@ function M.getKeys()
         { "<leader>cR", function() Snacks.rename.rename_file() end,                                             desc = "Rename File",                mode = { "n" },          has = { "workspace/didRenameFiles", "workspace/willRenameFiles" } },
         { "<leader>cr", vim.lsp.buf.rename,                                                                     desc = "Rename",                     has = "rename" },
         { "<leader>cA", GlobalUtil.lsp.action.source,                                                           desc = "Source Action",              has = "codeAction" },
-        {
-            "]]",
-            function() Snacks.words.jump(vim.v.count1) end,
-            has = "documentHighlight",
-            desc = "Next Reference",
-            cond = function() return Snacks.words.is_enabled() end
-        },
-        {
-            "[[",
-            function() Snacks.words.jump(-vim.v.count1) end,
-            has = "documentHighlight",
-            desc = "Prev Reference",
-            cond = function() return Snacks.words.is_enabled() end
-        },
+        -- {
+        --     "]]",
+        --     function() Snacks.words.jump(vim.v.count1) end,
+        --     has = "documentHighlight",
+        --     desc = "Next Reference",
+        --     cond = function() return Snacks.words.is_enabled() end
+        -- },
+        -- {
+        --     "[[",
+        --     function() Snacks.words.jump(-vim.v.count1) end,
+        --     has = "documentHighlight",
+        --     desc = "Prev Reference",
+        --     cond = function() return Snacks.words.is_enabled() end
+        -- },
         {
             "<a-n>",
             function() Snacks.words.jump(vim.v.count1, true) end,
