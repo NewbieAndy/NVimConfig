@@ -11,6 +11,8 @@ map("n", "<leader>h", "<C-w>h", { desc = "Go to Left Window", remap = true })
 map("n", "<leader>j", "<C-w>j", { desc = "Go to Lower Window", remap = true })
 map("n", "<leader>k", "<C-w>k", { desc = "Go to Upper Window", remap = true })
 map("n", "<leader>l", "<C-w>l", { desc = "Go to Right Window", remap = true })
+map("n", "]]", "<C-i>", { desc = "forward", remap = true })
+map("n", "[[", "<C-o>", { desc = "back", remap = true })
 
 -- Resize window using <ctrl> arrow keys
 map("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase Window Height" })

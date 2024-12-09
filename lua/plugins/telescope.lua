@@ -108,35 +108,6 @@ return {
 				})
 			end
 
-			local open_with_trouble = function(...)
-				return require("trouble.sources.telescope").open(...)
-			end
-			-- local find_files_no_ignore = function()
-			--   local action_state = require("telescope.actions.state")
-			--   local line = action_state.get_current_line()
-			--   require("telescope.builtin").find_files({ no_ignore = true, default_text = line })()
-			-- end
-
-			-- local find_files_with_hidden = function()
-			--   local action_state = require("telescope.actions.state")
-			--   local line = action_state.get_current_line()
-			--   GlobalUtil.pick("find_files", { hidden = true, default_text = line })()
-			-- end
-
-			local function find_command()
-				if 1 == vim.fn.executable("rg") then
-					return { "rg", "--files", "--color", "never", "-g", "!.git" }
-				elseif 1 == vim.fn.executable("fd") then
-					return { "fd", "--type", "f", "--color", "never", "-E", ".git" }
-				elseif 1 == vim.fn.executable("fdfind") then
-					return { "fdfind", "--type", "f", "--color", "never", "-E", ".git" }
-				elseif 1 == vim.fn.executable("find") and vim.fn.has("win32") == 0 then
-					return { "find", ".", "-type", "f" }
-				elseif 1 == vim.fn.executable("where") then
-					return { "where", "/r", ".", "*" }
-				end
-			end
-
 			return {
 				defaults = {
 					prompt_prefix = " ",
@@ -166,18 +137,14 @@ return {
 					},
 					mappings = {
 						i = {
-							["<c-t>"] = open_with_trouble,
-							["<a-t>"] = open_with_trouble,
-							-- ["<a-i>"] = find_files_no_ignore,
-							-- ["<a-h>"] = find_files_with_hidden,
 							["<CMD-k>"] = actions.preview_scrolling_up,
 							["<CMD-j>"] = actions.preview_scrolling_down,
 							["<CMD-h>"] = actions.preview_scrolling_left,
 							["<CMD-l>"] = actions.preview_scrolling_right,
-							["<c-s>"] = flash,
+							["<c-f>"] = flash,
 						},
 						n = {
-							["s"] = flash,
+							["f"] = flash,
 							["q"] = actions.close,
 							["<D-k>"] = actions.preview_scrolling_up,
 							["<D-j>"] = actions.preview_scrolling_down,
@@ -189,10 +156,10 @@ return {
 					},
 				},
 				pickers = {
-					find_files = {
-						find_command = find_command,
-						hidden = true,
-					},
+					-- find_files = {
+					-- 	find_command = find_command,
+					-- 	hidden = true,
+					-- },
 				},
 			}
 		end,

@@ -24,7 +24,7 @@ return {
           -- stylua: ignore
           ---@type snacks.dashboard.Item[]
           keys = {
-            -- { icon = "󰙅 ", key = "e", desc = "Explorer", action = function () require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root() }) end },
+            { icon = " ", key = "e", desc = "Open", action = function() vim.api.nvim_feedkeys(":edit ", "n", false) end },
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
             { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
@@ -34,31 +34,6 @@ return {
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
 				},
-			},
-		},
-		keys = {
-			{
-				"<leader>un",
-				function()
-					Snacks.notifier.hide()
-				end,
-				desc = "Dismiss All Notifications",
-			},
-			{
-				"]]",
-				function()
-					Snacks.words.jump(vim.v.count1)
-				end,
-				desc = "Next Reference",
-				mode = { "n", "t" },
-			},
-			{
-				"[[",
-				function()
-					Snacks.words.jump(-vim.v.count1)
-				end,
-				desc = "Prev Reference",
-				mode = { "n", "t" },
 			},
 		},
 		init = function()
