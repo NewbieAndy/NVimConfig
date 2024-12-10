@@ -1,19 +1,31 @@
 ## ⚡️ Requirements
 - [Neovim](https://neovim.io/)
   ```sh
-  brew
+  brew install neovivm
   ```
-- Git >= **2.19.0** (for partial clones support)
-- a [Nerd Font](https://www.nerdfonts.com/) **_(optional)_**
-- a **C** compiler for `nvim-treesitter`. See [here](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
-- a **C** compiler for `nvim-treesitter`. See [here](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
-
-## 🚀 Getting Started
-- Make a backup of your current Neovim files:
+- [GIT](https://git-scm.com/)
   ```sh
-  mv ~/.config/nvim ~/.config/nvim.bak
-  mv ~/.local/share/nvim ~/.local/share/nvim.bak
+  brew install git
   ```
+- [Nerd Font](https://www.nerdfonts.com)
+- a **C** compiler for `nvim-treesitter`. See [here](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
+    ```sh
+    brew install make
+    ```
+## ⚡️ Optional
+## 🚀 Getting Started
+- Backup or delete your current configuration
+  *Delete Current Configuration*
+  ```sh
+    rm -rf ~/.config/nvim ~/.cache/nvim ~/.local/share/nvim ~/.local/state/nvim
+  ```
+  *Backup Current Configuration*
+    ```sh
+    mv ~/.config/nvim{,.bak}
+    mv ~/.local/share/nvim{,.bak}
+    mv ~/.local/state/nvim{,.bak}
+    mv ~/.cache/nvim{,.bak}
+    ```
 - Clone the code
 
   ```sh
