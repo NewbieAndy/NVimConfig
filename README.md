@@ -13,6 +13,7 @@
     brew install make
     ```
 ## ⚡️ Optional
+
 ## 🚀 Getting Started
 - Backup or delete your current configuration
   *Delete Current Configuration*

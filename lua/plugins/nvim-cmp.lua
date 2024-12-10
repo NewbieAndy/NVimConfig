@@ -139,6 +139,7 @@ return {
 						name = "snippets",
 						group_index = 1,
 					},
+					{ name = "render-markdown" },
 				}),
 				formatting = {
 					format = function(entry, item)
