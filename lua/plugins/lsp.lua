@@ -108,42 +108,6 @@ function M.getKeys()
 			desc = "Source Action",
 			has = "codeAction",
 		},
-		-- {
-		--     "]]",
-		--     function() Snacks.words.jump(vim.v.count1) end,
-		--     has = "documentHighlight",
-		--     desc = "Next Reference",
-		--     cond = function() return Snacks.words.is_enabled() end
-		-- },
-		-- {
-		--     "[[",
-		--     function() Snacks.words.jump(-vim.v.count1) end,
-		--     has = "documentHighlight",
-		--     desc = "Prev Reference",
-		--     cond = function() return Snacks.words.is_enabled() end
-		-- },
-		{
-			"<a-n>",
-			function()
-				Snacks.words.jump(vim.v.count1, true)
-			end,
-			has = "documentHighlight",
-			desc = "Next Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
-		{
-			"<a-p>",
-			function()
-				Snacks.words.jump(-vim.v.count1, true)
-			end,
-			has = "documentHighlight",
-			desc = "Prev Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
 	}
 end
 
@@ -271,13 +235,7 @@ return {
 			-- LSP Server Settings
 			---@type lspconfig.options
 			servers = {
-				marksman = {},
 				lua_ls = {
-					-- mason = false, -- set to false if you don't want this server to be installed with mason
-					-- Use this to add any additional keymaps
-					-- for specific lsp servers
-					-- ---@type LazyKeysSpec[]
-					-- keys = {},
 					settings = {
 						Lua = {
 							workspace = {
@@ -524,17 +482,6 @@ return {
 					),
 					handlers = { setup },
 				})
-			end
-
-			if GlobalUtil.lsp.is_enabled("denols") and GlobalUtil.lsp.is_enabled("vtsls") then
-				local is_deno = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
-				GlobalUtil.lsp.disable("vtsls", is_deno)
-				GlobalUtil.lsp.disable("denols", function(root_dir, config)
-					if not is_deno(root_dir) then
-						config.settings.deno.enable = false
-					end
-					return false
-				end)
 			end
 		end,
 	},
