@@ -1,4 +1,3 @@
--- 未处理
 return {
 	{
 		"hrsh7th/nvim-cmp",
@@ -62,6 +61,55 @@ return {
 					and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 			end
 
+			--这里配置补全源
+			local cmp_sources = {
+				{
+					name = "copilot",
+					group_index = 1,
+					priority = 100,
+					icon = GlobalUtil.icons.kinds.Copilot,
+				},
+				{
+					name = "lazydev",
+					group_index = 0,
+					icon = GlobalUtil.icons.kinds.Dev,
+				},
+				{
+					name = "nvim_lsp",
+					group_index = 1,
+					icon = GlobalUtil.icons.kinds.Lsp,
+				},
+				{
+					name = "path",
+					group_index = 1,
+					icon = GlobalUtil.icons.kinds.Path,
+				},
+				{
+					name = "buffer",
+					group_index = 1,
+					icon = GlobalUtil.icons.kinds.Buffer,
+				},
+				{
+					name = "snippets",
+					group_index = 1,
+					icon = GlobalUtil.icons.kinds.Snippet,
+				},
+				{
+					name = "render-markdown",
+					icon = GlobalUtil.icons.kinds.Markdown,
+				},
+			}
+
+			-- 获取源图标
+			function get_source_icon(item_name)
+				for _, value in pairs(cmp_sources) do
+					if value.name == item_name then
+						return value.icon
+					end
+				end
+				return GlobalUtil.icons.kinds.Apple
+			end
+
 			return {
 				auto_brackets = { "python" }, -- configure any filetype to auto add brackets
 				completion = {
@@ -113,40 +161,14 @@ return {
 						end
 					end, { "i", "c", "s" }),
 				}),
-				sources = cmp.config.sources({
-					{
-						name = "copilot",
-						group_index = 1,
-						priority = 100,
-					},
-					{
-						name = "lazydev",
-						group_index = 0,
-					},
-					{
-						name = "nvim_lsp",
-						group_index = 1,
-					},
-					{
-						name = "path",
-						group_index = 1,
-					},
-					{
-						name = "buffer",
-						group_index = 1,
-					},
-					{
-						name = "snippets",
-						group_index = 1,
-					},
-					{ name = "render-markdown" },
-				}),
+				sources = cmp_sources,
 				formatting = {
 					format = function(entry, item)
 						local icons = GlobalUtil.icons.kinds
 						if icons[item.kind] then
 							item.kind = icons[item.kind] .. item.kind
 						end
+						item.menu = get_source_icon(entry.source.name)
 
 						local widths = {
 							abbr = vim.g.cmp_widths and vim.g.cmp_widths.abbr or 40,
@@ -158,7 +180,6 @@ return {
 								item[key] = vim.fn.strcharpart(item[key], 0, width - 1) .. "…"
 							end
 						end
-
 						return item
 					end,
 				},
