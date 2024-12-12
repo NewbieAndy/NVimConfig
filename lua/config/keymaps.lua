@@ -1,3 +1,4 @@
+
 local map = GlobalUtil.safe_keymap_set
 
 -- better up/down
@@ -29,8 +30,10 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- neo-tree
-map("n", "<leader>e", function()
+map({"n","i"}, "<C-e>", function()
 	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root() })
+  vim.cmd('stopinsert')
+  
 end, { desc = "Explorer NeoTree", remap = true })
 
 -- buffers
