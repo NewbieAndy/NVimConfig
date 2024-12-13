@@ -24,7 +24,6 @@ end
 ---@param on_attach fun(client:vim.lsp.Client, buffer)
 ---@param name? string
 function M.on_attach(on_attach, name)
-  -- vim.notify("on_attach running name is:" .. vim.inspect(name) , vim.log.levels.WARN)
   return vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
       local buffer = args.buf ---@type number

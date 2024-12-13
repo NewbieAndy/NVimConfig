@@ -50,8 +50,8 @@ return {
 				{ "<leader>gf", builtin.git_files, desc = "Find Files (git-files)" },
 				{ "<leader>gc", builtin.git_commits, desc = "Git Commits" },
 				{ "<leader>gs", builtin.git_status, desc = "Git Status" },
+				{ "<leader>sa", builtin.autocommands, desc = "Auto Commands" },
 				-- search
-				-- { "<leader>sa", "<cmd>Telescope autocommands<cr>", desc = "Auto Commands" },
 				-- { "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
 				-- { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
 				-- { "<leader>sg", require("telescope.builtin").live_grep, desc = "Grep (Root Dir)" },

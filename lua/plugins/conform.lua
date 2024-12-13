@@ -47,7 +47,9 @@ return {
 				lua = { "stylua" },
 				fish = { "fish_indent" },
 				sh = { "shfmt" },
-        json={ "deno_fmt" },
+				json = { "deno_fmt" },
+				["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+				["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
 			},
 			-- The options you set here will be merged with the builtin formatters.
 			-- You can also define any custom formatters here.
@@ -82,10 +84,6 @@ return {
 						return #diag > 0
 					end,
 				},
-			},
-			formatters_by_ft = {
-				["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-				["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
 			},
 		}
 		return opts

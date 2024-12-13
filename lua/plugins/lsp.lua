@@ -170,7 +170,7 @@ return {
 	-- lspconfig
 	{
 		"neovim/nvim-lspconfig",
-		event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+		event = { "FileType", "BufReadPost", "BufNewFile", "BufWritePre" },
 		dependencies = {
 			"mason.nvim",
 			{ "williamboman/mason-lspconfig.nvim", config = function() end },
@@ -532,7 +532,7 @@ return {
 	-- none-ls
 	{
 		"nvimtools/none-ls.nvim",
-		event = { "BufReadPost", "BufNewFile", "BufWritePre" },
+		event = { "filetype", "BufReadPost", "BufNewFile", "BufWritePre" },
 		dependencies = { "mason.nvim" },
 		init = function()
 			GlobalUtil.on_very_lazy(function()
