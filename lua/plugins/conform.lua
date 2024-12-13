@@ -4,16 +4,6 @@ return {
 	dependencies = { "mason.nvim" },
 	lazy = true,
 	cmd = "ConformInfo",
-	keys = {
-		{
-			"<leader>cF",
-			function()
-				require("conform").format({ formatters = { "injected" }, timeout_ms = 3000 })
-			end,
-			mode = { "n", "v" },
-			desc = "Format Injected Langs",
-		},
-	},
 	init = function()
 		-- Install the conform formatter on VeryLazy
 		GlobalUtil.on_very_lazy(function()
@@ -47,7 +37,7 @@ return {
 				lua = { "stylua" },
 				fish = { "fish_indent" },
 				sh = { "shfmt" },
-				json = { "deno_fmt" },
+				json = { "jq" },
 				["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
 				["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
 			},
@@ -56,12 +46,11 @@ return {
 			---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
 			formatters = {
 				injected = { options = { ignore_errors = true } },
-				-- # Example of using dprint only when a dprint.json file is present
-				-- dprint = {
-				--   condition = function(ctx)
-				--     return vim.fs.find({ "dprint.json" }, { path = ctx.filename, upward = true })[1]
-				--   end,
-				-- },
+
+				jq = {
+					command = "jq",
+					args = { "." },
+				},
 				--
 				-- # Example of using shfmt with extra args
 				-- shfmt = {
