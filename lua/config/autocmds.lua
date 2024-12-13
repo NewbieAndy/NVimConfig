@@ -14,59 +14,58 @@ local previous_input_method = ""
 -- 离开插入模式自动切换到英文输入法
 local auto_switch_input_method_group = augroup("auto_switch_input_method")
 -- 获取当前输入法
-function get_and_cache_current_input_method()
+function get_current_input_method()
 	local ok, handle = pcall(function()
-		return io.popen('hs -c "getCurrentInputMetho1d()"')
+		return io.popen('hs -c "getCurrentInputMethod()"')
 	end)
-
 	if not ok then
-		return nil
+		return ""
 	end
-	-- vim.notify("current_input_method handle:" .. vim.inspect(handle))
 	local result = handle:read("*a")
-	vim.notify("result process," .. result)
-	-- vim.notify("current_input_method result:" .. vim.inspect(result))
 	handle:close()
-	local current_input_method = ''
+	local current_input_method = ""
 	if result and "" ~= result then
-		vim.notify("result process," .. result)
 		local lines = vim.split(result, "\n", { trimempty = true })
 		current_input_method = lines[#lines]
 	end
 	return current_input_method
 end
---
--- -- 缓存当前输入法
--- function CacheCurrentInputMethod()
---     previous_input_method = GetCurrentInputMethod()
--- end
---
--- -- 恢复之前的输入法
--- function RestorePreviousInputMethod()
---     if previous_input_method ~= "" then
---         local command = 'osascript -e \'tell application "System Events" to set input method of current input source to "' .. previous_input_method .. '"\''
---         os.execute(command)
---     end
--- end
---
--- -- 设置自动命令
--- vim.api.nvim_exec([[
---     augroup InputMethod
---         autocmd!
---         autocmd InsertEnter * lua CacheCurrentInputMethod()
---         autocmd InsertLeave * lua RestorePreviousInputMethod()
---     augroup END
--- ]], false)
 
--- vim.api.nvim_create_autocmd({ "InsertLeave"}, {
--- 	group = auto_switch_input_method_group,
--- 	pattern = "*",
---   callback = function()
---     --记录当前输入法
---     --切换到英文
---     os.execute('open "hammerspoon://switchInputMethod2ABC"')
---   end,
--- })
+-- 切换输入法
+function switch_input_method(input_method)
+	if input_method then
+		local command = string.format("hs -c 'switchInputMethod(\"%s\")'", input_method)
+		os.execute(command)
+	end
+end
+
+-- 离开插入模式缓存当前输入法并切换到英文输入法
+vim.api.nvim_create_autocmd({ "InsertLeave" }, {
+	group = auto_switch_input_method_group,
+	pattern = "*",
+	callback = function()
+		-- 缓存输入法
+		previous_input_method = get_current_input_method()
+		--已经是英文输入法不处理
+		if "" ~= previous_input_method then
+			if previous_input_method == "com.apple.keylayout.ABC" then
+				return
+			end
+			switch_input_method("com.apple.keylayout.ABC")
+		end
+	end,
+})
+-- 进入插入模式回复上次输入法
+vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+	group = auto_switch_input_method_group,
+	pattern = "*",
+	callback = function()
+		--切换输入法
+		if "" ~= previous_input_method then
+			switch_input_method(previous_input_method)
+		end
+	end,
+})
 
 --判断是否需要重新加载
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
