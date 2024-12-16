@@ -72,8 +72,8 @@ return {
         ["<esc>"] = "cancel",   -- close preview or floating neo-tree window
         ["P"] = "noop",
         ["l"] = "focus_preview",
-        ["S"] = "open_split",
-        ["s"] = "open_vsplit",
+        ["s"] = "open_split",
+        ["v"] = "open_vsplit",
         ["t"] = "noop",
         ["w"] = "noop",
         ["C"] = "noop",

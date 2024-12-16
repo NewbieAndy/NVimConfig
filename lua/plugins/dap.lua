@@ -1,4 +1,4 @@
--- 未处理
+-- TODO: 未处理
 ---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
     local args = type(config.args) == "function" and (config.args() or {}) or config.args or

@@ -137,19 +137,15 @@ return {
 					},
 					mappings = {
 						i = {
-							["<CMD-k>"] = actions.preview_scrolling_up,
-							["<CMD-j>"] = actions.preview_scrolling_down,
-							["<CMD-h>"] = actions.preview_scrolling_left,
-							["<CMD-l>"] = actions.preview_scrolling_right,
 							["<c-f>"] = flash,
+							["<c-s>"] = actions.file_split,
+							["<c-v>"] = actions.file_vsplit,
 						},
 						n = {
 							["f"] = flash,
 							["q"] = actions.close,
-							["<D-k>"] = actions.preview_scrolling_up,
-							["<D-j>"] = actions.preview_scrolling_down,
-							["<D-h>"] = actions.preview_scrolling_left,
-							["<D-l>"] = actions.preview_scrolling_right,
+							["s"] = actions.file_split,
+							["v"] = actions.file_vsplit,
 							["h"] = actions.results_scrolling_left,
 							["l"] = actions.results_scrolling_right,
 						},

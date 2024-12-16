@@ -1,4 +1,3 @@
-
 local map = GlobalUtil.safe_keymap_set
 
 -- better up/down
@@ -30,10 +29,9 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- neo-tree
-map({"n","i"}, "<C-e>", function()
+map({ "n", "i" }, "<C-e>", function()
 	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root() })
-  vim.cmd('stopinsert')
-  
+	vim.cmd("stopinsert")
 end, { desc = "Explorer NeoTree", remap = true })
 
 -- buffers
@@ -72,7 +70,7 @@ map("i", ".", ".<c-g>u")
 map("i", ";", ";<c-g>u")
 
 -- save file
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+-- map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 
 --keywordprg
 map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
@@ -152,8 +150,11 @@ if vim.fn.executable("lazygit") == 1 then
   map("n", "<leader>gL", function() Snacks.lazygit.log() end, { desc = "Lazygit Log (cwd)" })
 end
 
+map("n", "<leader>q", function ()
+  GlobalUtil.ui.close()
+end, { desc = "Close" })
 -- quit
-map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All" })
+map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit All" })
 
 -- highlights under cursor
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
