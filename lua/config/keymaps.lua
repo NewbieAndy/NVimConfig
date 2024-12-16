@@ -30,7 +30,7 @@ map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", {
 
 -- neo-tree
 map({ "n", "i" }, "<C-e>", function()
-	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root() })
+	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root.root() })
 	vim.cmd("stopinsert")
 end, { desc = "Explorer NeoTree", remap = true })
 
