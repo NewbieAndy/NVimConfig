@@ -99,6 +99,10 @@ map({ "n", "v" }, "<leader>fr", function()
 		},
 	})
 end, { desc = "Search and Replace" })
+map("n", "<leader>fe", function ()
+  GlobalUtil.open.test()
+  
+end, { desc = "Change Filetype" })
 
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
