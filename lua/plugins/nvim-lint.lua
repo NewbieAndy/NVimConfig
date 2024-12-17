@@ -1,4 +1,3 @@
---TODO 未处理
 return {
     "mfussenegger/nvim-lint",
     event = { "BufReadPost", "BufNewFile", "BufWritePre" },

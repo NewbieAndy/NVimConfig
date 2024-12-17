@@ -1,4 +1,3 @@
--- TODO: 未处理
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
@@ -11,8 +10,6 @@ return {
       auto_trigger = true,
       keymap = {
         accept = false,
-        next = "<M-]>",
-        prev = "<M-[>",
       },
     },
     panel = { enabled = false },
