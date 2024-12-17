@@ -62,11 +62,9 @@ return {
 				function()
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					if mode == "v" or mode == "V" then
-						return require("CopilotChat").toggle({ selection = select.visual })
-					else
-						return require("CopilotChat").toggle()
-					end
+					return require("CopilotChat").toggle(
+						(mode == "v" or mode == "V") and { selection = select.visual } or nil
+					)
 				end,
 				desc = "Toggle (CopilotChat)",
 				remap = true,
@@ -78,11 +76,9 @@ return {
 				function()
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					if mode == "v" or mode == "V" then
-						return require("CopilotChat").toggle({ selection = select.visual })
-					else
-						return require("CopilotChat").toggle()
-					end
+					return require("CopilotChat").toggle(
+						(mode == "v" or mode == "V") and { selection = select.visual } or nil
+					)
 				end,
 				desc = "Toggle (CopilotChat)",
 				mode = { "n", "v" },
@@ -119,7 +115,12 @@ return {
 				function()
 					local input = vim.fn.input("Quick Chat: ")
 					if input ~= "" then
-						require("CopilotChat").ask(input)
+						local select = require("CopilotChat.select")
+						local mode = vim.api.nvim_get_mode().mode
+						require("CopilotChat").ask(
+							input,
+							(mode == "v" or mode == "V") and { selection = select.visual } or nil
+						)
 					end
 				end,
 				desc = "Quick Chat (CopilotChat)",
@@ -131,13 +132,9 @@ return {
 					local actions = require("CopilotChat.actions")
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					if mode == "v" or mode == "V" then
-						require("CopilotChat.integrations.telescope").pick(
-							actions.prompt_actions({ selection = select.visual })
-						)
-					else
-						require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
-					end
+					require("CopilotChat.integrations.telescope").pick(
+						actions.prompt_actions((mode == "v" or mode == "V") and { selection = select.visual } or nil)
+					)
 				end,
 				desc = "Prompt Actions (CopilotChat)",
 				mode = { "n", "v" },

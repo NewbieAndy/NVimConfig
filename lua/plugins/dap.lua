@@ -36,7 +36,14 @@ return {
                     if vim.fn.has("win32") == 1 then
                         require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
                     else
-                        require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
+                        -- 优先使用当前项目的虚拟环境
+                        local venv = vim.fn.getenv("VIRTUAL_ENV")
+                        local venv_path = (venv and venv ~= "") and tostring(venv) or nil
+                        if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then
+                            require("dap-python").setup(venv_path .. "/bin/python")
+                        else
+                            require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
+                        end
                     end
                 end,
             },
