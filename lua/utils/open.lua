@@ -55,7 +55,24 @@ function M.show_box()
 	-- vim.api.nvim_buf_set_option(buf, 'buftype', 'prompt')
 	-- vim.fn.prompt_setprompt(buf, 'Path: ')
 	-- vim.cmd('startinsert')
-	vim.ui.input({ prompt = "File Path:", completion = 'file' })
+	local cmp = require("cmp")
+    -- 保存当前 cmdline 的配置
+    local old_cmdline_opts = cmp.get_config().cmdline
+    -- 临时配置 cmdline 用于补全
+    cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+            { name = 'path' }
+        }, {
+            { name = 'cmdline' }
+        })
+    })
+	    -- 调用 vim.ui.input 并处理输入
+		vim.ui.input({ prompt = 'Enter file path: ' }, function(input)
+			if input then
+				print('No input provided'.. input)
+			end
+		end)
 	-- 进入命令模式
 	-- vim.cmd('startcommand')
 end

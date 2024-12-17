@@ -19,7 +19,7 @@ return {
 
 				prompts = {
 					Explain = {
-						prompt = "> /COPILOT_EXPLAIN\n\nIn chinese write an explanation for the selected code as paragraphs of text.",
+						prompt = "> /COPILOT_EXPLAIN\n\nIn Chinese write an explanation for the selected code as paragraphs of text.",
 						mapping = "<leader>ae",
 					},
 					Review = {
@@ -78,7 +78,6 @@ return {
 				function()
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					vim.notify("mode:" .. mode)
 					if mode == "v" or mode == "V" then
 						return require("CopilotChat").toggle({ selection = select.visual })
 					else
@@ -130,7 +129,15 @@ return {
 				"<leader>ap",
 				function()
 					local actions = require("CopilotChat.actions")
-					require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+					local select = require("CopilotChat.select")
+					local mode = vim.api.nvim_get_mode().mode
+					if mode == "v" or mode == "V" then
+						require("CopilotChat.integrations.telescope").pick(
+							actions.prompt_actions({ selection = select.visual })
+						)
+					else
+						require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+					end
 				end,
 				desc = "Prompt Actions (CopilotChat)",
 				mode = { "n", "v" },

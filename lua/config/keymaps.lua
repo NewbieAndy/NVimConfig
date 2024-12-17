@@ -101,8 +101,7 @@ map({ "n", "v" }, "<leader>fr", function()
 end, { desc = "Search and Replace" })
 map("n", "<leader>fe", function ()
   GlobalUtil.open.test()
-  
-end, { desc = "Change Filetype" })
+end, { desc = "Open Test" })
 
 map("n", "<leader>xl", "<cmd>lopen<cr>", { desc = "Location List" })
 map("n", "<leader>xq", "<cmd>copen<cr>", { desc = "Quickfix List" })
@@ -158,7 +157,7 @@ map("n", "<leader>q", function ()
   GlobalUtil.ui.close()
 end, { desc = "Close" })
 -- quit
-map("n", "<leader>Q", "<cmd>qa<cr>", { desc = "Quit All" })
+map("n", "Q", "<cmd>qa<cr>", { desc = "Quit All" })
 
 -- highlights under cursor
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
