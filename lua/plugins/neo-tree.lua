@@ -73,7 +73,6 @@ return {
 						local cc = require("neo-tree.sources.filesystem.commands")
 						cc.set_root(state)
 						if node.type == "directory" then
-							vim.notify("node.path" .. node.path)
 							GlobalUtil.root.reload_root_path(node.path)
 						end
 					end,
