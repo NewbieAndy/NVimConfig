@@ -33,12 +33,18 @@ return {
 		keys = function()
 			local builtin = require("telescope.builtin")
 			return {
-				{ "<leader><space>", builtin.find_files, desc = "搜索文件" },
+				-- { "<leader><space>", builtin.find_files, desc = "搜索文件" },
+				{ "<leader><space>", function ()
+						builtin.find_files({cwd = GlobalUtil.root.root()})
+				end, desc = "搜索文件" },
 				{ "<leader>/", builtin.current_buffer_fuzzy_find, desc = "Buffer" },
 				{ "<leader>:", builtin.command_history, desc = "History Commands" },
 				{ "<leader>m", builtin.marks, desc = "跳转书签" },
 				{ "<leader>ff", builtin.find_files, desc = "搜索文件" },
-				{ "<leader>fo", builtin.oldfiles, desc = "Recent" },
+				-- { "<leader>fo", builtin.oldfiles, desc = "Recent" },
+				{ "<leader>fo", function ()
+          builtin.oldfiles({ cwd = GlobalUtil.root.root() })
+				end, desc = "Recent" },
 				{ "<leader>sg", builtin.live_grep, desc = "Grep (Root Dir)" },
 				{ "<leader>sb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "切换 Buffer" },
 				{ "<leader>sj", builtin.jumplist, desc = "Jumplist" },
@@ -110,6 +116,7 @@ return {
 
 			return {
 				defaults = {
+					cwd = GlobalUtil.root.root(),
 					prompt_prefix = " ",
 					selection_caret = " ",
 					-- open files in the first window that is an actual file.

@@ -210,7 +210,4 @@ function M.git()
 	local ret = git_root and vim.fn.fnamemodify(git_root, ":h") or root
 	return ret
 end
-
---加载根路径
-M.reload_root_path()
 return M
