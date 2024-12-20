@@ -165,9 +165,15 @@ map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 
 -- floating terminal
-map("n", "<leader>t",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root(),env = {win = "float"} }) end, { desc = "Terminal (Root Dir)" })
-map("n", "<c-/>",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root() }) end, { desc = "Terminal (Root Dir)" })
-map("n", "<c-_>",      function() Snacks.terminal(nil, { cwd = GlobalUtil.root() }) end, { desc = "which_key_ignore" })
+map("n", "<c-/>",      function() 
+  local venv = vim.fn.getenv("VIRTUAL_ENV")
+  Snacks.terminal(nil, { cwd = GlobalUtil.root.root(),env = {venv=venv} }) 
+end, { desc = "Terminal (Root Dir)" })
+map("n", "<c-_>",      function() 
+  local venv = vim.fn.getenv("VIRTUAL_ENV")
+  Snacks.terminal(nil, { cwd = GlobalUtil.root.root(),env = {venv=venv} }) 
+end, { desc = "Terminal (Root Dir)" })
+
 
 -- Terminal Mappings
 map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
