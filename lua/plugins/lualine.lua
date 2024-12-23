@@ -78,17 +78,27 @@ return {
 					},
 					lualine_c = {
 						--文件类型
-						{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+						{
+							"filetype",
+							icon_only = true,
+							separator = "",
+							padding = { left = 1, right = 0 },
+						},
 						{
 							function()
 								-- 当前文件类型
 								local filetype = vim.bo.filetype
-								if filetype ~= "python" then
+								-- if filetype ~= "python" then
+								-- 	return ""
+								-- end
+								local venv_path = os.getenv("VIRTUAL_ENV")
+								if venv_path == nil then
 									return ""
 								end
-								local venv_name = require("venv-selector").get_active_venv()
-								return venv_name
+								return "(" .. vim.fn.fnamemodify(venv_path, ":t") .. ")"
 							end,
+              padding = { left = 0, right = 1 },
+              color = { fg = "#ff9e64" },
 						},
 						-- 文件路径
 						{
