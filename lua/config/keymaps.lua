@@ -165,7 +165,7 @@ map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 
 -- floating terminal
-map("n", "<c-/>",      function() 
+map("n", "<c-t>",      function() 
   local venv = vim.fn.getenv("VIRTUAL_ENV")
   Snacks.terminal(nil, { cwd = GlobalUtil.root.root(),env = {venv=venv} }) 
 end, { desc = "Terminal (Root Dir)" })
@@ -176,7 +176,7 @@ end, { desc = "Terminal (Root Dir)" })
 
 
 -- Terminal Mappings
-map("t", "<C-/>", "<cmd>close<cr>", { desc = "Hide Terminal" })
+map("t", "<C-t>", "<cmd>close<cr>", { desc = "Hide Terminal" })
 map("t", "<c-_>", "<cmd>close<cr>", { desc = "which_key_ignore" })
 
 -- windows
