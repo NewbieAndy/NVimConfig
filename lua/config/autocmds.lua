@@ -66,7 +66,6 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 		end
 	end,
 })
-
 --判断是否需要重新加载
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 	group = augroup("checktime"),
