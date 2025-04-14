@@ -33,7 +33,6 @@ return {
 		keys = function()
 			local builtin = require("telescope.builtin")
 			return {
-				-- { "<leader><space>", builtin.find_files, desc = "搜索文件" },
 				{
 					"<leader><space>",
 					function()
@@ -44,13 +43,6 @@ return {
 				{ "<leader>/", builtin.current_buffer_fuzzy_find, desc = "Buffer" },
 				{ "<leader>:", builtin.command_history, desc = "History Commands" },
 				{ "<leader>m", builtin.marks, desc = "跳转书签" },
-				{
-					"<leader>ff",
-					function()
-						builtin.find_files({ cwd = GlobalUtil.root.root() })
-					end,
-					desc = "搜索文件",
-				},
 				{
 					"<leader>fo",
 					function()
@@ -93,40 +85,7 @@ return {
 					end,
 					desc = "Git Status",
 				},
-				{ "<leader>sa", builtin.autocommands, desc = "Auto Commands" },
-				-- search
-				-- { "<leader>sd", "<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document Diagnostics" },
-				-- { "<leader>sD", "<cmd>Telescope diagnostics<cr>", desc = "Workspace Diagnostics" },
-				-- { "<leader>sg", require("telescope.builtin").live_grep, desc = "Grep (Root Dir)" },
-				-- { "<leader>sG", require("telescope.builtin").live_grep({ root = false }), desc = "Grep (cwd)" },
-				-- { "<leader>sh", "<cmd>Telescope help_tags<cr>", desc = "Help Pages" },
-				-- { "<leader>sH", "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups" },
-				-- { "<leader>sk", "<cmd>Telescope keymaps<cr>", desc = "Key Maps" },
-				-- { "<leader>sM", "<cmd>Telescope man_pages<cr>", desc = "Man Pages" },
-				-- { "<leader>sR", "<cmd>Telescope resume<cr>", desc = "Resume" },
-				-- { "<leader>sw",  require("telescope.builtin").grep_string({ word_match = "-w" }), desc = "Word (Root Dir)" },
-				-- { "<leader>sW",  require("telescope.builtin").grep_string({ root = false, word_match = "-w" }), desc = "Word (cwd)" },
-				-- { "<leader>sw",  require("telescope.builtin").grep_string, mode = "v", desc = "Selection (Root Dir)" },
-				-- { "<leader>sW",  require("telescope.builtin").grep_string({ root = false }), mode = "v", desc = "Selection (cwd)" },
-				-- { "<leader>uC",  require("telescope.builtin").colorscheme({ enable_preview = true }), desc = "Colorscheme with Preview" },
-				-- {
-				--   "<leader>ss",
-				--   function()
-				--     require("telescope.builtin").lsp_document_symbols({
-				--       symbols = GlobalUtil.get_kind_filter(),
-				--     })
-				--   end,
-				--   desc = "Goto Symbol",
-				-- },
-				-- {
-				--   "<leader>sS",
-				--   function()
-				--     require("telescope.builtin").lsp_dynamic_workspace_symbols({
-				--       symbols = GlobalUtil.get_kind_filter(),
-				--     })
-				--   end,
-				--   desc = "Goto Symbol (Workspace)",
-				-- },
+				{ "<leader>sa", builtin.autocommands, desc = "Auto Commands" }
 			}
 		end,
 		opts = function()
@@ -202,10 +161,6 @@ return {
 					oldfiles = {
 						cwd = GlobalUtil.root.root(),
 					},
-					-- find_files = {
-					-- 	find_command = find_command,
-					-- 	hidden = true,
-					-- },
 				},
 			}
 		end,

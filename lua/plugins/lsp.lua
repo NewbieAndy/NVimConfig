@@ -1,5 +1,8 @@
+---@alias LazyKeysLspSpec LazyKeysSpec|{has?:string|string[], cond?:fun():boolean}
+---@alias LazyKeysLsp LazyKeys|{has?:string|string[], cond?:fun():boolean}
 local M = {}
 
+---@return LazyKeysLspSpec[]
 function M.getKeys()
 	local builtin = require("telescope.builtin")
 	return {
@@ -9,11 +12,18 @@ function M.getKeys()
 			desc = "Lsp Info",
 		},
 		{
-			"<leader>da",
+			"<leader>fD",
 			function()
 				builtin.diagnostics({ reuse_win = true })
 			end,
-			desc = "Diagnostics",
+			desc = "Workspace DiAgnostics",
+		},
+		{
+			"<leader>fd",
+			function()
+				builtin.diagnostics({ reuse_win = true, bufnr = 0 })
+			end,
+			desc = "Document Diagnostics",
 		},
 		{
 			"gd",
@@ -114,6 +124,28 @@ function M.getKeys()
 			desc = "Source Action",
 			has = "codeAction",
 		},
+		{
+			"]]",
+			function()
+				Snacks.words.jump(vim.v.count1)
+			end,
+			has = "documentHighlight",
+			desc = "Next Reference",
+			cond = function()
+				return Snacks.words.is_enabled()
+			end,
+		},
+		{
+			"[[",
+			function()
+				Snacks.words.jump(-vim.v.count1)
+			end,
+			has = "documentHighlight",
+			desc = "Prev Reference",
+			cond = function()
+				return Snacks.words.is_enabled()
+			end,
+		},
 	}
 end
 
@@ -137,6 +169,7 @@ function M.has(buffer, method)
 	return false
 end
 
+---@return LazyKeysLsp[]
 function M.resolve(buffer)
 	local Keys = require("lazy.core.handler.keys")
 	if not Keys.resolve then
@@ -172,45 +205,6 @@ function M.on_attach(_, buffer)
 end
 
 return {
-	-- cmdline tools and lsp servers
-	{
-		"williamboman/mason.nvim",
-		cmd = "Mason",
-		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
-		build = ":MasonUpdate",
-		opts_extend = { "ensure_installed" },
-		opts = {
-			ensure_installed = {
-				"stylua",
-				"shfmt",
-				"markdownlint-cli2",
-				"markdown-toc",
-			},
-		},
-		---@param opts MasonSettings | {ensure_installed: string[]}
-		config = function(_, opts)
-			require("mason").setup(opts)
-			local mr = require("mason-registry")
-			mr:on("package:install:success", function()
-				vim.defer_fn(function()
-					-- trigger FileType event to possibly load this newly installed LSP server
-					require("lazy.core.handler.event").trigger({
-						event = "FileType",
-						buf = vim.api.nvim_get_current_buf(),
-					})
-				end, 100)
-			end)
-
-			mr.refresh(function()
-				for _, tool in ipairs(opts.ensure_installed) do
-					local p = mr.get_package(tool)
-					if not p:is_installed() then
-						p:install()
-					end
-				end
-			end)
-		end,
-	},
 	-- lspconfig
 	{
 		"neovim/nvim-lspconfig",
@@ -481,6 +475,43 @@ return {
 					handlers = { setup },
 				})
 			end
+		end,
+	},
+	-- cmdline tools and lsp servers
+	{
+		"williamboman/mason.nvim",
+		cmd = "Mason",
+		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+		build = ":MasonUpdate",
+		opts_extend = { "ensure_installed" },
+		opts = {
+			ensure_installed = {
+				"stylua",
+				"shfmt",
+			},
+		},
+		---@param opts MasonSettings | {ensure_installed: string[]}
+		config = function(_, opts)
+			require("mason").setup(opts)
+			local mr = require("mason-registry")
+			mr:on("package:install:success", function()
+				vim.defer_fn(function()
+					-- trigger FileType event to possibly load this newly installed LSP server
+					require("lazy.core.handler.event").trigger({
+						event = "FileType",
+						buf = vim.api.nvim_get_current_buf(),
+					})
+				end, 100)
+			end)
+
+			mr.refresh(function()
+				for _, tool in ipairs(opts.ensure_installed) do
+					local p = mr.get_package(tool)
+					if not p:is_installed() then
+						p:install()
+					end
+				end
+			end)
 		end,
 	},
 
