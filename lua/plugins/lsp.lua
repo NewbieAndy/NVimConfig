@@ -130,7 +130,6 @@ function M.has(buffer, method)
 	return false
 end
 
----@return LazyKeysLsp[]
 function M.resolve(buffer)
 	local Keys = require("lazy.core.handler.keys")
 	if not Keys.resolve then
@@ -166,6 +165,45 @@ function M.on_attach(_, buffer)
 end
 
 return {
+	-- cmdline tools and lsp servers
+	{
+		"williamboman/mason.nvim",
+		cmd = "Mason",
+		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+		build = ":MasonUpdate",
+		opts_extend = { "ensure_installed" },
+		opts = {
+			ensure_installed = {
+				"stylua",
+				"shfmt",
+				"markdownlint-cli2",
+				"markdown-toc",
+			},
+		},
+		---@param opts MasonSettings | {ensure_installed: string[]}
+		config = function(_, opts)
+			require("mason").setup(opts)
+			local mr = require("mason-registry")
+			mr:on("package:install:success", function()
+				vim.defer_fn(function()
+					-- trigger FileType event to possibly load this newly installed LSP server
+					require("lazy.core.handler.event").trigger({
+						event = "FileType",
+						buf = vim.api.nvim_get_current_buf(),
+					})
+				end, 100)
+			end)
+
+			mr.refresh(function()
+				for _, tool in ipairs(opts.ensure_installed) do
+					local p = mr.get_package(tool)
+					if not p:is_installed() then
+						p:install()
+					end
+				end
+			end)
+		end,
+	},
 	-- lspconfig
 	{
 		"neovim/nvim-lspconfig",
@@ -265,8 +303,6 @@ return {
 				--docker
 				dockerls = {},
 				docker_compose_language_service = {},
-				--java
-				jdtls = {},
 				--json
 				jsonls = {
 					-- lazy-load schemastore when needed
@@ -305,21 +341,11 @@ return {
 					},
 				},
 				pyright = { enabled = true },
-				--tailwindcss
-				tailwindcss = {
-					-- exclude a filetype from the default_config
-					filetypes_exclude = { "markdown" },
-					-- add additional filetypes to the default_config
-					filetypes_include = {},
-					-- to fully override the default_config, change the below
-					-- filetypes = {}
-				},
 				--toml
 				taplo = {},
 			},
 			-- you can do any additional lsp server setup here
 			-- return true if you don't want this server to be setup with lspconfig
-			---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
 			setup = {
 				-- example to setup with typescript.nvim
 				-- tsserver = function(_, opts)
@@ -328,10 +354,6 @@ return {
 				-- end,
 				-- Specify * to use this function as a fallback for any server
 				-- ["*"] = function(server, opts) end,
-				--java
-				jdtls = function()
-					return true -- avoid duplicate servers
-				end,
 				--python
 				ruff = function()
 					GlobalUtil.lsp.on_attach(function(client, _)
@@ -339,37 +361,8 @@ return {
 						client.server_capabilities.hoverProvider = false
 					end, "ruff")
 				end,
-				--tailwindcss
-				tailwindcss = function(_, opts)
-					local tw = GlobalUtil.lsp.get_raw_config("tailwindcss")
-					opts.filetypes = opts.filetypes or {}
-
-					-- Add default filetypes
-					vim.list_extend(opts.filetypes, tw.default_config.filetypes)
-
-					-- Remove excluded filetypes
-					--- @param ft string
-					opts.filetypes = vim.tbl_filter(function(ft)
-						return not vim.tbl_contains(opts.filetypes_exclude or {}, ft)
-					end, opts.filetypes)
-
-					-- Additional settings for Phoenix projects
-					opts.settings = {
-						tailwindCSS = {
-							includeLanguages = {
-								elixir = "html-eex",
-								eelixir = "html-eex",
-								heex = "html-eex",
-							},
-						},
-					}
-
-					-- Add additional filetypes
-					vim.list_extend(opts.filetypes, opts.filetypes_include or {})
-				end,
 			},
 		},
-		---@param opts PluginLspOpts
 		config = function(_, opts)
 			-- setup autoformat
 			GlobalUtil.format.register(GlobalUtil.lsp.formatter())
@@ -485,49 +478,6 @@ return {
 		end,
 	},
 
-	-- cmdline tools and lsp servers
-	{
-
-		"williamboman/mason.nvim",
-		cmd = "Mason",
-		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
-		build = ":MasonUpdate",
-		opts_extend = { "ensure_installed" },
-		opts = {
-			ensure_installed = {
-				"stylua",
-				"shfmt",
-				"java-debug-adapter",
-				"java-test",
-				"js-debug-adapter",
-				"markdownlint-cli2",
-				"markdown-toc",
-			},
-		},
-		---@param opts MasonSettings | {ensure_installed: string[]}
-		config = function(_, opts)
-			require("mason").setup(opts)
-			local mr = require("mason-registry")
-			mr:on("package:install:success", function()
-				vim.defer_fn(function()
-					-- trigger FileType event to possibly load this newly installed LSP server
-					require("lazy.core.handler.event").trigger({
-						event = "FileType",
-						buf = vim.api.nvim_get_current_buf(),
-					})
-				end, 100)
-			end)
-
-			mr.refresh(function()
-				for _, tool in ipairs(opts.ensure_installed) do
-					local p = mr.get_package(tool)
-					if not p:is_installed() then
-						p:install()
-					end
-				end
-			end)
-		end,
-	},
 	-- none-ls
 	{
 		"nvimtools/none-ls.nvim",

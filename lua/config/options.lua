@@ -1,29 +1,29 @@
 local option = vim.opt
 
- -- 启用自动写入
+-- 启用自动写入
 option.autowrite = true
- -- 与系统剪贴板同步
+-- 与系统剪贴板同步
 option.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
 option.completeopt = "menu,menuone,noselect"
 -- 隐藏用于粗体和斜体的 * 标记，但不隐藏带有替换的标记
 option.conceallevel = 2
- -- 在退出修改过的缓冲区之前确认保存更改
+-- 在退出修改过的缓冲区之前确认保存更改
 option.confirm = true
 -- 启用当前行高亮
 option.cursorline = true
- -- 使用空格代替制表符
+-- 使用空格代替制表符
 option.expandtab = true
 option.fillchars = {
-  foldopen = "",
-  foldclose = "",
-  fold = " ",
-  foldsep = " ",
-  diff = "╱",
-  eob = " ",
+	foldopen = "",
+	foldclose = "",
+	fold = " ",
+	foldsep = " ",
+	diff = "╱",
+	eob = " ",
 }
 option.foldlevel = 99
 option.formatexpr = "v:lua.require'utils'.format.formatexpr()"
- -- tcqj
+-- tcqj
 option.formatoptions = "jcroqlnt"
 option.grepformat = "%f:%l:%c:%m"
 option.grepprg = "rg --vimgrep"
@@ -64,13 +64,13 @@ option.undofile = true
 option.undolevels = 10000
 option.updatetime = 200 -- Save swap file and trigger CursorHold
 
- -- Allow cursor to move where there is no text in visual block mode
+-- Allow cursor to move where there is no text in visual block mode
 option.virtualedit = "block"
- -- Command-line completion mode
+-- Command-line completion mode
 option.wildmode = "longest:full,full"
- -- Minimum window width
+-- Minimum window width
 option.winminwidth = 5
- -- Disable line wrap
+-- Disable line wrap
 option.wrap = false
 option.smoothscroll = true
 option.foldexpr = "v:lua.require'utils'.ui.foldexpr()"
@@ -79,4 +79,3 @@ option.foldtext = ""
 
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
-

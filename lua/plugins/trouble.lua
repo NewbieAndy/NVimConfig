@@ -18,7 +18,7 @@ return {
     { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                   desc = "Quickfix List (Trouble)" },
     {
       "[q",
-      function()
+     function()
         if require("trouble").is_open() then
           require("trouble").prev({ skip_groups = true, jump = true })
         else

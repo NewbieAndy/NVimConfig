@@ -14,7 +14,7 @@ local previous_input_method = ""
 -- 离开插入模式自动切换到英文输入法
 local auto_switch_input_method_group = augroup("auto_switch_input_method")
 -- 获取当前输入法
-function get_current_input_method()
+local function get_current_input_method()
 	local ok, handle = pcall(function()
 		return io.popen('hs -c "getCurrentInputMethod()"')
 	end)
@@ -32,7 +32,7 @@ function get_current_input_method()
 end
 
 -- 切换输入法
-function switch_input_method(input_method)
+local function switch_input_method(input_method)
 	if input_method then
 		local command = string.format("hs -c 'switchInputMethod(\"%s\")'", input_method)
 		os.execute(command)

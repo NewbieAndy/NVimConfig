@@ -3,7 +3,7 @@ local M = {}
 ---@return {fg?:string}?
 function M.fg(name)
 	local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
-	local fg = hl and hl.fg or hl.foreground
+	local fg = hl and hl.fg
 	return fg and { fg = string.format("#%06x", fg) } or nil
 end
 
@@ -87,7 +87,7 @@ return {
 						{
 							function()
 								-- 当前文件类型
-								local filetype = vim.bo.filetype
+								--	local filetype = vim.bo.filetype
 								-- if filetype ~= "python" then
 								-- 	return ""
 								-- end
@@ -97,8 +97,8 @@ return {
 								end
 								return "(" .. vim.fn.fnamemodify(venv_path, ":t") .. ")"
 							end,
-              padding = { left = 0, right = 1 },
-              color = { fg = "#ff9e64" },
+							padding = { left = 0, right = 1 },
+							color = { fg = "#ff9e64" },
 						},
 						-- 文件路径
 						{
@@ -110,7 +110,6 @@ return {
 									return ""
 								end
 
-								path = GlobalUtil.norm(path)
 								local cwd = GlobalUtil.root.cwd()
 								path = path:sub(#cwd + 2)
 
