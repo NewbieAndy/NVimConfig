@@ -9,6 +9,13 @@ function M.getKeys()
 			desc = "Lsp Info",
 		},
 		{
+			"<leader>da",
+			function()
+				builtin.diagnostics({ reuse_win = true })
+			end,
+			desc = "Diagnostics",
+		},
+		{
 			"gd",
 			function()
 				builtin.lsp_definitions({ reuse_win = true })
@@ -270,7 +277,6 @@ return {
 				timeout_ms = nil,
 			},
 			-- LSP Server Settings
-			---@type lspconfig.options
 			servers = {
 				lua_ls = {
 					settings = {
@@ -324,6 +330,7 @@ return {
 				--nushell
 				nushell = {},
 				--python
+				pyright = { enabled = true },
 				ruff = {
 					enabled = true,
 					cmd_env = { RUFF_TRACE = "messages" },
@@ -340,7 +347,6 @@ return {
 						},
 					},
 				},
-				pyright = { enabled = true },
 				--toml
 				taplo = {},
 			},
