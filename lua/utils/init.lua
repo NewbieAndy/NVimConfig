@@ -1,12 +1,10 @@
 local LazyUtil = require("lazy.core.util")
 
 ---@class utils: LazyUtilCore
----@field config LazyVimConfig
 ---@field ui utils.ui
 ---@field lsp utils.lsp
 ---@field root utils.root
 ---@field format utils.format
----@field plugin utils.plugin
 ---@field mini utils.mini
 ---@field cmp utils.cmp
 local M = {}

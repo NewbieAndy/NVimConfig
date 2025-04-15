@@ -60,10 +60,24 @@ return {
 				{ "<leader>sb", "<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>", desc = "切换 Buffer" },
 				{ "<leader>sj", builtin.jumplist, desc = "Jumplist" },
 				{ "<leader>sk", builtin.keymaps, desc = "keymaps" },
-				{ "<leader>sl", builtin.loclist, desc = "Location List" },
 				{ "<leader>so", builtin.vim_options, desc = "Options" },
-				{ "<leader>sq", builtin.quickfix, desc = "Quickfix List" },
 				{ "<leader>sr", builtin.registers, desc = "Registers" },
+				{
+					"<leader>xx",
+					function()
+						builtin.diagnostics({ reuse_win = true, bufnr = 0 })
+					end,
+					desc = "Document Diagnostics",
+				},
+				{
+					"<leader>xX",
+					function()
+						builtin.diagnostics({ reuse_win = true })
+					end,
+					desc = "Workspace DiAgnostics",
+				},
+				{ "<leader>xl", builtin.loclist, desc = "Location List" },
+				{ "<leader>xq", builtin.quickfix, desc = "Quickfix List" },
 				{
 					"<leader>gf",
 					function()
@@ -85,7 +99,7 @@ return {
 					end,
 					desc = "Git Status",
 				},
-				{ "<leader>sa", builtin.autocommands, desc = "Auto Commands" }
+				{ "<leader>sa", builtin.autocommands, desc = "Auto Commands" },
 			}
 		end,
 		opts = function()

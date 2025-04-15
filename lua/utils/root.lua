@@ -198,10 +198,7 @@ function M.get(opts)
 		ret = roots[1] and roots[1].paths[1] or vim.uv.cwd()
 		M.cache[buf] = ret
 	end
-	if opts and opts.normalize then
-		return ret
-	end
-	return GlobalUtil.is_win() and ret:gsub("/", "\\") or ret
+	return ret
 end
 
 function M.git()

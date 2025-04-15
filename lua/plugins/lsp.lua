@@ -12,20 +12,6 @@ function M.getKeys()
 			desc = "Lsp Info",
 		},
 		{
-			"<leader>fD",
-			function()
-				builtin.diagnostics({ reuse_win = true })
-			end,
-			desc = "Workspace DiAgnostics",
-		},
-		{
-			"<leader>fd",
-			function()
-				builtin.diagnostics({ reuse_win = true, bufnr = 0 })
-			end,
-			desc = "Document Diagnostics",
-		},
-		{
 			"gd",
 			function()
 				builtin.lsp_definitions({ reuse_win = true })
@@ -35,7 +21,9 @@ function M.getKeys()
 		},
 		{
 			"gr",
-			"<cmd>Telescope lsp_references<cr>",
+			function()
+				builtin.lsp_references({ reuse_win = true })
+			end,
 			desc = "References",
 			nowait = true,
 		},
@@ -124,28 +112,6 @@ function M.getKeys()
 			desc = "Source Action",
 			has = "codeAction",
 		},
-		{
-			"]]",
-			function()
-				Snacks.words.jump(vim.v.count1)
-			end,
-			has = "documentHighlight",
-			desc = "Next Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
-		{
-			"[[",
-			function()
-				Snacks.words.jump(-vim.v.count1)
-			end,
-			has = "documentHighlight",
-			desc = "Prev Reference",
-			cond = function()
-				return Snacks.words.is_enabled()
-			end,
-		},
 	}
 end
 
@@ -191,9 +157,8 @@ function M.on_attach(_, buffer)
 
 	for _, keys in pairs(keymaps) do
 		local has = not keys.has or M.has(buffer, keys.has)
-		local cond = not (keys.cond == false or ((type(keys.cond) == "function") and not keys.cond()))
 
-		if has and cond then
+		if has then
 			local opts = Keys.opts(keys)
 			opts.cond = nil
 			opts.has = nil
