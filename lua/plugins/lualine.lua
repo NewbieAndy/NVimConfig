@@ -142,16 +142,28 @@ return {
 						},
 					},
 					lualine_x = {
-            -- stylua: ignore
-            {
-              function() return "  " .. require("dap").status() end,
-              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-              color = function() return M.fg("Debug") end,
-            },
+						Snacks.profiler.status(),
 						{
-							require("noice").api.status.mode.get,
-							cond = require("noice").api.status.mode.has,
-							color = { fg = "#ff9e64" },
+							function()
+								return require("noice").api.status.mode.get()
+							end,
+							cond = function()
+								return package.loaded["noice"] and require("noice").api.status.mode.has()
+							end,
+							color = function()
+								return { fg = Snacks.util.color("Constant") }
+							end,
+						},
+						{
+							function()
+								return "  " .. require("dap").status()
+							end,
+							cond = function()
+								return package.loaded["dap"] and require("dap").status() ~= ""
+							end,
+							color = function()
+								return { fg = Snacks.util.color("Debug") }
+							end,
 						},
 						{
 							-- copilot ICON
