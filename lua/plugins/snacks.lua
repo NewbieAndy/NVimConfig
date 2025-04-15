@@ -14,12 +14,12 @@ return {
 			quickfile = { enabled = true },
 			statuscolumn = { enabled = true },
 			words = { enabled = true },
-			styles = {
-				notification = {
-					wo = { wrap = true }, -- Wrap notifications
-          relative = true, -- Relative time
-				},
-			},
+			-- styles = {
+			-- 	notification = {
+			-- 		wo = { wrap = true }, -- Wrap notifications
+			--        -- relative = true, -- Relative time
+			-- 	},
+			-- },
 			dashboard = {
 				preset = {
           -- stylua: ignore
