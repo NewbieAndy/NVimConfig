@@ -28,25 +28,6 @@ return {
 					end, "copilot")
 				end,
 			},
-			-- {
-			-- 	"saghen/blink.cmp",
-			-- 	optional = true,
-			-- 	dependencies = { "giuxtaposition/blink-cmp-copilot" },
-			-- 	opts = {
-			-- 		sources = {
-			-- 			completion = {
-			-- 				enabled_providers = { "copilot" },
-			-- 			},
-			-- 			providers = {
-			-- 				copilot = {
-			-- 					name = "copilot",
-			-- 					module = "blink-cmp-copilot",
-			-- 					kind = "Copilot",
-			-- 				},
-			-- 			},
-			-- 		},
-			-- 	},
-			-- },
 		},
 		opts = function()
 			vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
@@ -99,7 +80,6 @@ return {
 					icon = GlobalUtil.icons.kinds.Markdown,
 				},
 			}
-
 			-- 获取源图标
 			function get_source_icon(item_name)
 				for _, value in pairs(cmp_sources) do

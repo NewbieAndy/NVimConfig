@@ -6,6 +6,22 @@ return {
 		version = false, -- telescope did only one release, so use HEAD for now
 		dependencies = {
 			{ "nvim-lua/plenary.nvim" },
+			-- {
+			-- 	"nvim-telescope/telescope-ui-select.nvim",
+			-- 	config = function(plugin)
+			-- 		GlobalUtil.on_load("telescope.nvim", function()
+			-- 			require("telescope").setup({
+			-- 				extensions = {
+			-- 					["ui-select"] = {
+			-- 						require("telescope.themes").get_dropdown({
+			-- 						}),
+			-- 					},
+			-- 				},
+			-- 			})
+			-- 			require("telescope").load_extension("ui-select")
+			-- 		end)
+			-- 	end,
+			-- },
 			{
 				"nvim-telescope/telescope-fzf-native.nvim",
 				build = "make",
@@ -179,7 +195,6 @@ return {
 			}
 		end,
 	},
-	-- better vim.ui with telescope
 	{
 		"stevearc/dressing.nvim",
 		lazy = true,
