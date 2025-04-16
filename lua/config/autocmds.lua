@@ -3,7 +3,7 @@ local function augroup(name)
 	return vim.api.nvim_create_augroup("custom_" .. name, { clear = true })
 end
 
--- 离开插入模式后自动保存
+-- 离开插入模式后自动保存a
 vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged", "FocusLost" }, {
 	group = augroup("auto_save"),
 	pattern = "*",
