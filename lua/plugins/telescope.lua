@@ -95,7 +95,7 @@ return {
 				{ "<leader>xl", builtin.loclist, desc = "Location List" },
 				{ "<leader>xq", builtin.quickfix, desc = "Quickfix List" },
 				{
-					"<leader>gf",
+				"<leader>gf",
 					function()
 						builtin.git_files({ cwd = GlobalUtil.root.root() })
 					end,

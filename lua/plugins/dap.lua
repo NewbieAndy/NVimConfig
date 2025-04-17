@@ -50,22 +50,8 @@ return {
 				dependencies = { "williamboman/mason.nvim" },
 				cmd = { "DapInstall", "DapUninstall" },
 				opts = {
-					-- Makes a best effort to setup the various debuggers with
-					-- reasonable debug configurations
-					automatic_installation = true,
-
-					-- You can provide additional configuration to the handlers,
-					-- see mason-nvim-dap README for more information
-					handlers = {},
-
-					-- You'll need to check that you have the required things installed
-					-- online, please don't ask me how to install them :)
-					ensure_installed = {
-						-- Update this to ensure that you have the debuggers for the langs you want
-					},
+					handlers = { python = function() end },
 				},
-				-- mason-nvim-dap is loaded when nvim-dap loads
-				config = function() end,
 			},
 			"theHamsta/nvim-dap-virtual-text",
 			{
@@ -76,17 +62,13 @@ return {
                     { "<leader>dPc", function() require('dap-python').test_class() end,  desc = "Debug Class",  ft = "python" },
                 },
 				config = function()
-					if vim.fn.has("win32") == 1 then
-						require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/Scripts/pythonw.exe"))
+					-- 优先使用当前项目的虚拟环境
+					local venv = vim.fn.getenv("VIRTUAL_ENV")
+					local venv_path = (venv and venv ~= "") and tostring(venv) or nil
+					if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then
+						require("dap-python").setup(venv_path .. "/bin/python")
 					else
-						-- 优先使用当前项目的虚拟环境
-						local venv = vim.fn.getenv("VIRTUAL_ENV")
-						local venv_path = (venv and venv ~= "") and tostring(venv) or nil
-						if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then
-							require("dap-python").setup(venv_path .. "/bin/python")
-						else
-							require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
-						end
+						require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
 					end
 				end,
 			},

@@ -112,6 +112,17 @@ function M.getKeys()
 			desc = "Source Action",
 			has = "codeAction",
 		},
+		{
+			"<leader>cs",
+			function()
+				builtin.lsp_document_symbols({
+					-- symbol_highlights = { "function" },
+					symbols = { "function", "class" },
+					reuse_win = true,
+				})
+			end,
+			desc = "document_symbols",
+		},
 	}
 end
 
