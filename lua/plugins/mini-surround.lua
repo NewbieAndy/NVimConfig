@@ -1,3 +1,6 @@
+if true then
+  return {}
+end
 -- TODO: 未处理
 -- Fast and feature-rich surround actions. For text that includes
 -- surrounding characters like brackets or quotes, this allows you

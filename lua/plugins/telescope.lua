@@ -79,21 +79,21 @@ return {
 				{ "<leader>so", builtin.vim_options, desc = "Options" },
 				{ "<leader>sr", builtin.registers, desc = "Registers" },
 				{
-					"<leader>xx",
+					"<leader>sd",
 					function()
 						builtin.diagnostics({ reuse_win = true, bufnr = 0 })
 					end,
 					desc = "Document Diagnostics",
 				},
 				{
-					"<leader>xX",
+					"<leader>sD",
 					function()
 						builtin.diagnostics({ reuse_win = true })
 					end,
 					desc = "Workspace DiAgnostics",
 				},
-				{ "<leader>xl", builtin.loclist, desc = "Location List" },
-				{ "<leader>xq", builtin.quickfix, desc = "Quickfix List" },
+				{ "<leader>sl", builtin.loclist, desc = "Location List" },
+				{ "<leader>sf", builtin.quickfix, desc = "Quickfix List" },
 				{
 				"<leader>gf",
 					function()
