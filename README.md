@@ -30,7 +30,7 @@
 - Clone the code
 
   ```sh
-  git clone https://github.com/LazyVim/starter ~/.config/nvim
+  git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
   ```
 - Start Neovim!
 
