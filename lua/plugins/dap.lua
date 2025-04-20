@@ -1,3 +1,6 @@
+if true then
+  return {}
+end
 -- TODO: 未处理
 ---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
