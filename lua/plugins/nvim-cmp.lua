@@ -6,6 +6,7 @@ return {
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-cmdline",
 			"hrsh7th/cmp-path",
 			{
 				"garymjr/nvim-snippets",
@@ -44,6 +45,12 @@ return {
 
 			--这里配置补全源
 			local cmp_sources = {
+				{
+					name = "copilot",
+					group_index = 1,
+					priority = 100,
+					icon = GlobalUtil.icons.kinds.Copilot,
+				},
 				{
 					name = "copilot",
 					group_index = 1,
@@ -91,6 +98,7 @@ return {
 			end
 
 			return {
+				native_menu = false, -- 或 true
 				auto_brackets = { "python" }, -- configure any filetype to auto add brackets
 				completion = {
 					completeopt = "menu,menuone,noinsert" .. (auto_select and "" or ",noselect"),

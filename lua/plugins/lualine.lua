@@ -86,11 +86,6 @@ return {
 						},
 						{
 							function()
-								-- 当前文件类型
-								--	local filetype = vim.bo.filetype
-								-- if filetype ~= "python" then
-								-- 	return ""
-								-- end
 								local venv_path = os.getenv("VIRTUAL_ENV")
 								if venv_path == nil then
 									return ""
@@ -145,17 +140,6 @@ return {
 						Snacks.profiler.status(),
 						{
 							function()
-								return require("noice").api.status.mode.get()
-							end,
-							cond = function()
-								return package.loaded["noice"] and require("noice").api.status.mode.has()
-							end,
-							color = function()
-								return { fg = Snacks.util.color("Constant") }
-							end,
-						},
-						{
-							function()
 								return "  " .. require("dap").status()
 							end,
 							cond = function()
@@ -169,7 +153,7 @@ return {
 							-- copilot ICON
 							function()
 								local icon = GlobalUtil.icons.kinds.Copilot
-								local status = require("copilot.api").status.data
+								local status = require("copilot.status").data
 								return icon .. (status.message or "")
 							end,
 							--加载了copilot显示
@@ -188,7 +172,7 @@ return {
 									return
 								end
 								--API状态
-								local status = require("copilot.api").status.data
+								local status = require("copilot.status").data
 								return M.fg(
 									(status == nil and "DiagnosticError")
 										or (status.status == "InProgress" and "DiagnosticWarn")

@@ -26,22 +26,9 @@ return {
 				"nvim-telescope/telescope-fzf-native.nvim",
 				build = "make",
 				enabled = true,
-				config = function(plugin)
+				config = function()
 					GlobalUtil.on_load("telescope.nvim", function()
-						local ok, err = pcall(require("telescope").load_extension, "fzf")
-						if not ok then
-							local lib = plugin.dir .. "/build/libfzf." .. (GlobalUtil.is_win() and "dll" or "so")
-							if not vim.uv.fs_stat(lib) then
-								GlobalUtil.warn("`telescope-fzf-native.nvim` not built. Rebuilding...")
-								require("lazy").build({ plugins = { plugin }, show = false }):wait(function()
-									GlobalUtil.info(
-										"Rebuilding `telescope-fzf-native.nvim` done.\nPlease restart Neovim."
-									)
-								end)
-							else
-								GlobalUtil.error("Failed to load `telescope-fzf-native.nvim`:\n" .. err)
-							end
-						end
+						pcall(require("telescope").load_extension, "fzf")
 					end)
 				end,
 			},
@@ -95,7 +82,7 @@ return {
 				{ "<leader>sl", builtin.loclist, desc = "Location List" },
 				{ "<leader>sf", builtin.quickfix, desc = "Quickfix List" },
 				{
-				"<leader>gf",
+					"<leader>gf",
 					function()
 						builtin.git_files({ cwd = GlobalUtil.root.root() })
 					end,

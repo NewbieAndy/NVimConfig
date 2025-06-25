@@ -51,11 +51,6 @@ return {
 					command = "jq",
 					args = { "." },
 				},
-				--
-				-- # Example of using shfmt with extra args
-				-- shfmt = {
-				--   prepend_args = { "-i", "2", "-ci" },
-				-- },
 				["markdown-toc"] = {
 					condition = function(_, ctx)
 						for _, line in ipairs(vim.api.nvim_buf_get_lines(ctx.buf, 0, -1, false)) do
@@ -63,6 +58,7 @@ return {
 								return true
 							end
 						end
+						return false
 					end,
 				},
 				["markdownlint-cli2"] = {
