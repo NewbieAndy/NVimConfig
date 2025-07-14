@@ -35,7 +35,7 @@ return {
         { "<leader>snh", function() require("noice").cmd("history") end,                                desc = "Noice History" },
         { "<leader>sna", function() require("noice").cmd("all") end,                                    desc = "Noice All" },
         { "<leader>snd", function() require("noice").cmd("dismiss") end,                                desc = "Dismiss All" },
-        { "<leader>snt", function() require("noice").cmd("pick") end,                                   desc = "Noice Picker (Telescope/FzfLua)" },
+        { "<leader>snt", function() require("noice").cmd("pick") end,                                   desc = "Noice Picker" },
     },
 	config = function(_, opts)
 		-- HACK: noice shows messages from before it was enabled,

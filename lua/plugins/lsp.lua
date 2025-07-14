@@ -4,7 +4,6 @@ local M = {}
 
 ---@return LazyKeysLspSpec[]
 function M.getKeys()
-	local builtin = require("telescope.builtin")
 	return {
 		{
 			"<leader>cl",
@@ -14,7 +13,7 @@ function M.getKeys()
 		{
 			"gd",
 			function()
-				builtin.lsp_definitions({ reuse_win = true })
+		      Snacks.picker.lsp_definitions()
 			end,
 			desc = "Goto Definition",
 			has = "definition",
@@ -22,7 +21,7 @@ function M.getKeys()
 		{
 			"gr",
 			function()
-				builtin.lsp_references({ reuse_win = true })
+		      Snacks.picker.lsp_references()
 			end,
 			desc = "References",
 			nowait = true,
@@ -30,14 +29,14 @@ function M.getKeys()
 		{
 			"gi",
 			function()
-				builtin.lsp_implementations({ reuse_win = true })
+		      Snacks.picker.lsp_implementations()
 			end,
 			desc = "Goto Implementation",
 		},
 		{
 			"gy",
 			function()
-				builtin.lsp_type_definitions({ reuse_win = true })
+		      Snacks.picker.lsp_type_definitions()
 			end,
 			desc = "Goto T[y]pe Definition",
 		},
@@ -105,11 +104,7 @@ function M.getKeys()
 		{
 			"<leader>ss",
 			function()
-				builtin.lsp_document_symbols({
-					-- symbol_highlights = { "function" },
-					symbols = { "function", "class" },
-					reuse_win = true,
-				})
+        Snacks.picker.lsp_symbols()
 			end,
 			desc = "document_symbols",
 		},

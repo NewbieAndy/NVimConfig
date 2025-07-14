@@ -170,7 +170,6 @@ function M.setup()
 	vim.api.nvim_create_user_command("LazyRoot", function()
 		GlobalUtil.root.info()
 	end, { desc = "LazyVim roots for the current buffer" })
-
 	-- FIX: doesn't properly clear cache in neo-tree `set_root` (which should happen presumably on `DirChanged`),
 	-- probably because the event is triggered in the neo-tree buffer, therefore add `BufEnter`
 	-- Maybe this is too frequent on `BufEnter` and something else should be done instead??

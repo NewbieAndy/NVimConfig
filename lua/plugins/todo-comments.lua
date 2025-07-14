@@ -91,7 +91,14 @@ return {
 				end,
 				desc = "Previous Todo Comment",
 			},
-			{ "<leader>st", "<cmd>TodoTelescope<cr>", desc = "Todo" },
+			{
+				"<leader>st",
+				function()
+          ---@diagnostic disable-next-line: undefined-field
+					Snacks.picker.todo_comments()
+				end,
+				desc = "Todo",
+			},
 		},
 	},
 	-- comments

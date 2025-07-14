@@ -149,11 +149,11 @@ return {
 			{
 				"<leader>ap",
 				function()
-					local actions = require("CopilotChat.actions")
+					local chat = require("CopilotChat")
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					require("CopilotChat.integrations.telescope").pick(
-						actions.prompt_actions((mode == "v" or mode == "V") and { selection = select.visual } or nil)
+					require("CopilotChat.integrations.snacks").pick(
+						chat.select_prompt((mode == "v" or mode == "V") and { selection = select.visual } or nil)
 					)
 				end,
 				desc = "Prompt Actions (CopilotChat)",
