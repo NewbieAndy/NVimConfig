@@ -7,6 +7,7 @@ return {
 		opts = {
 			indent = { enabled = true },
 			bigfile = { enabled = true },
+			lazygit = { enabled = true },
 			notifier = {
 				enabled = true,
 				timeout = 3000,
@@ -55,7 +56,7 @@ return {
 									["[e"] = "explorer_error_prev",
 								},
 							},
-						}, 
+						},
 					},
 				},
 				-- filter = {

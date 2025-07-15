@@ -31,7 +31,7 @@ map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", {
 map({ "n", "i" }, "<C-e>", function()
 	Snacks.explorer.open()
 	vim.cmd("stopinsert")
-end, { desc = "Explorer NeoTree", remap = true })
+end, { desc = "Explorer", remap = true })
 
 -- buffers
 map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev Buffer" })

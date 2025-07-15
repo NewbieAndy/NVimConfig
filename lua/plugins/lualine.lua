@@ -220,7 +220,7 @@ return {
 						{ "location", padding = { left = 0, right = 1 } },
 					},
 				},
-				extensions = { "neo-tree", "lazy" },
+				extensions = {"lazy" },
 			}
 
 			-- do not add trouble symbols if aerial is enabled

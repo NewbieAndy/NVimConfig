@@ -18,18 +18,6 @@ return {
 			end,
 			offsets = {
 				{
-					filetype = "neo-tree",
-					text = function()
-						local basename = GlobalUtil.root.cwd_basename()
-						if basename == "" then
-							basename = "ROOT"
-						end
-						return GlobalUtil.icons.kinds.Apple .. basename
-					end,
-					highlight = "Directory",
-					text_align = "left",
-				},
-				{
 					filetype = "snacks_layout_box",
 				},
 			},
