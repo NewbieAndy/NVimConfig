@@ -13,7 +13,7 @@ function M.getKeys()
 		{
 			"gd",
 			function()
-		      Snacks.picker.lsp_definitions()
+				Snacks.picker.lsp_definitions()
 			end,
 			desc = "Goto Definition",
 			has = "definition",
@@ -21,7 +21,7 @@ function M.getKeys()
 		{
 			"gr",
 			function()
-		      Snacks.picker.lsp_references()
+				Snacks.picker.lsp_references()
 			end,
 			desc = "References",
 			nowait = true,
@@ -29,14 +29,14 @@ function M.getKeys()
 		{
 			"gi",
 			function()
-		      Snacks.picker.lsp_implementations()
+				Snacks.picker.lsp_implementations()
 			end,
 			desc = "Goto Implementation",
 		},
 		{
 			"gy",
 			function()
-		      Snacks.picker.lsp_type_definitions()
+				Snacks.picker.lsp_type_definitions()
 			end,
 			desc = "Goto T[y]pe Definition",
 		},
@@ -104,7 +104,7 @@ function M.getKeys()
 		{
 			"<leader>ss",
 			function()
-        Snacks.picker.lsp_symbols()
+				Snacks.picker.lsp_symbols()
 			end,
 			desc = "document_symbols",
 		},
@@ -331,7 +331,7 @@ return {
 								globalPlugins = {
 									{
 										name = "@vue/typescript-plugin",
-										location =GlobalUtil.get_pkg_path(
+										location = GlobalUtil.get_pkg_path(
 											"vue-language-server",
 											"/node_modules/@vue/language-server"
 										),
@@ -595,7 +595,6 @@ return {
 			local all_mslp_servers = {}
 			if have_mason then
 				all_mslp_servers = require("mason-lspconfig").get_available_servers()
-
 			end
 
 			local ensure_installed = {} ---@type string[]
@@ -670,7 +669,7 @@ return {
 	{
 		"nvimtools/none-ls.nvim",
 		event = { "filetype", "BufReadPost", "BufNewFile", "BufWritePre" },
-		dependencies = { "mason.nvim" },
+		dependencies = { "mason.nvim", "nvim-lua/plenary.nvim" },
 		init = function()
 			GlobalUtil.on_very_lazy(function()
 				-- register the formatter with LazyVim

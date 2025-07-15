@@ -166,20 +166,22 @@ end
 ---@type table<number, string>
 M.cache = {}
 
-function M.setup()
-	vim.api.nvim_create_user_command("LazyRoot", function()
-		GlobalUtil.root.info()
-	end, { desc = "LazyVim roots for the current buffer" })
-	-- FIX: doesn't properly clear cache in neo-tree `set_root` (which should happen presumably on `DirChanged`),
-	-- probably because the event is triggered in the neo-tree buffer, therefore add `BufEnter`
-	-- Maybe this is too frequent on `BufEnter` and something else should be done instead??
-	vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged", "BufEnter" }, {
-		group = vim.api.nvim_create_augroup("lazyvim_root_cache", { clear = true }),
-		callback = function(event)
-			M.cache[event.buf] = nil
-		end,
-	})
-end
+-- function M.setup()
+--   --添加日志
+--   vim.notify("LazyVim root setup", vim.log.levels.INFO, { title = "LazyVim Root" })
+-- 	vim.api.nvim_create_user_command("LazyRoot", function()
+-- 		GlobalUtil.root.info()
+-- 	end, { desc = "LazyVim roots for the current buffer" })
+-- 	-- FIX: doesn't properly clear cache in neo-tree `set_root` (which should happen presumably on `DirChanged`),
+-- 	-- probably because the event is triggered in the neo-tree buffer, therefore add `BufEnter`
+-- 	-- Maybe this is too frequent on `BufEnter` and something else should be done instead??
+-- 	vim.api.nvim_create_autocmd({ "LspAttach", "BufWritePost", "DirChanged", "BufEnter" }, {
+-- 		group = vim.api.nvim_create_augroup("lazyvim_root_cache", { clear = true }),
+-- 		callback = function(event)
+-- 			M.cache[event.buf] = nil
+-- 		end,
+-- 	})
+-- end
 
 -- returns the root directory based on:
 -- * lsp workspace folders

@@ -11,9 +11,19 @@ return {
 				enabled = true,
 				timeout = 3000,
 			},
+			explorer = {
+				enabled = true,
+				replace_netrw = true, -- Replace netrw with Snacks Explorer
+			},
 			picker = {
 				enabled = true,
 				cwd = GlobalUtil.root.root(),
+				sources = {
+					explorer = {
+						enabled = true,
+						-- win = { position = "float" }, -- Use float window for explorer
+					},
+				},
 				-- filter = {
 				-- 	cwd = true, -- Filter pickers by current working directory
 				-- },
@@ -53,14 +63,14 @@ return {
 			{
 				"<leader><space>",
 				function()
-					Snacks.picker.smart({filter = { cwd = true }})
+					Snacks.picker.smart({ filter = { cwd = true } })
 				end,
 				desc = "Smart Find Files",
 			},
 			{
 				"<leader>ff",
 				function()
-					Snacks.picker.files({filter = { cwd = true }})
+					Snacks.picker.files({ filter = { cwd = true } })
 				end,
 				desc = "Find Files",
 			},
@@ -74,7 +84,7 @@ return {
 			{
 				"<leader>sg",
 				function()
-					Snacks.picker.grep({filter = { cwd = true }})
+					Snacks.picker.grep({ filter = { cwd = true } })
 				end,
 				desc = "Grep",
 			},
@@ -124,7 +134,7 @@ return {
 			{
 				"<leader>fo",
 				function()
-					Snacks.picker.recent({filter = { cwd = true }})
+					Snacks.picker.recent({ filter = { cwd = true } })
 				end,
 				desc = "Recent",
 			},

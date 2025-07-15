@@ -28,9 +28,8 @@ map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
--- neo-tree
 map({ "n", "i" }, "<C-e>", function()
-	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root.root() })
+	Snacks.explorer.open()
 	vim.cmd("stopinsert")
 end, { desc = "Explorer NeoTree", remap = true })
 
@@ -99,7 +98,6 @@ map({ "n", "v" }, "<leader>fr", function()
 		},
 	})
 end, { desc = "Search and Replace" })
-
 
 map("n", "[q", vim.cmd.cprev, { desc = "Previous Quickfix" })
 map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
