@@ -17,8 +17,10 @@ return {
 				replace_netrw = true, -- Replace netrw with Snacks Explorer
 			},
 			picker = {
+				prompt = GlobalUtil.icons.kinds.Apple,
 				enabled = true,
 				cwd = GlobalUtil.root.root(),
+				ui_select = true,
 				sources = {
 					explorer = {
 						enabled = true,

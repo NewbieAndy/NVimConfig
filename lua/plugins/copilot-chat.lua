@@ -29,7 +29,10 @@ return {
 		build = "make tiktoken",
 		opts = function()
 			return {
-				auto_insert_mode = true,
+				auto_insert_mode = false,
+				completion = {
+					enabled = true, -- 重点：必须开启
+				},
 				insert_at_end = true,
 				question_header = "  User ",
 				answer_header = "  Copilot ",
@@ -56,7 +59,7 @@ return {
 						prompt = "> /COPILOT_GENERATE\n\nPlease add Chinese documentation comments to the selected code.",
 					},
 					Tests = {
-						prompt = "> /COPILOT_GENERATE\n\nPlease generate tests for my code.",
+						prompt = "> /COPILOT_GENERATE\n\nPlease generate tests for my code.And add Chinese comments",
 					},
 					Commit = {
 						prompt = "> #git:staged\n\nWrite Chinese commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.",
@@ -65,12 +68,66 @@ return {
 						prompt = "Translate selected code comments into Chinese.",
 						mapping = "<leader>at",
 					},
+					MyCustomPrompt = {
+						prompt = "Explain how it works.",
+						system_prompt = "You are very good at explaining stuff",
+						mapping = "<leader>ccmc",
+						description = "My custom prompt description",
+					},
 				},
 
 				mappings = {
 					close = {
 						normal = "q",
 						insert = "<c-a>",
+					},
+					complete = {
+						detail = "Use @<Tab> or /<Tab> for options.",
+						insert = "<Tab>",
+					},
+					reset = {
+						normal = "<C-x>",
+						insert = "<C-x>",
+					},
+					submit_prompt = {
+						normal = "<CR>",
+						insert = "<C-s>",
+					},
+					toggle_sticky = {
+						normal = "grr",
+					},
+					clear_stickies = {
+						normal = "grx",
+					},
+					accept_diff = {
+						normal = "<C-y>",
+						insert = "<C-y>",
+					},
+					jump_to_diff = {
+						normal = "gj",
+					},
+					quickfix_answers = {
+						normal = "gqa",
+					},
+					quickfix_diffs = {
+						normal = "gqd",
+					},
+					yank_diff = {
+						normal = "gy",
+						register = '"', -- Default register to use for yanking
+					},
+					show_diff = {
+						normal = "gd",
+						full_diff = false, -- Show full diff instead of unified diff when showing diff window
+					},
+					show_info = {
+						normal = "gi",
+					},
+					show_context = {
+						normal = "gc",
+					},
+					show_help = {
+						normal = "gh",
 					},
 				},
 			}
@@ -125,7 +182,8 @@ return {
 			{
 				"<leader>ax",
 				function()
-					return require("CopilotChat").reset()
+					require("CopilotChat").reset()
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
 				end,
 				desc = "Clear (CopilotChat)",
 				mode = { "n", "v" },
@@ -152,9 +210,7 @@ return {
 					local chat = require("CopilotChat")
 					local select = require("CopilotChat.select")
 					local mode = vim.api.nvim_get_mode().mode
-					require("CopilotChat.integrations.snacks").pick(
-						chat.select_prompt((mode == "v" or mode == "V") and { selection = select.visual } or nil)
-					)
+					chat.select_prompt((mode == "v" or mode == "V") and { selection = select.visual } or nil)
 				end,
 				desc = "Prompt Actions (CopilotChat)",
 				mode = { "n", "v" },
@@ -171,6 +227,7 @@ return {
 
 		config = function(_, opts)
 			local chat = require("CopilotChat")
+			chat.setup(opts)
 			vim.api.nvim_create_autocmd("BufEnter", {
 				pattern = "copilot-chat",
 				callback = function()
@@ -178,24 +235,6 @@ return {
 					vim.opt_local.number = false
 				end,
 			})
-
-			-- local select = require("CopilotChat.select")
-			-- -- Use unnamed register for the selection
-			-- opts.selection = select.unnamed
-			-- -- Custom buffer for CopilotChat
-			-- vim.api.nvim_create_autocmd("BufEnter", {
-			--   pattern = "copilot-*",
-			--   callback = function()
-			--     vim.opt_local.relativenumber = true
-			--     vim.opt_local.number = true
-			--     -- Get current filetype and set it to markdown if the current filetype is copilot-chat
-			--     local ft = vim.bo.filetype
-			--     if ft == "copilot-chat" then
-			--       vim.bo.filetype = "markdown"
-			--     end
-			--   end,
-			-- })
-			chat.setup(opts)
 		end,
 	},
 }
