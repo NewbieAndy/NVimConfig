@@ -1,4 +1,3 @@
---未处理
 return {
 	{
 		"zbirenbaum/copilot.lua",
@@ -68,12 +67,12 @@ return {
 						prompt = "Translate selected code comments into Chinese.",
 						mapping = "<leader>at",
 					},
-					MyCustomPrompt = {
-						prompt = "Explain how it works.",
-						system_prompt = "You are very good at explaining stuff",
-						mapping = "<leader>ccmc",
-						description = "My custom prompt description",
-					},
+					-- MyCustomPrompt = {
+					-- 	prompt = "Explain how it works.",
+					-- 	system_prompt = "You are very good at explaining stuff",
+					-- 	mapping = "<leader>ccmc",
+					-- 	description = "My custom prompt description",
+					-- },
 				},
 
 				mappings = {
