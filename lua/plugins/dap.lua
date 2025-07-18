@@ -1,7 +1,3 @@
-if true then
-  return {}
-end
--- TODO: 未处理
 ---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
 	local args = type(config.args) == "function" and (config.args() or {}) or config.args or {} --[[@as string[] | string ]]
@@ -59,12 +55,18 @@ return {
 			"theHamsta/nvim-dap-virtual-text",
 			{
 				"mfussenegger/nvim-dap-python",
-                -- stylua: ignore
-                keys = {
-                    { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
-                    { "<leader>dPc", function() require('dap-python').test_class() end,  desc = "Debug Class",  ft = "python" },
-                },
+				ft = "python",
+				dependencies = { "linux-cultist/venv-selector.nvim" },
 				config = function()
+					-- require("venv-selector").cached_venv()
+					-- local venv_v = require("venv-selector").get_active_venv()
+					vim.notify("Using venv_v: ")
+					vim.notify("Using venv_v: ")
+					vim.notify("Using venv_v: ")
+					vim.notify("Using venv_v: ")
+					vim.notify("Using venv_v: ")
+					vim.notify("Using venv_v: ")
+          require('venv-selector').setup{}
 					-- 优先使用当前项目的虚拟环境
 					local venv = vim.fn.getenv("VIRTUAL_ENV")
 					local venv_path = (venv and venv ~= "") and tostring(venv) or nil

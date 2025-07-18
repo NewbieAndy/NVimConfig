@@ -79,3 +79,5 @@ option.foldtext = ""
 
 -- Fix markdown indentation settings
 vim.g.markdown_recommended_style = 0
+-- 禁用python文件中 [[ ]] 跳转的映射
+vim.g.no_python_maps = 1

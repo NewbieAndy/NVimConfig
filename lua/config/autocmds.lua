@@ -66,6 +66,16 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 		end
 	end,
 })
+
+-- 换行不自动注释
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:append("c")
+    vim.opt_local.formatoptions:remove({"r", "o"})
+  end,
+})
+
 --判断是否需要重新加载
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 	group = augroup("checktime"),
