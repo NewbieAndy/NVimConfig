@@ -52,20 +52,14 @@ return {
 					icon = GlobalUtil.icons.kinds.Copilot,
 				},
 				{
-					name = "copilot",
+					name = "nvim_lsp",
 					group_index = 1,
-					priority = 100,
-					icon = GlobalUtil.icons.kinds.Copilot,
+					icon = GlobalUtil.icons.kinds.Lsp,
 				},
 				{
 					name = "lazydev",
 					group_index = 0,
 					icon = GlobalUtil.icons.kinds.Dev,
-				},
-				{
-					name = "nvim_lsp",
-					group_index = 1,
-					icon = GlobalUtil.icons.kinds.Lsp,
 				},
 				{
 					name = "path",
@@ -148,6 +142,9 @@ return {
 							fallback()
 						end
 					end, { "i", "c", "s" }),
+					["<S-F3>"] = cmp.mapping(function()
+						cmp.complete()
+					end, { "i","c","s" }),
 				}),
 				sources = cmp_sources,
 				formatting = {
