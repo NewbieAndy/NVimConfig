@@ -56,18 +56,33 @@ return {
 			{
 				"mfussenegger/nvim-dap-python",
 				ft = "python",
-				dependencies = { "linux-cultist/venv-selector.nvim" },
+				dependencies = {
+          "linux-cultist/venv-selector.nvim" },
 				config = function()
-					-- require("venv-selector").cached_venv()
-					-- local venv_v = require("venv-selector").get_active_venv()
-					vim.notify("Using venv_v: ")
-					vim.notify("Using venv_v: ")
-					vim.notify("Using venv_v: ")
-					vim.notify("Using venv_v: ")
-					vim.notify("Using venv_v: ")
-					vim.notify("Using venv_v: ")
-          require('venv-selector').setup{}
-					-- 优先使用当前项目的虚拟环境
+					-- -- 1. 自动激活上次选的 venv（如果有缓存）
+					-- require("venv-selector").retrieve_from_cache()
+					-- -- 2. 获取当前激活虚拟环境的 python 路径
+					-- local venv_python = require("venv-selector").get_active_path()
+					-- -- 3. 优先用 venv-selector 的 python 路径
+					-- if venv_python and vim.fn.filereadable(venv_python) == 1 then
+					-- 	require("dap-python").setup(venv_python)
+					-- else
+					-- 	local venv = vim.fn.getenv("VIRTUAL_ENV")
+					-- 	local venv_path = (venv and venv ~= "") and tostring(venv) or nil
+					-- 	if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then
+					-- 		require("dap-python").setup(venv_path .. "/bin/python")
+					-- 	else
+					-- 		require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
+					-- 	end
+					-- end
+					-- 判断是否安装了 venv-selector并初始化
+					if GlobalUtil.has("venv-selector.nvim") then
+						vim.notify("venv-selector.nvim is loaded, will use it to select venv")
+					else
+						vim.notify("venv-selector.nvim is not loaded, will use it to select venv")
+					end
+
+					-- -- 优先使用当前项目的虚拟环境
 					local venv = vim.fn.getenv("VIRTUAL_ENV")
 					local venv_path = (venv and venv ~= "") and tostring(venv) or nil
 					if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then

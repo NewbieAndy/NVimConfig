@@ -60,6 +60,13 @@ function M.getKeys()
 			desc = "Signature Help",
 		},
 		{
+			"<S-F4>",
+			vim.lsp.buf.code_action,
+			desc = "Code Action",
+			mode = { "n", "v" },
+			has = "codeAction",
+		},
+		{
 			"<leader>ca",
 			vim.lsp.buf.code_action,
 			desc = "Code Action",
@@ -294,13 +301,6 @@ return {
 							logLevel = "error",
 						},
 					},
-					keys = {
-						{
-							"<leader>co",
-							GlobalUtil.lsp.action["source.organizeImports"],
-							desc = "Organize Imports",
-						},
-					},
 				},
 				--toml
 				taplo = {},
@@ -365,58 +365,58 @@ return {
 							},
 						},
 					},
-					keys = {
-						{
-							"gD",
-							function()
-								local params = vim.lsp.util.make_position_params()
-								GlobalUtil.lsp.execute({
-									command = "typescript.goToSourceDefinition",
-									arguments = { params.textDocument.uri, params.position },
-									open = true,
-								})
-							end,
-							desc = "Goto Source Definition",
-						},
-						{
-							"gR",
-							function()
-								GlobalUtil.lsp.execute({
-									command = "typescript.findAllFileReferences",
-									arguments = { vim.uri_from_bufnr(0) },
-									open = true,
-								})
-							end,
-							desc = "File References",
-						},
-						{
-							"<leader>co",
-							GlobalUtil.lsp.action["source.organizeImports"],
-							desc = "Organize Imports",
-						},
-						{
-							"<leader>cM",
-							GlobalUtil.lsp.action["source.addMissingImports.ts"],
-							desc = "Add missing imports",
-						},
-						{
-							"<leader>cu",
-							GlobalUtil.lsp.action["source.removeUnused.ts"],
-							desc = "Remove unused imports",
-						},
-						{
-							"<leader>cD",
-							GlobalUtil.lsp.action["source.fixAll.ts"],
-							desc = "Fix all diagnostics",
-						},
-						{
-							"<leader>cV",
-							function()
-								GlobalUtil.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
-							end,
-							desc = "Select TS workspace version",
-						},
-					},
+					-- keys = {
+					-- 	{
+					-- 		"gD",
+					-- 		function()
+					-- 			local params = vim.lsp.util.make_position_params()
+					-- 			GlobalUtil.lsp.execute({
+					-- 				command = "typescript.goToSourceDefinition",
+					-- 				arguments = { params.textDocument.uri, params.position },
+					-- 				open = true,
+					-- 			})
+					-- 		end,
+					-- 		desc = "Goto Source Definition",
+					-- 	},
+					-- 	{
+					-- 		"gR",
+					-- 		function()
+					-- 			GlobalUtil.lsp.execute({
+					-- 				command = "typescript.findAllFileReferences",
+					-- 				arguments = { vim.uri_from_bufnr(0) },
+					-- 				open = true,
+					-- 			})
+					-- 		end,
+					-- 		desc = "File References",
+					-- 	},
+					-- 	{
+					-- 		"<leader>co",
+					-- 		GlobalUtil.lsp.action["source.organizeImports"],
+					-- 		desc = "Organize Imports",
+					-- 	},
+					-- 	{
+					-- 		"<leader>cM",
+					-- 		GlobalUtil.lsp.action["source.addMissingImports.ts"],
+					-- 		desc = "Add missing imports",
+					-- 	},
+					-- 	{
+					-- 		"<leader>cu",
+					-- 		GlobalUtil.lsp.action["source.removeUnused.ts"],
+					-- 		desc = "Remove unused imports",
+					-- 	},
+					-- 	{
+					-- 		"<leader>cD",
+					-- 		GlobalUtil.lsp.action["source.fixAll.ts"],
+					-- 		desc = "Fix all diagnostics",
+					-- 	},
+					-- 	{
+					-- 		"<leader>cV",
+					-- 		function()
+					-- 			GlobalUtil.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
+					-- 		end,
+					-- 		desc = "Select TS workspace version",
+					-- 	},
+					-- },
 					volar = {
 						init_options = {
 							vue = {
