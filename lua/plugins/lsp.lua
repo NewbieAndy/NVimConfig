@@ -292,13 +292,13 @@ return {
 				--nushell
 				nushell = {},
 				--python
-				pyright = { enabled = true },
+				-- pyright = { enabled = true },
+				basedpyright = { enabled = true },
 				ruff = {
 					enabled = true,
 					cmd_env = { RUFF_TRACE = "messages" },
 					init_options = {
-						settings = {
-							logLevel = "error",
+						settings = { logLevel = "error",
 						},
 					},
 				},
