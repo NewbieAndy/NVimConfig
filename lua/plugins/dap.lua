@@ -1,6 +1,6 @@
-if true then
-  return {}
-end
+-- if true then
+--   return {}
+-- end
 ---@param config {type?:string, args?:string[]|fun():string[]?}
 local function get_args(config)
 	local args = type(config.args) == "function" and (config.args() or {}) or config.args or {} --[[@as string[] | string ]]
@@ -17,6 +17,16 @@ local function get_args(config)
 		return require("dap.utils").splitstr(new_args)
 	end
 	return config
+end
+--- 检查指定虚拟环境目录下 python 是否存在且可执行
+-- @param workdir string 工作目录（如 vim.fn.getcwd()）
+-- @param venv_dir string 虚拟环境目录名（如 ".venv"）
+-- @return boolean
+local function has_venv_python(workdir, venv_dir)
+	-- 拼接 python 路径
+	local python_path = workdir .. "/" .. venv_dir .. "/bin/python"
+	-- 判断路径下 python 是否可执行
+	return vim.fn.executable(python_path) == 1
 end
 
 return {
@@ -60,20 +70,26 @@ return {
 				"mfussenegger/nvim-dap-python",
 				ft = "python",
 				config = function()
-					if GlobalUtil.has("venv-selector.nvim") then
-            -- /Users/andy/neoaira/schedtut-server/.venv/bin/python
-						vim.notify("venv-selector.nvim is loaded, will use it to select venv")
-            require("venv-selector").activate_from_path("/Users/andy/neoaira/schedtut-server/.venv/bin/python")
-					else
-						vim.notify("venv-selector.nvim is not loaded, will use it to select venv")
-					end
+					GlobalUtil.root()
+					local root_pwd = GlobalUtil.root()
 					-- -- 优先使用当前项目的虚拟环境
 					local venv = vim.fn.getenv("VIRTUAL_ENV")
 					local venv_path = (venv and venv ~= "") and tostring(venv) or nil
 					if venv_path and vim.fn.filereadable(venv_path .. "/bin/python") == 1 then
 						require("dap-python").setup(venv_path .. "/bin/python")
+					-- vim.notify("dap-python init virtual_env")
+					elseif has_venv_python(root_pwd, ".venv") then
+						require("dap-python").setup(root_pwd .. "/.venv/bin/python")
+					-- vim.notify("dap-python init .venv")
+					elseif has_venv_python(root_pwd, "venv") then
+						require("dap-python").setup(root_pwd .. "/venv/bin/python")
+					-- vim.notify("dap-python init venv")
+					elseif vim.fn.exepath("python") then
+						require("dap-python").setup(vim.fn.exepath("python"))
+					-- vim.notify("dap-python init PATH")
 					else
 						require("dap-python").setup(GlobalUtil.get_pkg_path("debugpy", "/venv/bin/python"))
+						-- vim.notify("dap-python init Mason")
 					end
 				end,
 			},
