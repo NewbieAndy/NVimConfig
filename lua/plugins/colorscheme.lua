@@ -1,9 +1,14 @@
 return {
-  "folke/tokyonight.nvim",
-  opts = { style = "moon" },
-  lazy = false,
-  priority = 1000,
-  config = function()
-    vim.cmd([[colorscheme tokyonight]])
-  end,
+	"folke/tokyonight.nvim",
+	lazy = false,
+	priority = 1000,
+	config = function()
+		require("tokyonight").setup({
+			on_highlights = function(hl, c)
+				-- 调整补全弹窗背景和选中项，提升对比度
+				hl.Pmenu = { bg = "#22243b", fg = c.fg_dark }
+			end,
+		})
+		vim.cmd([[colorscheme tokyonight]])
+	end,
 }

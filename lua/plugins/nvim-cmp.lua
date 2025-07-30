@@ -144,9 +144,17 @@ return {
 					end, { "i", "c", "s" }),
 					["<S-F3>"] = cmp.mapping(function()
 						cmp.complete()
-					end, { "i","c","s" }),
+					end, { "i", "c", "s" }),
 				}),
 				sources = cmp_sources,
+				window = {
+					completion = require("cmp").config.window.bordered({
+						winhighlight = "Normal:Pmenu,FloatBorder:PmenuBorder,CursorLine:PmenuSel,Search:None",
+					}),
+					documentation = require("cmp").config.window.bordered({
+						winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
+					}),
+				},
 				formatting = {
 					format = function(entry, item)
 						local icons = GlobalUtil.icons.kinds
