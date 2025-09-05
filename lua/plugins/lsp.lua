@@ -179,7 +179,7 @@ return {
 		event = { "FileType", "BufReadPost", "BufNewFile", "BufWritePre" },
 		dependencies = {
 			"mason.nvim",
-			{ "williamboman/mason-lspconfig.nvim", config = function() end },
+			{ "mason-org/mason-lspconfig.nvim", config = function() end },
 		},
 		opts = {
 			-- options for vim.diagnostic.config()
@@ -298,8 +298,7 @@ return {
 					enabled = true,
 					cmd_env = { RUFF_TRACE = "messages" },
 					init_options = {
-						settings = { logLevel = "error",
-						},
+						settings = { logLevel = "error" },
 					},
 				},
 				--toml
@@ -626,7 +625,7 @@ return {
 	},
 	-- cmdline tools and lsp servers
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
 		cmd = "Mason",
 		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
 		build = ":MasonUpdate",
@@ -637,7 +636,8 @@ return {
 				"shfmt",
 				"js-debug-adapter",
 				"vue-language-server",
-				"typescript-language-server",
+        "prettier"
+				--"typescript-language-server",
 			},
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
@@ -704,6 +704,20 @@ return {
 				nls.builtins.diagnostics.fish,
 				nls.builtins.formatting.stylua,
 				nls.builtins.formatting.shfmt,
+				nls.builtins.formatting.prettier,
+				-- nls.builtins.formatting.prettier.with({
+				-- 	-- 推荐只格式化你关心的文件类型
+				-- 	filetypes = {
+				-- 		"javascript",
+				-- 		"typescript",
+				-- 		"typescriptreact",
+				-- 		"javascriptreact",
+				-- 		"json",
+				-- 		"css",
+				-- 		"scss",
+				-- 		"markdown",
+				-- 	},
+				-- }),
 			})
 		end,
 	},

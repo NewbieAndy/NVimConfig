@@ -1,4 +1,58 @@
 -- 代码格式化
+local M = {}
+
+M.formatters_by_ft = {
+	lua = { "stylua" },
+	fish = { "fish_indent" },
+	sh = { "shfmt" },
+	css = { "prettier" },
+	graphql = { "prettier" },
+	handlebars = { "prettier" },
+	html = { "prettier" },
+	javascript = { "prettier" },
+	javascriptreact = { "prettier" },
+	json = { "prettier", "jq" },
+	jsonc = { "prettier" },
+	less = { "prettier" },
+	scss = { "prettier" },
+	typescript = { "prettier" },
+	typescriptreact = { "prettier" },
+	vue = { "prettier" },
+	yaml = { "prettier" },
+	markdown = { "prettier", "markdownlint-cli2", "markdown-toc" },
+	["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+}
+
+function M.has_prettier_config(ctx)
+	vim.fn.system({ "prettier", "--find-config-path", ctx.filename })
+	return vim.v.shell_error == 0
+end
+
+function M.is_support_prettier_ft(ft)
+	for k, v in pairs(M.formatters_by_ft) do
+		if k == ft and vim.tbl_contains(v, "prettier") then
+			return true
+		end
+	end
+	return false
+end
+
+--- Checks if a parser can be inferred for the given context:
+--- * If the filetype is in the supported list, return true
+--- * Otherwise, check if a parser can be inferred
+function M.has_prettier_parser(ctx)
+	local ret = vim.fn.system({ "prettier", "--file-info", ctx.filename })
+	---@type boolean, string?
+	local ok, parser = pcall(function()
+		return vim.fn.json_decode(ret).inferredParser
+	end)
+	return ok and parser and parser ~= vim.NIL
+end
+
+M.is_support_prettier_ft = GlobalUtil.memoize(M.is_support_prettier_ft)
+M.has_prettier_config = GlobalUtil.memoize(M.has_prettier_config)
+M.has_prettier_parser = GlobalUtil.memoize(M.has_prettier_parser)
+
 return {
 	"stevearc/conform.nvim",
 	dependencies = { "mason.nvim" },
@@ -33,14 +87,7 @@ return {
 				quiet = false, -- not recommended to change
 				lsp_format = "fallback", -- not recommended to change
 			},
-			formatters_by_ft = {
-				lua = { "stylua" },
-				fish = { "fish_indent" },
-				sh = { "shfmt" },
-				json = { "jq" },
-				["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-				["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-			},
+			formatters_by_ft = M.formatters_by_ft,
 			-- The options you set here will be merged with the builtin formatters.
 			-- You can also define any custom formatters here.
 			---@type table<string, conform.FormatterConfigOverride|fun(bufnr: integer): nil|conform.FormatterConfigOverride>
@@ -67,6 +114,16 @@ return {
 							return d.source == "markdownlint"
 						end, vim.diagnostic.get(ctx.buf))
 						return #diag > 0
+					end,
+				},
+				prettier = {
+					condition = function(_, ctx)
+						local ft = vim.bo[ctx.buf].filetype
+						-- default filetypes are always supported
+						if M.is_support_prettier_ft(ft) then
+							return true
+						end
+						return M.has_prettier_parser(ctx) and M.has_prettier_config(ctx)
 					end,
 				},
 			},
