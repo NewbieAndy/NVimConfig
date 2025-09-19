@@ -309,5 +309,4 @@ function M.memoize(fn)
 		return cache[fn][key]
 	end
 end
-
 return M

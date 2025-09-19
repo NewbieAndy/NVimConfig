@@ -181,335 +181,340 @@ return {
 			"mason.nvim",
 			{ "mason-org/mason-lspconfig.nvim", config = function() end },
 		},
-		opts = {
-			-- options for vim.diagnostic.config()
-			---@type vim.diagnostic.Opts
-			diagnostics = {
-				underline = true,
-				update_in_insert = false,
-				virtual_text = {
-					spacing = 4,
-					source = "if_many",
-					prefix = "●",
-					-- this will set set the prefix to a function that returns the diagnostics icon based on the severity
-					-- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
-					-- prefix = "icons",
-				},
-				severity_sort = true,
-				signs = {
-					text = {
-						[vim.diagnostic.severity.ERROR] = GlobalUtil.icons.diagnostics.Error,
-						[vim.diagnostic.severity.WARN] = GlobalUtil.icons.diagnostics.Warn,
-						[vim.diagnostic.severity.HINT] = GlobalUtil.icons.diagnostics.Hint,
-						[vim.diagnostic.severity.INFO] = GlobalUtil.icons.diagnostics.Info,
+		opts = function()
+			---@class PluginLspOpts
+			local ret = {
+				-- options for vim.diagnostic.config()
+				---@type vim.diagnostic.Opts
+				diagnostics = {
+					underline = true,
+					update_in_insert = false,
+					virtual_text = {
+						spacing = 4,
+						source = "if_many",
+						prefix = "●",
+						-- this will set set the prefix to a function that returns the diagnostics icon based on the severity
+						-- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
+						-- prefix = "icons",
 					},
-				},
-			},
-			-- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
-			-- Be aware that you also will need to properly configure your LSP server to
-			-- provide the inlay hints.
-			inlay_hints = {
-				enabled = true,
-				exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
-			},
-			-- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
-			-- Be aware that you also will need to properly configure your LSP server to
-			-- provide the code lenses.
-			codelens = {
-				enabled = false,
-			},
-			-- Enable lsp cursor word highlighting
-			document_highlight = {
-				enabled = true,
-			},
-			-- add any global capabilities here
-			capabilities = {
-				workspace = {
-					fileOperations = {
-						didRename = true,
-						willRename = true,
-					},
-				},
-			},
-			-- options for vim.lsp.buf.format
-			-- `bufnr` and `filter` is handled by the LazyVim formatter,
-			-- but can be also overridden when specified
-			format = {
-				formatting_options = nil,
-				timeout_ms = nil,
-			},
-			-- LSP Server Settings
-			servers = {
-				lua_ls = {
-					settings = {
-						Lua = {
-							workspace = {
-								checkThirdParty = false,
-							},
-							codeLens = {
-								enable = true,
-							},
-							completion = {
-								callSnippet = "Replace",
-							},
-							doc = {
-								privateName = { "^_" },
-							},
-							hint = {
-								enable = true,
-								setType = false,
-								paramType = true,
-								paramName = "Disable",
-								semicolon = "Disable",
-								arrayIndex = "Disable",
-							},
+					severity_sort = true,
+					signs = {
+						text = {
+							[vim.diagnostic.severity.ERROR] = GlobalUtil.icons.diagnostics.Error,
+							[vim.diagnostic.severity.WARN] = GlobalUtil.icons.diagnostics.Warn,
+							[vim.diagnostic.severity.HINT] = GlobalUtil.icons.diagnostics.Hint,
+							[vim.diagnostic.severity.INFO] = GlobalUtil.icons.diagnostics.Info,
 						},
 					},
 				},
-				--c
-				neocmake = {},
-				--docker
-				dockerls = {},
-				docker_compose_language_service = {},
-				--json
-				jsonls = {
-					-- lazy-load schemastore when needed
-					on_new_config = function(new_config)
-						new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-						vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
-					end,
-					settings = {
-						json = {
-							format = {
-								enable = true,
-							},
-							validate = { enable = true },
-						},
-					},
-				},
-				-- markdown
-				marksman = {},
-				--nushell
-				nushell = {},
-				--python
-				-- pyright = { enabled = true },
-				basedpyright = { enabled = true },
-				ruff = {
+				-- Enable this to enable the builtin LSP inlay hints on Neovim >= 0.10.0
+				-- Be aware that you also will need to properly configure your LSP server to
+				-- provide the inlay hints.
+				inlay_hints = {
 					enabled = true,
-					cmd_env = { RUFF_TRACE = "messages" },
-					init_options = {
-						settings = { logLevel = "error" },
-					},
+					exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
 				},
-				--toml
-				taplo = {},
-				--- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
-				--- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
-				tsserver = {
+				-- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
+				-- Be aware that you also will need to properly configure your LSP server to
+				-- provide the code lenses.
+				codelens = {
 					enabled = false,
 				},
-				ts_ls = {
-					enabled = false,
+				-- Enable lsp cursor word highlighting
+				document_highlight = {
+					enabled = true,
 				},
-				vtsls = {
-					-- explicitly add default filetypes, so that we can extend
-					-- them in related extras
-					filetypes = {
-						"javascript",
-						"javascriptreact",
-						"javascript.jsx",
-						"typescript",
-						"typescriptreact",
-						"typescript.tsx",
-						"vue",
+				-- add any global capabilities here
+				capabilities = {
+					workspace = {
+						fileOperations = {
+							didRename = true,
+							willRename = true,
+						},
 					},
-					settings = {
-						complete_function_calls = true,
-						vtsls = {
-							tsserver = {
-								globalPlugins = {
-									{
-										name = "@vue/typescript-plugin",
-										location = GlobalUtil.get_pkg_path(
-											"vue-language-server",
-											"/node_modules/@vue/language-server"
-										),
-										languages = { "vue" },
-										configNamespace = "typescript",
-										enableForWorkspaceTypeScriptVersions = true,
-									},
+				},
+				-- options for vim.lsp.buf.format
+				-- `bufnr` and `filter` is handled by the LazyVim formatter,
+				-- but can be also overridden when specified
+				format = {
+					formatting_options = nil,
+					timeout_ms = nil,
+				},
+				-- LSP Server Settings
+				servers = {
+					lua_ls = {
+						settings = {
+							Lua = {
+								workspace = {
+									checkThirdParty = false,
 								},
-							},
-							enableMoveToFileCodeAction = true,
-							autoUseWorkspaceTsdk = true,
-							experimental = {
-								maxInlayHintLength = 30,
+								codeLens = {
+									enable = true,
+								},
 								completion = {
-									enableServerSideFuzzyMatch = true,
+									callSnippet = "Replace",
+								},
+								doc = {
+									privateName = { "^_" },
+								},
+								hint = {
+									enable = true,
+									setType = false,
+									paramType = true,
+									paramName = "Disable",
+									semicolon = "Disable",
+									arrayIndex = "Disable",
 								},
 							},
 						},
-						typescript = {
-							updateImportsOnFileMove = { enabled = "always" },
-							suggest = {
-								completeFunctionCalls = true,
-							},
-							inlayHints = {
-								enumMemberValues = { enabled = true },
-								functionLikeReturnTypes = { enabled = true },
-								parameterNames = { enabled = "literals" },
-								parameterTypes = { enabled = true },
-								propertyDeclarationTypes = { enabled = true },
-								variableTypes = { enabled = false },
+					},
+					--c
+					neocmake = {},
+					--docker
+					dockerls = {},
+					docker_compose_language_service = {},
+					--json
+					jsonls = {
+						-- lazy-load schemastore when needed
+						on_new_config = function(new_config)
+							new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+							vim.list_extend(new_config.settings.json.schemas, require("schemastore").json.schemas())
+						end,
+						settings = {
+							json = {
+								format = {
+									enable = true,
+								},
+								validate = { enable = true },
 							},
 						},
 					},
-					-- keys = {
-					-- 	{
-					-- 		"gD",
-					-- 		function()
-					-- 			local params = vim.lsp.util.make_position_params()
-					-- 			GlobalUtil.lsp.execute({
-					-- 				command = "typescript.goToSourceDefinition",
-					-- 				arguments = { params.textDocument.uri, params.position },
-					-- 				open = true,
-					-- 			})
-					-- 		end,
-					-- 		desc = "Goto Source Definition",
-					-- 	},
-					-- 	{
-					-- 		"gR",
-					-- 		function()
-					-- 			GlobalUtil.lsp.execute({
-					-- 				command = "typescript.findAllFileReferences",
-					-- 				arguments = { vim.uri_from_bufnr(0) },
-					-- 				open = true,
-					-- 			})
-					-- 		end,
-					-- 		desc = "File References",
-					-- 	},
-					-- 	{
-					-- 		"<leader>co",
-					-- 		GlobalUtil.lsp.action["source.organizeImports"],
-					-- 		desc = "Organize Imports",
-					-- 	},
-					-- 	{
-					-- 		"<leader>cM",
-					-- 		GlobalUtil.lsp.action["source.addMissingImports.ts"],
-					-- 		desc = "Add missing imports",
-					-- 	},
-					-- 	{
-					-- 		"<leader>cu",
-					-- 		GlobalUtil.lsp.action["source.removeUnused.ts"],
-					-- 		desc = "Remove unused imports",
-					-- 	},
-					-- 	{
-					-- 		"<leader>cD",
-					-- 		GlobalUtil.lsp.action["source.fixAll.ts"],
-					-- 		desc = "Fix all diagnostics",
-					-- 	},
-					-- 	{
-					-- 		"<leader>cV",
-					-- 		function()
-					-- 			GlobalUtil.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
-					-- 		end,
-					-- 		desc = "Select TS workspace version",
-					-- 	},
-					-- },
-					volar = {
+					-- markdown
+					marksman = {},
+					--nushell
+					nushell = {},
+					--python
+					-- pyright = { enabled = true },
+					basedpyright = { enabled = true },
+					ruff = {
+						enabled = true,
+						cmd_env = { RUFF_TRACE = "messages" },
 						init_options = {
-							vue = {
-								hybridMode = true,
+							settings = { logLevel = "error" },
+						},
+					},
+					--toml
+					taplo = {},
+					--- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
+					--- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
+					tsserver = {
+						enabled = false,
+					},
+					ts_ls = {
+						enabled = false,
+					},
+					vtsls = {
+						-- explicitly add default filetypes, so that we can extend
+						-- them in related extras
+						filetypes = {
+							"javascript",
+							"javascriptreact",
+							"javascript.jsx",
+							"typescript",
+							"typescriptreact",
+							"typescript.tsx",
+							"vue",
+						},
+						settings = {
+							complete_function_calls = true,
+							vtsls = {
+								tsserver = {
+									globalPlugins = {
+										{
+											name = "@vue/typescript-plugin",
+											location = GlobalUtil.get_pkg_path(
+												"vue-language-server",
+												"/node_modules/@vue/language-server"
+											),
+											languages = { "vue" },
+											configNamespace = "typescript",
+											enableForWorkspaceTypeScriptVersions = true,
+										},
+									},
+								},
+								enableMoveToFileCodeAction = true,
+								autoUseWorkspaceTsdk = true,
+								experimental = {
+									maxInlayHintLength = 30,
+									completion = {
+										enableServerSideFuzzyMatch = true,
+									},
+								},
+							},
+							typescript = {
+								updateImportsOnFileMove = { enabled = "always" },
+								suggest = {
+									completeFunctionCalls = true,
+								},
+								inlayHints = {
+									enumMemberValues = { enabled = true },
+									functionLikeReturnTypes = { enabled = true },
+									parameterNames = { enabled = "literals" },
+									parameterTypes = { enabled = true },
+									propertyDeclarationTypes = { enabled = true },
+									variableTypes = { enabled = false },
+								},
+							},
+						},
+						-- keys = {
+						-- 	{
+						-- 		"gD",
+						-- 		function()
+						-- 			local params = vim.lsp.util.make_position_params()
+						-- 			GlobalUtil.lsp.execute({
+						-- 				command = "typescript.goToSourceDefinition",
+						-- 				arguments = { params.textDocument.uri, params.position },
+						-- 				open = true,
+						-- 			})
+						-- 		end,
+						-- 		desc = "Goto Source Definition",
+						-- 	},
+						-- 	{
+						-- 		"gR",
+						-- 		function()
+						-- 			GlobalUtil.lsp.execute({
+						-- 				command = "typescript.findAllFileReferences",
+						-- 				arguments = { vim.uri_from_bufnr(0) },
+						-- 				open = true,
+						-- 			})
+						-- 		end,
+						-- 		desc = "File References",
+						-- 	},
+						-- 	{
+						-- 		"<leader>co",
+						-- 		GlobalUtil.lsp.action["source.organizeImports"],
+						-- 		desc = "Organize Imports",
+						-- 	},
+						-- 	{
+						-- 		"<leader>cM",
+						-- 		GlobalUtil.lsp.action["source.addMissingImports.ts"],
+						-- 		desc = "Add missing imports",
+						-- 	},
+						-- 	{
+						-- 		"<leader>cu",
+						-- 		GlobalUtil.lsp.action["source.removeUnused.ts"],
+						-- 		desc = "Remove unused imports",
+						-- 	},
+						-- 	{
+						-- 		"<leader>cD",
+						-- 		GlobalUtil.lsp.action["source.fixAll.ts"],
+						-- 		desc = "Fix all diagnostics",
+						-- 	},
+						-- 	{
+						-- 		"<leader>cV",
+						-- 		function()
+						-- 			GlobalUtil.lsp.execute({ command = "typescript.selectTypeScriptVersion" })
+						-- 		end,
+						-- 		desc = "Select TS workspace version",
+						-- 	},
+						-- },
+						volar = {
+							init_options = {
+								vue = {
+									hybridMode = true,
+								},
 							},
 						},
 					},
 				},
-			},
-			-- you can do any additional lsp server setup here
-			-- return true if you don't want this server to be setup with lspconfig
-			setup = {
-				-- example to setup with typescript.nvim
-				-- tsserver = function(_, opts)
-				--   require("typescript").setup({ server = opts })
-				--   return true
-				-- end,
-				-- Specify * to use this function as a fallback for any server
-				-- ["*"] = function(server, opts) end,
-				--python
-				ruff = function()
-					GlobalUtil.lsp.on_attach(function(client, _)
-						-- Disable hover in favor of Pyright
-						client.server_capabilities.hoverProvider = false
-					end, "ruff")
-				end,
-				--- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
-				--- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
-				tsserver = function()
-					-- disable tsserver
-					return true
-				end,
-				ts_ls = function()
-					-- disable tsserver
-					return true
-				end,
-				vtsls = function(_, opts)
-					GlobalUtil.lsp.on_attach(function(client, buffer)
-						client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
-							---@type string, string, lsp.Range
-							local action, uri, range = unpack(command.arguments)
+				-- you can do any additional lsp server setup here
+				-- return true if you don't want this server to be setup with lspconfig
+				setup = {
+					-- example to setup with typescript.nvim
+					-- tsserver = function(_, opts)
+					--   require("typescript").setup({ server = opts })
+					--   return true
+					-- end,
+					-- Specify * to use this function as a fallback for any server
+					-- ["*"] = function(server, opts) end,
+					--python
+					ruff = function()
+						GlobalUtil.lsp.on_attach(function(client, _)
+							-- Disable hover in favor of Pyright
+							client.server_capabilities.hoverProvider = false
+						end, "ruff")
+					end,
+					--- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
+					--- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
+					tsserver = function()
+						-- disable tsserver
+						return true
+					end,
+					ts_ls = function()
+						-- disable tsserver
+						return true
+					end,
+					vtsls = function(_, opts)
+						GlobalUtil.lsp.on_attach(function(client, buffer)
+							client.commands["_typescript.moveToFileRefactoring"] = function(command, ctx)
+								---@type string, string, lsp.Range
+								local action, uri, range = unpack(command.arguments)
 
-							local function move(newf)
+								local function move(newf)
+									client.request("workspace/executeCommand", {
+										command = command.command,
+										arguments = { action, uri, range, newf },
+									})
+								end
+
+								local fname = vim.uri_to_fname(uri)
 								client.request("workspace/executeCommand", {
-									command = command.command,
-									arguments = { action, uri, range, newf },
-								})
-							end
-
-							local fname = vim.uri_to_fname(uri)
-							client.request("workspace/executeCommand", {
-								command = "typescript.tsserverRequest",
-								arguments = {
-									"getMoveToRefactoringFileSuggestions",
-									{
-										file = fname,
-										startLine = range.start.line + 1,
-										startOffset = range.start.character + 1,
-										endLine = range["end"].line + 1,
-										endOffset = range["end"].character + 1,
+									command = "typescript.tsserverRequest",
+									arguments = {
+										"getMoveToRefactoringFileSuggestions",
+										{
+											file = fname,
+											startLine = range.start.line + 1,
+											startOffset = range.start.character + 1,
+											endLine = range["end"].line + 1,
+											endOffset = range["end"].character + 1,
+										},
 									},
-								},
-							}, function(_, result)
-								---@type string[]
-								local files = result.body.files
-								table.insert(files, 1, "Enter new path...")
-								vim.ui.select(files, {
-									prompt = "Select move destination:",
-									format_item = function(f)
-										return vim.fn.fnamemodify(f, ":~:.")
-									end,
-								}, function(f)
-									if f and f:find("^Enter new path") then
-										vim.ui.input({
-											prompt = "Enter move destination:",
-											default = vim.fn.fnamemodify(fname, ":h") .. "/",
-											completion = "file",
-										}, function(newf)
-											return newf and move(newf)
-										end)
-									elseif f then
-										move(f)
-									end
+								}, function(_, result)
+									---@type string[]
+									local files = result.body.files
+									table.insert(files, 1, "Enter new path...")
+									vim.ui.select(files, {
+										prompt = "Select move destination:",
+										format_item = function(f)
+											return vim.fn.fnamemodify(f, ":~:.")
+										end,
+									}, function(f)
+										if f and f:find("^Enter new path") then
+											vim.ui.input({
+												prompt = "Enter move destination:",
+												default = vim.fn.fnamemodify(fname, ":h") .. "/",
+												completion = "file",
+											}, function(newf)
+												return newf and move(newf)
+											end)
+										elseif f then
+											move(f)
+										end
+									end)
 								end)
-							end)
-						end
-					end, "vtsls")
-					-- copy typescript settings to javascript
-					opts.settings.javascript =
-						vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
-				end,
-			},
-		},
-		config = function(_, opts)
+							end
+						end, "vtsls")
+						-- copy typescript settings to javascript
+						opts.settings.javascript =
+							vim.tbl_deep_extend("force", {}, opts.settings.typescript, opts.settings.javascript or {})
+					end,
+				},
+			}
+			return ret
+		end,
+		---@param opts PluginLspOpts
+		config = vim.schedule_wrap(function(_, opts)
 			-- setup autoformat
 			GlobalUtil.format.register(GlobalUtil.lsp.formatter())
 
@@ -545,84 +550,100 @@ return {
 				end)
 			end
 
+			-- diagnostics
 			if type(opts.diagnostics.virtual_text) == "table" and opts.diagnostics.virtual_text.prefix == "icons" then
-				opts.diagnostics.virtual_text.prefix = vim.fn.has("nvim-0.10.0") == 0 and "●"
-					or function(diagnostic)
-						local icons = GlobalUtil.icons.diagnostics
-						for d, icon in pairs(icons) do
-							if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
-								return icon
-							end
+				opts.diagnostics.virtual_text.prefix = function(diagnostic)
+					local icons = GlobalUtil.icons.diagnostics
+					for d, icon in pairs(icons) do
+						if diagnostic.severity == vim.diagnostic.severity[d:upper()] then
+							return icon
 						end
 					end
+					return "●"
+				end
 			end
-
 			vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-			local servers = opts.servers
-			local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-			local capabilities = vim.tbl_deep_extend(
-				"force",
-				{},
-				vim.lsp.protocol.make_client_capabilities(),
-				has_cmp and cmp_nvim_lsp.default_capabilities() or {},
-				opts.capabilities or {}
-			)
-
-			local function setup(server)
-				local server_opts = vim.tbl_deep_extend("force", {
-					capabilities = vim.deepcopy(capabilities),
-				}, servers[server] or {})
-				if server_opts.enabled == false then
-					return
-				end
-
-				if opts.setup[server] then
-					if opts.setup[server](server, server_opts) then
-						return
-					end
-				elseif opts.setup["*"] then
-					if opts.setup["*"](server, server_opts) then
-						return
-					end
-				end
-				require("lspconfig")[server].setup(server_opts)
-				-- vim.lsp.config(server, server_opts)
+			if opts.capabilities then
+				vim.lsp.config("*", { capabilities = opts.capabilities })
 			end
 
 			-- get all the servers that are available through mason-lspconfig
-			local have_mason, mlsp = pcall(require, "mason-lspconfig")
-			local all_mslp_servers = {}
-			if have_mason then
-				all_mslp_servers = require("mason-lspconfig").get_available_servers()
+			local have_mason = GlobalUtil.has("mason-lspconfig.nvim")
+			local mason_all = have_mason
+					and vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
+				or {} --[[ @as string[] ]]
+
+			local exclude_automatic_enable = {} ---@type string[]
+
+			local function configure(server)
+				local server_opts = opts.servers[server] or {}
+
+				local setup = opts.setup[server] or opts.setup["*"]
+				if setup and setup(server, server_opts) then
+					return true -- lsp will be setup by the setup function
+				end
+
+				vim.lsp.config(server, server_opts)
+
+				-- manually enable if mason=false or if this is a server that cannot be installed with mason-lspconfig
+				if server_opts.mason == false or not vim.tbl_contains(mason_all, server) then
+					vim.lsp.enable(server)
+					return true
+				end
+				return false
 			end
 
 			local ensure_installed = {} ---@type string[]
-			for server, server_opts in pairs(servers) do
-				if server_opts then
-					server_opts = server_opts == true and {} or server_opts
-					if server_opts.enabled ~= false then
-						-- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
-						if server_opts.mason == false or not vim.tbl_contains(all_mslp_servers, server) then
-							setup(server)
-						else
-							ensure_installed[#ensure_installed + 1] = server
-						end
+			for server, server_opts in pairs(opts.servers) do
+				server_opts = server_opts == true and {} or server_opts or false
+				if server_opts and server_opts.enabled ~= false then
+					-- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
+					if configure(server) then
+						exclude_automatic_enable[#exclude_automatic_enable + 1] = server
+					else
+						ensure_installed[#ensure_installed + 1] = server
 					end
+				else
+					exclude_automatic_enable[#exclude_automatic_enable + 1] = server
 				end
 			end
 
 			if have_mason then
-				mlsp.setup({
+				require("mason-lspconfig").setup({
 					ensure_installed = vim.tbl_deep_extend(
 						"force",
 						ensure_installed,
 						GlobalUtil.opts("mason-lspconfig.nvim").ensure_installed or {}
 					),
-					handlers = { setup },
+					automatic_enable = {
+						exclude = exclude_automatic_enable,
+					},
 				})
 			end
-		end,
+
+			if vim.lsp.is_enabled and vim.lsp.is_enabled("denols") and vim.lsp.is_enabled("vtsls") then
+				---@param server string
+				local resolve = function(server)
+					local markers, root_dir = vim.lsp.config[server].root_markers, vim.lsp.config[server].root_dir
+					vim.lsp.config(server, {
+						root_dir = function(bufnr, on_dir)
+							local is_deno = vim.fs.root(bufnr, { "deno.json", "deno.jsonc" }) ~= nil
+							if is_deno == (server == "denols") then
+								if root_dir then
+									return root_dir(bufnr, on_dir)
+								elseif type(markers) == "table" then
+									local root = vim.fs.root(bufnr, markers)
+									return root and on_dir(root)
+								end
+							end
+						end,
+					})
+				end
+				resolve("denols")
+				resolve("vtsls")
+			end
+		end),
 	},
 	-- cmdline tools and lsp servers
 	{
