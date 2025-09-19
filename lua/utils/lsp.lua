@@ -180,15 +180,38 @@ function M.format(opts)
     GlobalUtil.opts("nvim-lspconfig").format or {},
     GlobalUtil.opts("conform.nvim").format or {}
   )
-  local ok, conform = pcall(require, "conform")
-  -- use conform for formatting with LSP when available,
-  -- since it has better format diffing
-  if ok then
-    opts.formatters = {}
-    conform.format(opts)
+  if M.is_unsave_file_buf(opts.bufnr) then
+    vim.lsp.buf.format()
   else
-    vim.lsp.buf.format(opts)
+    local ok, conform = pcall(require, "conform")
+    -- use conform for formatting with LSP when available,
+    -- since it has better format diffing
+    if ok then
+      vim.notify("conform format")
+      opts.formatters = {}
+      conform.format(opts)
+    else
+      vim.lsp.buf.format(opts)
+    end
   end
+end
+
+-- 是否是未保存文件类型的buffer
+function M.is_unsave_file_buf(bufnr)
+    -- 1. 判断 bufnr 是否有效（正整数）
+    if not bufnr or bufnr < 1 then
+        return false
+    end
+    -- 2. 判断 buffer 是否有效
+    if not vim.api.nvim_buf_is_valid(bufnr) then
+        return false
+    end
+    -- 3. 判断 buffer 是否未保存成文件
+    local filename = vim.api.nvim_buf_get_name(bufnr)
+    local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
+    local is_unsaved = (filename == "" or filename == nil) and buftype == ""
+    -- 4. 满足条件时优先用 LSP 格式化
+    return is_unsaved
 end
 
 M.action = setmetatable({}, {

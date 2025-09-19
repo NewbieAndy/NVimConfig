@@ -587,6 +587,7 @@ return {
 					end
 				end
 				require("lspconfig")[server].setup(server_opts)
+				-- vim.lsp.config.setup(server, server_opts)
 			end
 
 			-- get all the servers that are available through mason-lspconfig
@@ -636,7 +637,7 @@ return {
 				"shfmt",
 				"js-debug-adapter",
 				"vue-language-server",
-        "prettier"
+				"prettier",
 				--"typescript-language-server",
 			},
 		},
