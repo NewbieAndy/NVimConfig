@@ -20,6 +20,18 @@ return {
 				{
 					filetype = "snacks_layout_box",
 				},
+        {
+					filetype = "neo-tree",
+					text = function()
+						local basename = GlobalUtil.root.cwd_basename()
+						if basename == "" then
+							basename = "ROOT"
+						end
+						return GlobalUtil.icons.kinds.Apple .. basename
+					end,
+					highlight = "Directory",
+					text_align = "left",
+				},
 			},
 			---@param opts bufferline.IconFetcherOpts
 			get_element_icon = function(opts)

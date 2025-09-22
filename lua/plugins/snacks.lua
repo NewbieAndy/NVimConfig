@@ -13,7 +13,7 @@ return {
 				timeout = 3000,
 			},
 			explorer = {
-				enabled = true,
+				enabled = false,
 				replace_netrw = true, -- Replace netrw with Snacks Explorer
 			},
 			picker = {
@@ -23,7 +23,7 @@ return {
 				ui_select = true,
 				sources = {
 					explorer = {
-						enabled = true,
+						enabled = false,
 						win = {
 							list = {
 								keys = {
@@ -153,13 +153,13 @@ return {
 				end,
 				desc = "Notification History",
 			},
-			{
-				"<leader>e",
-				function()
-					Snacks.explorer()
-				end,
-				desc = "File Explorer",
-			},
+			-- {
+			-- 	"<leader>e",
+			-- 	function()
+			-- 		Snacks.explorer()
+			-- 	end,
+			-- 	desc = "File Explorer",
+			-- },
 			-- find
 			{
 				"<leader>fb",
