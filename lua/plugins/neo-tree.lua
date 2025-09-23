@@ -129,7 +129,7 @@ return {
 		},
 		filesystem = {
 			hide_gitignored = false,
-			bind_to_cwd = true,
+			bind_to_cwd = false,
 			follow_current_file = { enabled = true },
 			use_libuv_file_watcher = true,
 			window = {

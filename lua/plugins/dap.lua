@@ -70,8 +70,7 @@ return {
 				"mfussenegger/nvim-dap-python",
 				ft = "python",
 				config = function()
-					GlobalUtil.root()
-					local root_pwd = GlobalUtil.root()
+					local root_pwd = GlobalUtil.root.root()
 					-- -- 优先使用当前项目的虚拟环境
 					local venv = vim.fn.getenv("VIRTUAL_ENV")
 					local venv_path = (venv and venv ~= "") and tostring(venv) or nil
