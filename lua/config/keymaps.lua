@@ -133,13 +133,13 @@ map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 -- stylua: ignore start
 
 -- toggle options
-GlobalUtil.format.snacks_toggle():map("<leader>uf")
-GlobalUtil.format.snacks_toggle(true):map("<leader>uF")
-Snacks.toggle.option("spell", { name = "Spelling"}):map("<leader>us")
-Snacks.toggle.option("wrap", {name = "Wrap"}):map("<leader>uw")
-Snacks.toggle.option("conceallevel", {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map("<leader>uc")
+GlobalUtil.format.snacks_toggle():map("<leader>of")
+GlobalUtil.format.snacks_toggle(true):map("<leader>oF")
+Snacks.toggle.option("spell", { name = "拼写检查"}):map("<leader>os")
+Snacks.toggle.option("wrap", {name = "自动换行"}):map("<leader>ow")
+Snacks.toggle.option("conceallevel", {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map("<leader>oc")
 if vim.lsp.inlay_hint then
-  Snacks.toggle.inlay_hints():map("<leader>uh")
+  Snacks.toggle.inlay_hints():map("<leader>oh")
 end
 
 -- lazygit
