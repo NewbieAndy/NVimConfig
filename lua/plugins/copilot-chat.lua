@@ -26,111 +26,91 @@ return {
 		branch = "main",
 		cmd = "CopilotChat",
 		build = "make tiktoken",
-		opts = function()
-			return {
-				auto_insert_mode = false,
-				completion = {
-					enabled = true, -- 重点：必须开启
-				},
-				insert_at_end = true,
-				question_header = "  User ",
-				answer_header = "  Copilot ",
-				window = {
-					width = 0.4,
-				},
+		opts = {
+			model = "gpt-4.1", -- Default model to use, see ':CopilotChatModels' for available models (can be specified manually in prompt via $).
+			resources = "selection", -- Default resources to share with LLM (can be specified manually in prompt via #).
+			language = "Chinese", -- Default language to use for answers
+			--自动进入插入模式
+			auto_insert_mode = false,
+			insert_at_end = true,
+			headers = {
+				user = "👨‍💻You", -- Header to use for user questions
+				assistant = "🤖Copilot", -- Header to use for AI answers
+				tool = "🛠️Tool", -- Header to use for tool calls
+			},
+      separator = '-',
+			window = {
+				width = 0.45,
+			},
 
-				prompts = {
-					Explain = {
-						prompt = "> /COPILOT_EXPLAIN\n\nIn Chinese write an explanation for the selected code as paragraphs of text.",
-						mapping = "<leader>ae",
-					},
-					Review = {
-						prompt = "> /COPILOT_REVIEW\n\nCheck the selected code and output the check result in Chinese.",
-						mapping = "<leader>ar",
-					},
-					Fix = {
-						prompt = "> /COPILOT_GENERATE\n\nThere is a problem in this code. Rewrite the code to show it with the bug fixed.Finally explain the code in Chinese",
-					},
-					Optimize = {
-						prompt = "> /COPILOT_GENERATE\n\nOptimize the selected code to improve performance and readability.Finally explain the code in Chinese",
-					},
-					Docs = {
-						prompt = "> /COPILOT_GENERATE\n\nPlease add Chinese documentation comments to the selected code.",
-					},
-					Tests = {
-						prompt = "> /COPILOT_GENERATE\n\nPlease generate tests for my code.And add Chinese comments",
-					},
-					Commit = {
-						prompt = "> #git:staged\n\nWrite Chinese commit message for the change with commitizen convention. Make sure the title has maximum 50 characters and message is wrapped at 72 characters. Wrap the whole message in code block with language gitcommit.",
-					},
-					Translate = {
-						prompt = "Translate selected code comments into Chinese.",
-						mapping = "<leader>at",
-					},
-					-- MyCustomPrompt = {
-					-- 	prompt = "Explain how it works.",
-					-- 	system_prompt = "You are very good at explaining stuff",
-					-- 	mapping = "<leader>ccmc",
-					-- 	description = "My custom prompt description",
-					-- },
+			prompts = {
+				Translate = {
+					prompt = "Translate selected code comments into Chinese.",
+					mapping = "<leader>at",
 				},
+				-- MyCustomPrompt = {
+				-- 	prompt = "Explain how it works.",
+				-- 	system_prompt = "You are very good at explaining stuff",
+				-- 	mapping = "<leader>ccmc",
+				-- 	description = "My custom prompt description",
+				-- },
+			},
 
-				mappings = {
-					close = {
-						normal = "q",
-						insert = "<c-a>",
-					},
-					complete = {
-						detail = "Use @<Tab> or /<Tab> for options.",
-						insert = "<Tab>",
-					},
-					reset = {
-						normal = "<C-x>",
-						insert = "<C-x>",
-					},
-					submit_prompt = {
-						normal = "<CR>",
-						insert = "<C-s>",
-					},
-					toggle_sticky = {
-						normal = "grr",
-					},
-					clear_stickies = {
-						normal = "grx",
-					},
-					accept_diff = {
-						normal = "<C-y>",
-						insert = "<C-y>",
-					},
-					jump_to_diff = {
-						normal = "gj",
-					},
-					quickfix_answers = {
-						normal = "gqa",
-					},
-					quickfix_diffs = {
-						normal = "gqd",
-					},
-					yank_diff = {
-						normal = "gy",
-						register = '"', -- Default register to use for yanking
-					},
-					show_diff = {
-						normal = "gd",
-						full_diff = false, -- Show full diff instead of unified diff when showing diff window
-					},
-					show_info = {
-						normal = "gi",
-					},
-					show_context = {
-						normal = "gc",
-					},
-					show_help = {
-						normal = "gh",
-					},
+			mappings = {
+				close = {
+					normal = "q",
+					insert = "<c-a>",
 				},
-			}
-		end,
+				complete = {
+					detail = "Use @<Tab> or /<Tab> for options.",
+					insert = "<Tab>",
+				},
+				reset = {
+					normal = "<C-x>",
+					insert = "<C-x>",
+				},
+				submit_prompt = {
+					normal = "<CR>",
+					insert = "<C-s>",
+				},
+				toggle_sticky = {
+					normal = "grr",
+				},
+				clear_stickies = {
+					normal = "grx",
+				},
+				accept_diff = {
+					normal = "<C-y>",
+					insert = "<C-y>",
+				},
+				jump_to_diff = {
+					normal = "gj",
+				},
+				quickfix_answers = {
+					normal = "gqa",
+				},
+				quickfix_diffs = {
+					normal = "gqd",
+				},
+				yank_diff = {
+					normal = "gy",
+					register = '"', -- Default register to use for yanking
+				},
+				show_diff = {
+					normal = "gd",
+					full_diff = false, -- Show full diff instead of unified diff when showing diff window
+				},
+				show_info = {
+					normal = "gi",
+				},
+				show_context = {
+					normal = "gc",
+				},
+				show_help = {
+					normal = "gh",
+				},
+			},
+		},
 		keys = {
 			{ "<c-s>", "<CR>", ft = "copilot-chat", desc = "Submit Prompt", remap = true },
 			{
