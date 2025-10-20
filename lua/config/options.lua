@@ -4,7 +4,7 @@ local option = vim.opt
 option.autowrite = true
 -- 与系统剪贴板同步
 option.clipboard = vim.env.SSH_TTY and "" or "unnamedplus"
-option.completeopt = "menu,menuone,noselect"
+option.completeopt = "menu,menuone,noselect,popup"
 -- 隐藏用于粗体和斜体的 * 标记，但不隐藏带有替换的标记
 option.conceallevel = 2
 -- 在退出修改过的缓冲区之前确认保存更改

@@ -34,13 +34,15 @@ return {
 			auto_insert_mode = false,
 			insert_at_end = true,
 			headers = {
-				user = "👨‍💻You", -- Header to use for user questions
-				assistant = "🤖Copilot", -- Header to use for AI answers
-				tool = "🛠️Tool", -- Header to use for tool calls
+				user = GlobalUtil.icons.kinds.User, -- Header to use for user questions
+				assistant = GlobalUtil.icons.kinds.Copilot, -- Header to use for AI answers
+				tool = GlobalUtil.icons.kinds.Tool, -- Header to use for tool calls
 			},
-      separator = '-',
+      separator = '——',
 			window = {
-				width = 0.45,
+        -- layout = 'float',
+				-- width = 0.4,
+        border = 'double'
 			},
 
 			prompts = {
