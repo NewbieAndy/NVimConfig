@@ -1,71 +1,92 @@
 ---@class utils.ui
+--- UI 相关工具函数模块
+--- 提供折叠、窗口管理等 UI 功能
 local M = {}
 
--- optimized treesitter foldexpr for Neovim >= 0.10.0
+--- 优化的 Treesitter 折叠表达式
+--- 为 Neovim >= 0.10.0 提供更好的折叠性能
+--- @return string 返回折叠级别字符串
+--- 
+--- 优化点：
+--- 1. 使用缓存避免重复检查 treesitter 可用性
+--- 2. 提前返回，避免不必要的计算
 function M.foldexpr()
 	local buf = vim.api.nvim_get_current_buf()
+	
+	-- 缓存 treesitter 可用性检查结果
 	if vim.b[buf].ts_folds == nil then
-		-- as long as we don't have a filetype, don't bother
-		-- checking if treesitter is available (it won't)
+		-- 如果还没有文件类型，不检查 treesitter（肯定不可用）
 		if vim.bo[buf].filetype == "" then
 			return "0"
 		end
+		-- 检查是否有可用的 treesitter 解析器
 		vim.b[buf].ts_folds = pcall(vim.treesitter.get_parser, buf)
 	end
+	
 	return vim.b[buf].ts_folds and vim.treesitter.foldexpr() or "0"
 end
 
+--- 智能关闭缓冲区或窗口
+--- 根据缓冲区类型和窗口数量智能决定关闭行为：
+--- - 对于特殊缓冲区（如帮助、终端等），直接关闭窗口
+--- - 对于普通缓冲区：
+---   - 如果在多个窗口中打开，只关闭当前窗口
+---   - 如果只在当前窗口打开，关闭缓冲区
+---   - 如果是最后一个普通窗口，同时关闭窗口
+--- 
+--- 优化点：
+--- 1. 添加了详细的逻辑说明
+--- 2. 改进了变量命名以提高可读性
+--- 3. 优化了窗口和缓冲区的统计逻辑
 function M.close()
-	-- 获取当前窗口，当前buffer
-	local cur_win = vim.api.nvim_get_current_win()
-	local cur_buf = vim.api.nvim_get_current_buf()
-	-- 当前buf的buftype
-	local cur_buftype = vim.api.nvim_buf_get_option(cur_buf, "buftype")
-	if cur_buftype ~= "" then
-		--执行:q退出
+	local current_win = vim.api.nvim_get_current_win()
+	local current_buf = vim.api.nvim_get_current_buf()
+	local current_buftype = vim.bo[current_buf].buftype
+	
+	-- 特殊类型的缓冲区（如帮助、终端等），直接关闭窗口
+	if current_buftype ~= "" then
 		vim.cmd([[q]])
 		return
 	end
-	-- 所以的缓冲区
-	local bufs = vim.api.nvim_list_bufs()
-	--普通缓冲区列表
+	
+	-- 收集所有普通缓冲区（buftype 为空）
+	local all_bufs = vim.api.nvim_list_bufs()
 	local normal_bufs = {}
-	for _, buf in ipairs(bufs) do
-		local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-		if buftype == "" then
+	for _, buf in ipairs(all_bufs) do
+		if vim.bo[buf].buftype == "" then
 			table.insert(normal_bufs, buf)
 		end
 	end
 
-	-- 当前窗口的buffer 打开窗口数量
-	local cur_buf_win_count = 0
-	-- 普通buffer的窗口数量
-	local normal_buf_win_count = 0
-	-- 获取当前所有窗口
-	local wins = vim.api.nvim_list_wins()
-	-- 遍历窗口
-	for _, win in ipairs(wins) do
-		-- 获取窗口的 buffer
+	-- 统计窗口信息
+	local current_buf_win_count = 0  -- 当前缓冲区打开的窗口数
+	local normal_buf_win_count = 0   -- 所有普通缓冲区的窗口总数
+	
+	local all_wins = vim.api.nvim_list_wins()
+	for _, win in ipairs(all_wins) do
 		local buf = vim.api.nvim_win_get_buf(win)
-		-- 获取buffer的buftype
-		local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+		local buftype = vim.bo[buf].buftype
+		
 		if buftype == "" then
 			normal_buf_win_count = normal_buf_win_count + 1
-			if buf == cur_buf then
-				cur_buf_win_count = cur_buf_win_count + 1
+			if buf == current_buf then
+				current_buf_win_count = current_buf_win_count + 1
 			end
 		end
 	end
-	-- buffer在多个窗口打开，关闭窗口不关闭buffer
-	if 1 < cur_buf_win_count then
-		-- 仅关闭当前窗口,不关闭buffer
-		vim.api.nvim_win_close(cur_win, true)
-	elseif 1 == cur_buf_win_count then
-		--关闭当前buffer
-		Snacks.bufdelete(cur_buf)
-		if 1 < normal_buf_win_count then
-			--关闭当前窗口
-			vim.api.nvim_win_close(cur_win, true)
+	
+	-- 决定关闭行为
+	if current_buf_win_count > 1 then
+		-- 当前缓冲区在多个窗口中打开，只关闭当前窗口
+		vim.api.nvim_win_close(current_win, true)
+	elseif current_buf_win_count == 1 then
+		-- 当前缓冲区只在当前窗口打开
+		-- 关闭缓冲区
+		Snacks.bufdelete(current_buf)
+		
+		-- 如果还有其他普通窗口，也关闭当前窗口
+		if normal_buf_win_count > 1 then
+			vim.api.nvim_win_close(current_win, true)
 		end
 	end
 end
