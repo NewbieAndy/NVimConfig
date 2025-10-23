@@ -60,20 +60,30 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 	group = auto_switch_input_method_group,
 	pattern = "*",
 	callback = function()
-		--切换输入法
-		if "" ~= previous_input_method then
-			switch_input_method(previous_input_method)
+		-- 打印当前光标前一个字符 没有输出nil
+		local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+		if col > 0 then
+      --获取前一个字符
+			local prev_char = vim.api.nvim_buf_get_text(0, row - 1, col - 1, row - 1, col, {})[1]
+			local prev_char_byte = string.byte(prev_char)
+			-- 判断前一个字符是否是非英文字符 如果是非英文字符则切换输入法为缓存输入法
+			if prev_char_byte == nil or prev_char_byte < 0 or prev_char_byte > 127 then
+				-- 打印是否是中文字符
+				if "" ~= previous_input_method then
+					switch_input_method(previous_input_method)
+				end
+			end
 		end
 	end,
 })
 
 -- 换行不自动注释
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "*",
-  callback = function()
-    vim.opt_local.formatoptions:append("c")
-    vim.opt_local.formatoptions:remove({"r", "o"})
-  end,
+	pattern = "*",
+	callback = function()
+		vim.opt_local.formatoptions:append("c")
+		vim.opt_local.formatoptions:remove({ "r", "o" })
+	end,
 })
 
 --判断是否需要重新加载
