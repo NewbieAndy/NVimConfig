@@ -21,6 +21,21 @@ return {
 				enabled = true,
 				cwd = GlobalUtil.root.root(),
 				ui_select = true,
+				actions = {
+					sidekick_send = function(...)
+						return require("sidekick.cli.snacks").send(...)
+					end,
+				},
+				win = {
+					input = {
+						keys = {
+							["<a-a>"] = {
+								"sidekick_send",
+								mode = { "n", "i" },
+							},
+						},
+					},
+				},
 				sources = {
 					explorer = {
 						enabled = false,

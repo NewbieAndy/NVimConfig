@@ -511,6 +511,11 @@ return {
 					end,
 				},
 			}
+      --开启了nes sidekick.nvim的copilot集成，则自动启用copilot lsp server
+			local sk = GlobalUtil.opts("sidekick.nvim") ---@type sidekick.Config|{}
+			if vim.tbl_get(sk, "nes", "enabled") ~= false then
+				ret.servers.copilot = {}
+			end
 			return ret
 		end,
 		---@param opts PluginLspOpts
