@@ -142,7 +142,7 @@ return {
 							fallback()
 						end
 					end, { "i", "c", "s" }),
-					["<S-F3>"] = cmp.mapping(function()
+					["<F13>"] = cmp.mapping(function()
 						cmp.complete()
 					end, { "i", "c", "s" }),
 				}),

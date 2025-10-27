@@ -60,7 +60,7 @@ function M.getKeys()
 			desc = "Signature Help",
 		},
 		{
-			"<S-F4>",
+			"<F14>",
 			vim.lsp.buf.code_action,
 			desc = "Code Action",
 			mode = { "n", "v" },

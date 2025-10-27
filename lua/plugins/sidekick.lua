@@ -13,13 +13,20 @@ return {
 			cli = {
 				-- 多路复用器配置
 				mux = {
-					backend = "tmux", -- 使用 tmux 作为后端
-					enabled = true,   -- 启用多路复用器支持
+					enabled = true, -- 启用多路复用器支持
 				},
 			},
 		},
 		-- 快捷键映射
 		keys = {
+			{
+				"<C-q>",
+				function()
+					-- 切换 Copilot CLI 窗口并聚焦
+					require("sidekick.cli").toggle({ name = "copilot", focus = true })
+				end,
+				desc = "切换 Sidekick CLI",
+			},
 			{
 				"<leader>acc",
 				function()
