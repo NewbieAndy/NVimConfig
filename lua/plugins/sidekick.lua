@@ -13,6 +13,7 @@ return {
 			cli = {
 				-- 多路复用器配置
 				mux = {
+          backend = "zellij", -- 使用 zellij 作为多路复用器后端
 					enabled = true, -- 启用多路复用器支持
 				},
 			},
