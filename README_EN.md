@@ -1,237 +1,92 @@
-# Neovim Configuration
+# NVimConfig | Neovim configuration
 
-A modern, feature-rich Neovim configuration optimized for software development across multiple languages with LSP, debugging, testing, and AI-assisted coding capabilities.
+A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formatting, Git, AI assistants, and VSCode integration. Built on lazy.nvim with great performance and modularity.
+
+- Audience: multi-language developers and users migrating from VSCode
+- Requirements: Neovim >= 0.9, a Nerd Font, and a basic C toolchain
 
 ## ✨ Features
-
-- 🚀 **Fast Startup**: Lazy-loading plugins with optimized performance
-- 🔧 **Language Support**: Full LSP integration for Python, TypeScript, JavaScript, Lua, Go, and more
-- 🤖 **AI Integration**: GitHub Copilot and CopilotChat for AI-assisted coding
-- 🐛 **Debugging**: Complete DAP (Debug Adapter Protocol) setup with UI
-- 🧪 **Testing**: Integrated test runner with Neotest for Python and Vitest
-- 🎨 **Modern UI**: Beautiful interface with Tokyo Night theme, statusline, and bufferline
-- 📁 **File Management**: Neo-tree file explorer with git integration
-- 🔍 **Search & Replace**: Powerful fuzzy finding with Telescope and grug-far
-- 📝 **Code Formatting**: Auto-formatting with conform.nvim and linting with nvim-lint
-- 🔄 **Git Integration**: Gitsigns and Lazygit for seamless version control
-- 💻 **VSCode Compatible**: Optional VSCode Neovim integration
+- Performance & UI: lazy-loaded plugins, tokyonight theme, lualine, bufferline, noice UI, Snacks statuscolumn/terminal/tools
+- Language & Completion: mason(+lspconfig), nvim-lspconfig, blink.cmp, friendly-snippets
+- Syntax & Editing: nvim-treesitter, ts-autotag, ts-comments, todo-comments
+- Code Quality: conform.nvim (formatting), nvim-lint (linting)
+- Debug & Test: nvim-dap + ui + virtual-text, dap-python, neotest (python/vitest)
+- Files & Search: neo-tree file explorer, grug-far search & replace
+- Git: gitsigns, integrated Snacks.lazygit
+- AI: GitHub Copilot and CopilotChat
+- Sessions & Utils: persistence, which-key, venv-selector
+- VSCode: seamless use with VSCode Neovim extension (auto-selects vscode-config)
+- macOS utility: optional auto IME switching via Hammerspoon
 
 ## 📦 Requirements
+- Neovim >= 0.9.0, Git, a Nerd Font, C toolchain
+- Optional: Node.js, Python, Lazygit, ripgrep, fd, Hammerspoon (macOS)
 
-- [Neovim](https://neovim.io/) >= 0.9.0
-  ```sh
-  brew install neovim
-  ```
-- [Git](https://git-scm.com/)
-  ```sh
-  brew install git
-  ```
-- [Nerd Font](https://www.nerdfonts.com) - Required for icons
-- **C compiler** for `nvim-treesitter`. See [requirements](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
-  ```sh
-  brew install make
-  ```
-
-## 🌟 Optional Dependencies
-
-- [Lazygit](https://github.com/jesseduffield/lazygit) - Terminal UI for git
-  ```sh
-  brew install lazygit
-  ```
-- [Ripgrep](https://github.com/BurntSushi/ripgrep) - Fast search tool
-  ```sh
-  brew install ripgrep
-  ```
-- [fd](https://github.com/sharkdp/fd) - Fast file finder
-  ```sh
-  brew install fd
-  ```
+macOS example:
+```sh
+brew install neovim git make ripgrep fd lazygit node python
+brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+```
 
 ## 🚀 Getting Started
+1) Backup or remove your old config
+```sh
+mv ~/.config/nvim{,.bak}; mv ~/.local/share/nvim{,.bak}; mv ~/.local/state/nvim{,.bak}; mv ~/.cache/nvim{,.bak}
+# or
+rm -rf ~/.config/nvim ~/.cache/nvim ~/.local/share/nvim ~/.local/state/nvim
+```
+2) Clone
+```sh
+git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
+```
+3) Start Neovim and wait for auto-install
+```sh
+nvim
+```
+4) (Optional) Install tools via Mason
+```
+:Mason
+```
+Suggested LSP: lua-language-server, typescript-language-server, pyright, rust-analyzer, gopls, clangd
+Suggested formatters: stylua, prettier, shfmt, black
 
-### Installation
+5) (Optional) Copilot login
+```
+:Copilot auth
+```
 
-1. **Backup or delete your current configuration**
+## ⌨️ Keymaps (Leader = Space)
+- Files: <leader>e or <C-e> → toggle neo-tree
+- Windows: <leader>h/j/k/l move; <C-arrows> resize; <leader>- / <leader>| split; <leader>wd close
+- Buffers: <S-h>/<S-l> prev/next; <leader>bd delete; <leader>bo delete others
+- Search & Replace: <leader>fr grug-far
+- Terminal: <C-/> floating terminal (Snacks.terminal); in terminal, <C-/> closes
+- Diagnostics: <leader>cd line diag; ]d/[d next/prev; ]e/[e error; ]w/[w warn
+- Git (lazygit): <leader>gg root; <leader>gG cwd; <leader>gb blame; <leader>gB browse; <leader>gh file history; <leader>gl/gL log
+- Misc: <leader>L Lazy; <leader>fn new file; <leader>ft change filetype; <leader>cf format
+- Common LSP: gd/gr/gi, K, <leader>ca, <leader>rn
 
-   *Delete current configuration:*
-   ```sh
-   rm -rf ~/.config/nvim ~/.cache/nvim ~/.local/share/nvim ~/.local/state/nvim
-   ```
-
-   *Or backup current configuration:*
-   ```sh
-   mv ~/.config/nvim{,.bak}
-   mv ~/.local/share/nvim{,.bak}
-   mv ~/.local/state/nvim{,.bak}
-   mv ~/.cache/nvim{,.bak}
-   ```
-
-2. **Clone this repository**
-   ```sh
-   git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
-   ```
-
-3. **Start Neovim**
-   ```sh
-   nvim
-   ```
-
-   The plugin manager will automatically install all plugins on first launch.
-
-## ⌨️ Key Mappings
-
-Leader key: `<Space>`
-
-### General
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `<Space>e` | Normal | Toggle file explorer |
-| `<C-e>` | Normal/Insert | Toggle file explorer |
-| `<Space>ff` | Normal | Find files |
-| `<Space>fg` | Normal | Live grep |
-| `<Space>fb` | Normal | Find buffers |
-| `<Space>fr` | Normal/Visual | Search and replace |
-| `<C-/>` | Normal | Toggle terminal |
-
-### Window Management
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `<Space>h/j/k/l` | Normal | Navigate windows |
-| `<Space>-` | Normal | Split window horizontally |
-| `<Space>|` | Normal | Split window vertically |
-| `<Space>wd` | Normal | Close window |
-
-### Buffer Management
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `<S-h>` | Normal | Previous buffer |
-| `<S-l>` | Normal | Next buffer |
-| `<Space>bd` | Normal | Delete buffer |
-| `<Space>bo` | Normal | Delete other buffers |
-
-### LSP & Code
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `gd` | Normal | Go to definition |
-| `gr` | Normal | Go to references |
-| `K` | Normal | Hover documentation |
-| `<Space>ca` | Normal | Code actions |
-| `<Space>cr` | Normal | Rename symbol |
-| `<Space>cf` | Normal/Visual | Format code |
-| `]d` / `[d` | Normal | Next/Previous diagnostic |
-| `]e` / `[e` | Normal | Next/Previous error |
-
-### Git
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `<Space>gg` | Normal | Open Lazygit |
-| `<Space>gb` | Normal | Git blame line |
-| `<Space>gh` | Normal | File history |
-| `<Space>gB` | Normal | Browse on GitHub |
-
-### AI & Copilot
-
-| Key | Mode | Description |
-|-----|------|-------------|
-| `<Space>aa` | Normal/Visual | Toggle CopilotChat |
-| `<Space>ae` | Visual | Explain code |
-| `<Space>ar` | Visual | Review code |
-| `<Space>af` | Visual | Fix code |
-
-## 🔧 Configuration Structure
-
+## 🧱 Layout
 ```
 ~/.config/nvim/
-├── init.lua                 # Entry point
-├── lua/
-│   ├── config/             # Core configuration
-│   │   ├── init.lua        # Plugin manager setup
-│   │   ├── options.lua     # Vim options
-│   │   ├── keymaps.lua     # Key mappings
-│   │   └── autocmds.lua    # Auto commands
-│   ├── plugins/            # Plugin configurations
-│   │   ├── lsp.lua         # LSP setup
-│   │   ├── nvim-cmp.lua    # Completion
-│   │   ├── dap.lua         # Debugging
-│   │   ├── neotest.lua     # Testing
-│   │   └── ...
-│   ├── utils/              # Utility functions
-│   │   ├── init.lua        # Utility loader
-│   │   ├── lsp.lua         # LSP utilities
-│   │   ├── format.lua      # Formatting utilities
-│   │   └── ...
-│   └── vscode-config/      # VSCode integration
-└── lazy-lock.json          # Plugin version lock
+├── init.lua
+├── lazy-lock.json
+└── lua/{config,plugins,utils,vscode-config,types.lua}
 ```
 
-## 🎨 Customization
+## 🛠 Customize
+- Theme: edit lua/plugins/colorscheme.lua (default: tokyonight)
+- Options: edit lua/config/options.lua
+- Keymaps: edit lua/config/keymaps.lua
+- Plugins: add a file under lua/plugins/ that returns your plugin spec
 
-### Changing Theme
-
-Edit `lua/plugins/colorscheme.lua` to switch themes. Current theme: Tokyo Night.
-
-### Adding Plugins
-
-Create a new file in `lua/plugins/` with your plugin configuration:
-
-```lua
-return {
-  "author/plugin-name",
-  opts = {
-    -- plugin options
-  },
-}
-```
-
-### Modifying Keymaps
-
-Edit `lua/config/keymaps.lua` to add or modify keybindings.
-
-## 📝 Supported Languages
-
-Out of the box LSP and tooling support for:
-
-- Python
-- TypeScript/JavaScript
-- Lua
-- Go
-- Rust
-- C/C++
-- JSON/YAML
-- Markdown
-- And many more...
-
-Language servers are automatically installed via Mason on first use.
-
-## 🛠️ Troubleshooting
-
-### Plugins not installing
-
-Run `:Lazy sync` to manually sync plugins.
-
-### LSP not working
-
-1. Check if language server is installed: `:Mason`
-2. Check LSP status: `:LspInfo`
-3. Restart LSP: `:LspRestart`
-
-### Performance issues
-
-Run `:Lazy profile` to identify slow plugins.
+## 🐞 Troubleshooting
+- Plugins not installing: :Lazy sync (check network/proxy)
+- LSP issues: :Mason to install, :LspInfo to check, :LspRestart to restart
+- Performance: :Lazy profile
 
 ## 📄 License
-
-This configuration is available under the MIT License. See [LICENSE](LICENSE) for details.
+MIT
 
 ## 🙏 Acknowledgments
-
-This configuration is built upon the excellent work of the Neovim community and inspired by various configurations including LazyVim and other popular setups.
-
----
-
-**Note**: This is a personal configuration. Feel free to fork and customize it to your needs!
+Neovim community; inspirations from LazyVim, NvChad, AstroNvim.
