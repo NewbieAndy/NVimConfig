@@ -1,7 +1,49 @@
 ---@class utils.cmp
+--- utils.cmp（与补全引擎解耦的通用工具）
+--- 职责：提供片段处理、撤销点、AI 接受、光标判断等通用能力；不直接依赖 nvim-cmp/blink.cmp 的内部 API。
+--- 注意：返回 true 表示已处理（用于键位链式判定），返回 false/nil 表示交由下一个分支或 fallback。
+
 --- 代码补全工具模块
 --- 提供 nvim-cmp 补全相关的辅助函数
 local M = {}
+
+--- 公共工具：判断光标前是否有可触发补全的字符
+--- 仅检查光标前一个字符是否是非空白字符
+function M.has_words_before()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  if col == 0 then return false end
+  local ch = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col)
+  return ch:match("%s") == nil
+end
+
+--- 动作集合：与补全引擎解耦的通用动作（供键位链式调用）
+--- 返回 true 表示已处理，返回 false/nil 表示未处理，交由下一个分支或 fallback
+M.actions = {
+  --- 片段前进跳转
+  snippet_forward = function()
+    if vim.snippet and vim.snippet.active({ direction = 1 }) then
+      vim.schedule(function() vim.snippet.jump(1) end)
+      return true
+    end
+  end,
+  --- 片段后退跳转
+  snippet_backward = function()
+    if vim.snippet and vim.snippet.active({ direction = -1 }) then
+      vim.schedule(function() vim.snippet.jump(-1) end)
+      return true
+    end
+  end,
+  --- 接受 Copilot 内联建议（仅在可见时处理）
+  ai_accept = function()
+    local ok, sug = pcall(function() return require("copilot.suggestion") end)
+    if ok and sug.is_visible() then
+      GlobalUtil.create_undo()
+      sug.accept()
+      return true
+    end
+  end,
+}
+
 
 ---@alias Placeholder {n:number, text:string}
 
@@ -21,7 +63,6 @@ function M.snippet_replace(snippet, fn)
 		return n and fn({ n = tonumber(n), text = name }) or match
 	end) or snippet
 end
-
 --- 预览代码片段
 --- 解析嵌套的占位符，生成可读的预览文本
 --- @param snippet string 代码片段字符串
@@ -71,19 +112,18 @@ end
 --- 1. 添加了更多的检查避免重复添加括号
 --- 2. 改进了光标位置检测
 function M.auto_brackets(entry)
-	local cmp = require("cmp")
+	-- 兼容：若未安装 nvim-cmp，则跳过（blink.cmp 自带 auto_brackets）
+	local ok, cmp = pcall(require, "cmp")
+	if not ok then return end
 	local Kind = cmp.lsp.CompletionItemKind
 	local item = entry.completion_item
-	
 	-- 只为函数和方法添加括号
 	if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local line = cursor[1]
 		local col = cursor[2]
-		
 		-- 检查光标后的字符
 		local next_char = vim.api.nvim_buf_get_text(0, line - 1, col, line - 1, col + 1, {})[1]
-		
 		-- 如果后面不是括号，则添加括号并将光标置于括号内
 		if next_char ~= "(" and next_char ~= ")" then
 			local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
@@ -100,24 +140,18 @@ end
 --- 1. 只处理需要添加文档的条目
 --- 2. 使用当前文件类型生成语法高亮的预览
 function M.add_missing_snippet_docs(window)
-	local cmp = require("cmp")
+	-- 兼容：若未安装 nvim-cmp，则跳过（仅用于旧引擎的菜单文档增强）
+	local ok, cmp = pcall(require, "cmp")
+	if not ok then return end
 	local Kind = cmp.lsp.CompletionItemKind
 	local entries = window:get_entries()
-	
 	for _, entry in ipairs(entries) do
-		-- 只处理代码片段类型的条目
 		if entry:get_kind() == Kind.Snippet then
 			local item = entry.completion_item
-			
-			-- 如果没有文档但有插入文本，生成预览文档
 			if not item.documentation and item.insertText then
 				item.documentation = {
 					kind = cmp.lsp.MarkupKind.Markdown,
-					value = string.format(
-						"```%s\n%s\n```",
-						vim.bo.filetype,
-						M.snippet_preview(item.insertText)
-					),
+					value = string.format("```%s\n%s\n```", vim.bo.filetype, M.snippet_preview(item.insertText)),
 				}
 			end
 		end
@@ -172,28 +206,23 @@ end
 --- 1. 添加了错误处理
 --- 2. 改进了片段解析的兼容性
 function M.setup(opts)
+	-- 兼容：若未安装 nvim-cmp，则跳过（blink.cmp 不调用此函数）
+	local ok_cmp, _ = pcall(require, "cmp")
+	if not ok_cmp then return end
 	-- 包装原始的片段解析函数，添加错误处理
 	local parse = require("cmp.utils.snippet").parse
 	require("cmp.utils.snippet").parse = function(input)
 		local ok, ret = pcall(parse, input)
-		if ok then
-			return ret
-		end
-		-- 解析失败时回退到预览模式
+		if ok then return ret end
 		return GlobalUtil.cmp.snippet_preview(input)
 	end
-
 	local cmp = require("cmp")
 	cmp.setup(opts)
-	
-	-- 在补全确认后自动添加括号（如果需要）
 	cmp.event:on("confirm_done", function(event)
 		if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
 			GlobalUtil.cmp.auto_brackets(event.entry)
 		end
 	end)
-	
-	-- 在补全菜单打开时添加缺失的片段文档
 	cmp.event:on("menu_opened", function(event)
 		GlobalUtil.cmp.add_missing_snippet_docs(event.window)
 	end)

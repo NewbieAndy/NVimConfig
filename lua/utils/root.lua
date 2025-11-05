@@ -17,6 +17,8 @@ local M = setmetatable({}, {
 ---@alias LazyRootSpec string|string[]|LazyRootFn
 
 --- 根目录检测规范列表
+--- 提示：可通过 vim.g.root_spec 覆盖默认规则；M.reload_root_path() 可在项目切换时重置缓存
+
 --- 按优先级从高到低排列：
 --- 1. "lsp" - 使用 LSP 服务器的工作目录
 --- 2. {".git", "lua"} - 查找包含这些文件/目录的父目录
@@ -128,8 +130,15 @@ end
 --- 获取缓冲区的真实文件路径
 --- @param buf number 缓冲区编号
 --- @return string|nil 返回规范化的文件路径，如果无效则返回 nil
+--- 安全获取缓冲区的规范化文件路径；无文件名则返回 nil
+--- @param buf number|nil 缓冲区编号，nil/0 表示当前缓冲区
+--- @return string|nil 规范化后的路径，若为空缓冲区则返回 nil
 function M.bufpath(buf)
-	return M.realpath(vim.api.nvim_buf_get_name(assert(buf)))
+  local b = (buf == nil or buf == 0) and vim.api.nvim_get_current_buf() or buf
+  if not b or b <= 0 then return nil end
+  local name = vim.api.nvim_buf_get_name(b)
+  if name == nil or name == "" then return nil end
+  return M.realpath(name)
 end
 
 --- 获取缓存的根目录

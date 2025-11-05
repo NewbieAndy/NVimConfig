@@ -148,17 +148,19 @@ end
 --- 启用或禁用自动格式化
 --- @param enable boolean|nil 是否启用，默认为 true
 --- @param buf boolean|nil 是否仅影响当前缓冲区
+--- 
+--- 启用/禁用时若状态未变化则不提示，避免噪声
 function M.enable(enable, buf)
-	enable = enable == nil and true or enable
-	
-	if buf then
-		vim.b.autoformat = enable
-	else
-		vim.g.autoformat = enable
-		vim.b.autoformat = nil
-	end
-	
-	M.info()
+  enable = enable == nil and true or enable
+  local prev = (buf and vim.b.autoformat) or (vim.g.autoformat == nil or vim.g.autoformat)
+  if prev == enable then return end
+  if buf then
+    vim.b.autoformat = enable
+  else
+    vim.g.autoformat = enable
+    vim.b.autoformat = nil
+  end
+  M.info()
 end
 
 --- 格式化缓冲区
@@ -195,6 +197,8 @@ function M.format(opts)
 	if not formatted and opts and opts.force then
 		GlobalUtil.warn("没有可用的格式化器", { title = "LazyVim" })
 	end
+--- 注意：可通过 GlobalUtil.format.snacks_toggle() 绑定到状态栏或快捷键以快速切换
+
 end
 
 --- 创建 Snacks 切换开关

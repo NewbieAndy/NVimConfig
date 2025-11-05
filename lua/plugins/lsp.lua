@@ -212,7 +212,7 @@ return {
 				-- provide the inlay hints.
 				inlay_hints = {
 					enabled = true,
-					exclude = { "vue" }, -- filetypes for which you don't want to enable inlay hints
+					exclude = { "vue", "python" }, -- 排除 python，降低插入态额外计算
 				},
 				-- Enable this to enable the builtin LSP code lenses on Neovim >= 0.10.0
 				-- Be aware that you also will need to properly configure your LSP server to
@@ -220,9 +220,9 @@ return {
 				codelens = {
 					enabled = false,
 				},
-				-- Enable lsp cursor word highlighting
+				-- Disable LSP cursor word highlighting（避免高延迟的 documentHighlight 阻塞补全）
 				document_highlight = {
-					enabled = true,
+					enabled = false,
 				},
 				-- add any global capabilities here
 				capabilities = {
@@ -534,6 +534,14 @@ return {
 			-- inlay hints
 			if opts.inlay_hints.enabled then
 				GlobalUtil.lsp.on_supports_method("textDocument/inlayHint", function(client, buffer)
+
+      -- 诊断：在 Python 下禁止 documentHighlight 避免高延迟
+      GlobalUtil.lsp.on_supports_method("textDocument/documentHighlight", function(client, buffer)
+        if vim.bo[buffer].filetype == "python" then
+          client.server_capabilities.documentHighlightProvider = false
+        end
+      end)
+
 					if
 						vim.api.nvim_buf_is_valid(buffer)
 						and vim.bo[buffer].buftype == ""
@@ -569,9 +577,14 @@ return {
 			end
 			vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-			if opts.capabilities then
-				vim.lsp.config("*", { capabilities = opts.capabilities })
-			end
+			-- 合并 blink.cmp 的补全能力并注入到所有 LSP（确保 LSP 补全可用）
+			local caps = (pcall(require, "blink.cmp") and require("blink.cmp").get_lsp_capabilities())
+				or vim.lsp.protocol.make_client_capabilities()
+			-- 统一 position encodings，避免多客户端混用导致位置计算差异
+			caps.general = caps.general or {}
+			caps.general.positionEncodings = { "utf-16" }
+			caps = vim.tbl_deep_extend("force", caps, opts.capabilities or {})
+			vim.lsp.config("*", { capabilities = caps })
 
 			-- get all the servers that are available through mason-lspconfig
 			local have_mason = GlobalUtil.has("mason-lspconfig.nvim")

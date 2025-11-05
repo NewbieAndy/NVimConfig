@@ -3,6 +3,8 @@
 --- 提供折叠、窗口管理等 UI 功能
 local M = {}
 
+--- 注意：close() 内置健壮性处理，在缺少 Snacks 时自动回退到内置 bdelete
+
 --- 优化的 Treesitter 折叠表达式
 --- 为 Neovim >= 0.10.0 提供更好的折叠性能
 --- @return string 返回折叠级别字符串
@@ -82,7 +84,12 @@ function M.close()
 	elseif current_buf_win_count == 1 then
 		-- 当前缓冲区只在当前窗口打开
 		-- 关闭缓冲区
-		Snacks.bufdelete(current_buf)
+		-- 安全删除缓冲区：优先使用 Snacks.bufdelete，不存在则回退到内置命令
+		if GlobalUtil.has("snacks.nvim") and pcall(require, "snacks") then
+			Snacks.bufdelete(current_buf)
+		else
+			vim.cmd(("bdelete! %d"):format(current_buf))
+		end
 		
 		-- 如果还有其他普通窗口，也关闭当前窗口
 		if normal_buf_win_count > 1 then

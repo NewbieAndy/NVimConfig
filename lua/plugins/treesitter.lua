@@ -60,8 +60,14 @@ return {
 		indent = {
 			enable = true,
 		},
+		refactor = {
+			-- 使用 Treesitter 高亮光标下标识符及其作用域，替代 LSP documentHighlight（零额外依赖）
+			highlight_definitions = { enable = true, clear_on_cursor_move = true },
+			highlight_current_scope = { enable = true },
+		},
+
 		playground = {
-			enable = true,
+			enable = false, -- 关闭 playground 以减少运行期开销
 		},
 		textobjects = {
 			select = {
