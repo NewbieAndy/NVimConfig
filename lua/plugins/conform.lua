@@ -21,6 +21,7 @@ M.formatters_by_ft = {
 	yaml = { "prettier" },
 	markdown = { "prettier", "markdownlint-cli2", "markdown-toc" },
 	["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+	java = { "google-java-format" },
 }
 
 function M.has_prettier_config(ctx)
@@ -126,6 +127,58 @@ return {
 						return M.has_prettier_parser(ctx) and M.has_prettier_config(ctx)
 					end,
 				},
+
+				-- Google Java Format：支持可执行文件或 JAR，两者其一即可
+				["google-java-format"] = function(bufnr)
+					local cmd, args, stdin = nil, {}, true
+					local function read_project_cfg(root)
+						local cfg = { aosp = false, length = nil }
+						local cfg_file = root .. "/.nvim/java.json"
+						if vim.uv.fs_stat(cfg_file) then
+							local ok, data = pcall(vim.json.decode, table.concat(vim.fn.readfile(cfg_file), "\n"))
+							if ok and type(data) == "table" and type(data.google_java_format) == "table" then
+								cfg.aosp = data.google_java_format.aosp or cfg.aosp
+								cfg.length = data.google_java_format.length or cfg.length
+							end
+						end
+						return cfg
+					end
+
+					local root = vim.fs.root(bufnr, { 
+						".nvim/java.json", "pom.xml", "build.gradle", "gradlew", "mvnw", ".git" 
+					}) or vim.fn.getcwd()
+					local cfg = read_project_cfg(root)
+
+					if vim.fn.executable("google-java-format") == 1 then
+						cmd = "google-java-format"
+						if cfg.aosp then table.insert(args, "--aosp") end
+						if cfg.length then table.insert(args, "--length"); table.insert(args, tostring(cfg.length)) end
+						table.insert(args, "-") -- read from stdin
+						return { command = cmd, args = args, stdin = true }
+					else
+						-- 尝试通过 JAR 运行（Mason 包或环境变量）
+						local jar = os.getenv("GOOGLE_JAVA_FORMAT_JAR")
+						if not jar then
+							local mason_dir = GlobalUtil.get_pkg_path("google-java-format", "", { warn = false })
+							if mason_dir and mason_dir ~= "" then
+								local found = vim.fn.glob(mason_dir .. "/*.jar", true, true)
+								if type(found) == "table" and #found > 0 then
+									jar = found[1]
+								end
+							end
+						end
+						if jar then
+							cmd = "java"
+							args = { "-jar", jar }
+							if cfg.aosp then table.insert(args, "--aosp") end
+							if cfg.length then table.insert(args, "--length"); table.insert(args, tostring(cfg.length)) end
+							table.insert(args, "-")
+							return { command = cmd, args = args, stdin = true }
+						end
+					end
+					-- 未找到任何可执行路径时，返回 nil 以跳过
+					return nil
+				end,
 			},
 		}
 		return opts

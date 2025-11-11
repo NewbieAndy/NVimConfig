@@ -63,7 +63,7 @@ function M.getKeys()
 			"<F14>",
 			vim.lsp.buf.code_action,
 			desc = "Code Action",
-			mode = { "n", "v" },
+			mode = {"i", "n", "v" },
 			has = "codeAction",
 		},
 		{
@@ -671,14 +671,16 @@ return {
 		build = ":MasonUpdate",
 		opts_extend = { "ensure_installed" },
 		opts = {
-			ensure_installed = {
-				"stylua",
-				"shfmt",
-				"js-debug-adapter",
-				"vue-language-server",
-				"prettier",
-				--"typescript-language-server",
-			},
+      ensure_installed = {
+        "stylua",
+        "shfmt",
+        "js-debug-adapter",
+        "vue-language-server",
+        "prettier",
+        --"typescript-language-server",
+        "jdtls",
+        "google-java-format",
+      },
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
 		config = function(_, opts)

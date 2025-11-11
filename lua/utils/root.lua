@@ -34,15 +34,16 @@ M.root_path = nil
 
 --- 重新加载根目录路径
 --- @param path string|nil 指定的路径，如果为 nil 则使用当前工作目录
---- 
+---
 --- 优化点：添加了路径验证
 function M.reload_root_path(path)
-  -- 验证路径是否存在
-  if path and vim.uv.fs_stat(path) then
-    M.root_path = M.realpath(path)
-  else
-    M.root_path = M.realpath(vim.uv.cwd())
-  end
+	-- 验证路径是否存在
+	if path and vim.uv.fs_stat(path) then
+		M.root_path = M.realpath(path)
+	else
+		M.root_path = M.realpath(vim.uv.cwd())
+	end
+	vim.uv.chdir(M.root_path)
 end
 
 --- 当前工作目录检测器
@@ -55,7 +56,7 @@ end
 --- 从附加到缓冲区的 LSP 客户端获取根目录
 --- @param buf number 缓冲区编号
 --- @return string[] 返回检测到的根目录列表
---- 
+---
 --- 优化点：
 --- 1. 添加了空值检查
 --- 2. 简化了过滤逻辑
@@ -64,15 +65,15 @@ function M.detectors.lsp(buf)
 	if not bufpath then
 		return {}
 	end
-	
+
 	local roots = {} ---@type string[]
 	local clients = GlobalUtil.lsp.get_clients({ bufnr = buf })
-	
+
 	-- 过滤掉被忽略的 LSP 客户端
 	clients = vim.tbl_filter(function(client)
 		return not vim.tbl_contains(vim.g.root_lsp_ignore or {}, client.name)
 	end, clients)
-	
+
 	-- 收集所有客户端的根目录
 	for _, client in pairs(clients) do
 		-- 从 workspace_folders 获取
@@ -82,13 +83,13 @@ function M.detectors.lsp(buf)
 				roots[#roots + 1] = vim.uri_to_fname(ws.uri)
 			end
 		end
-		
+
 		-- 从 root_dir 获取
 		if client.root_dir then
 			roots[#roots + 1] = client.root_dir
 		end
 	end
-	
+
 	-- 过滤出包含当前文件的根目录
 	return vim.tbl_filter(function(path)
 		path = GlobalUtil.norm(path)
@@ -101,14 +102,14 @@ end
 --- @param buf number 缓冲区编号
 --- @param patterns string|string[] 要查找的文件名或模式列表
 --- @return string[] 返回找到的根目录列表
---- 
+---
 --- 优化点：
 --- 1. 改进了模式匹配逻辑
 --- 2. 添加了通配符支持的说明
 function M.detectors.pattern(buf, patterns)
 	patterns = type(patterns) == "string" and { patterns } or patterns
 	local path = M.bufpath(buf) or vim.uv.cwd()
-	
+
 	-- 向上查找匹配的文件或目录
 	local pattern = vim.fs.find(function(name)
 		for _, p in ipairs(patterns) do
@@ -123,7 +124,7 @@ function M.detectors.pattern(buf, patterns)
 		end
 		return false
 	end, { path = path, upward = true })[1]
-	
+
 	return pattern and { vim.fs.dirname(pattern) } or {}
 end
 
@@ -134,11 +135,15 @@ end
 --- @param buf number|nil 缓冲区编号，nil/0 表示当前缓冲区
 --- @return string|nil 规范化后的路径，若为空缓冲区则返回 nil
 function M.bufpath(buf)
-  local b = (buf == nil or buf == 0) and vim.api.nvim_get_current_buf() or buf
-  if not b or b <= 0 then return nil end
-  local name = vim.api.nvim_buf_get_name(b)
-  if name == nil or name == "" then return nil end
-  return M.realpath(name)
+	local b = (buf == nil or buf == 0) and vim.api.nvim_get_current_buf() or buf
+	if not b or b <= 0 then
+		return nil
+	end
+	local name = vim.api.nvim_buf_get_name(b)
+	if name == nil or name == "" then
+		return nil
+	end
+	return M.realpath(name)
 end
 
 --- 获取缓存的根目录
@@ -164,13 +169,13 @@ end
 --- 解析符号链接并规范化路径
 --- @param path string|nil 输入路径
 --- @return string|nil 返回真实路径，如果路径无效则返回 nil
---- 
+---
 --- 优化点：添加了空字符串的检查
 function M.realpath(path)
 	if path == "" or path == nil then
 		return nil
 	end
-	
+
 	path = vim.uv.fs_realpath(path) or path
 	return GlobalUtil.norm(path)
 end
@@ -184,12 +189,12 @@ function M.resolve(spec)
 	if M.detectors[spec] then
 		return M.detectors[spec]
 	end
-	
+
 	-- 自定义函数
 	if type(spec) == "function" then
 		return spec
 	end
-	
+
 	-- 文件模式检测器
 	return function(buf)
 		return M.detectors.pattern(buf, spec)
@@ -203,7 +208,7 @@ end
 ---   - spec: 检测规范列表，默认使用 M.spec
 ---   - all: 是否返回所有匹配的根目录，默认 false 只返回第一个
 --- @return LazyRoot[] 返回检测到的根目录列表
---- 
+---
 --- 优化点：
 --- 1. 改进了选项处理
 --- 2. 添加了更清晰的注释
@@ -213,13 +218,13 @@ function M.detect(opts)
 	opts.buf = (opts.buf == nil or opts.buf == 0) and vim.api.nvim_get_current_buf() or opts.buf
 
 	local results = {} ---@type LazyRoot[]
-	
+
 	for _, spec in ipairs(opts.spec) do
 		-- 执行检测函数
 		local paths = M.resolve(spec)(opts.buf)
 		paths = paths or {}
 		paths = type(paths) == "table" and paths or { paths }
-		
+
 		-- 规范化并去重路径
 		local roots = {} ---@type string[]
 		for _, p in ipairs(paths) do
@@ -228,12 +233,12 @@ function M.detect(opts)
 				roots[#roots + 1] = pp
 			end
 		end
-		
+
 		-- 按路径长度降序排序（更深的路径优先）
 		table.sort(roots, function(a, b)
 			return #a > #b
 		end)
-		
+
 		if #roots > 0 then
 			results[#results + 1] = { spec = spec, paths = roots }
 			-- 如果不需要所有结果，找到第一个就返回
@@ -242,7 +247,7 @@ function M.detect(opts)
 			end
 		end
 	end
-	
+
 	return results
 end
 
@@ -254,7 +259,7 @@ function M.info()
 	local roots = M.detect({ all = true })
 	local lines = {} ---@type string[]
 	local first = true
-	
+
 	-- 格式化输出每个检测到的根目录
 	for _, root in ipairs(roots) do
 		for _, path in ipairs(root.paths) do
@@ -266,12 +271,12 @@ function M.info()
 			first = false
 		end
 	end
-	
+
 	-- 显示当前配置
 	lines[#lines + 1] = "```lua"
 	lines[#lines + 1] = "vim.g.root_spec = " .. vim.inspect(spec)
 	lines[#lines + 1] = "```"
-	
+
 	GlobalUtil.info(lines, { title = "LazyVim Roots" })
 	return roots[1] and roots[1].paths[1] or vim.uv.cwd()
 end
@@ -290,7 +295,7 @@ M.cache = {}
 ---   - normalize: 是否规范化路径
 ---   - buf: 缓冲区编号
 --- @return string 返回检测到的根目录路径
---- 
+---
 --- 优化点：
 --- 1. 添加了缓存机制
 --- 2. 改进了选项处理
@@ -298,13 +303,13 @@ function M.get(opts)
 	opts = opts or {}
 	local buf = opts.buf or vim.api.nvim_get_current_buf()
 	local cached = M.cache[buf]
-	
+
 	if not cached then
 		local roots = M.detect({ all = false, buf = buf })
 		cached = roots[1] and roots[1].paths[1] or vim.uv.cwd()
 		M.cache[buf] = cached
 	end
-	
+
 	return cached
 end
 

@@ -7,15 +7,6 @@
 --- 提供 nvim-cmp 补全相关的辅助函数
 local M = {}
 
---- 公共工具：判断光标前是否有可触发补全的字符
---- 仅检查光标前一个字符是否是非空白字符
-function M.has_words_before()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  if col == 0 then return false end
-  local ch = vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col)
-  return ch:match("%s") == nil
-end
-
 --- 动作集合：与补全引擎解耦的通用动作（供键位链式调用）
 --- 返回 true 表示已处理，返回 false/nil 表示未处理，交由下一个分支或 fallback
 M.actions = {
