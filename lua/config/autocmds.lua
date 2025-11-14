@@ -179,12 +179,32 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
-	group = augroup("wrap_spell"),
-	pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-	callback = function()
-		vim.opt_local.wrap = true
-		vim.opt_local.spell = true
-	end,
+  group = augroup("wrap_spell"),
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = true
+    vim.opt_local.breakindent = true
+    vim.opt_local.showbreak = "↳ "
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("textwidth_text"),
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.textwidth = 80
+    vim.opt_local.formatoptions:append("t")
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("textwidth_git"),
+  pattern = { "gitcommit" },
+  callback = function()
+    vim.opt_local.textwidth = 72
+    vim.opt_local.formatoptions:append("t")
+  end,
 })
 
 -- Fix conceallevel for json files

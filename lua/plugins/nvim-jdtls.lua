@@ -2,10 +2,13 @@
 -- Usage:
 -- 1. Ensure JDK21 installed at /Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home (configurable via opts.jdtls_jdk).
 -- 2. For per-project JDK (JDK8), create <project>/.nvim/java.json with { "project_jdk": "/path/to/jdk8" }
---    or set in .neoconf.json: { "java": { "projectJDK": "/path/to/jdk8" } }.
 -- 3. Open a .java file; jdtls will start automatically. Run :LspInfo to verify.
 -- 4. Change opts.jdtls_jdk to switch the runtime used for launching jdtls.
 -- 5. Optional Lombok: place lombok.jar path into opts.lombok_jar or install mason package "lombok".
+--关闭JAVA LSP
+if true then
+  return {}
+end
 
 local M = {
 	"mfussenegger/nvim-jdtls",
@@ -59,6 +62,7 @@ local M = {
 				end
 			end
 		end
+
 
 		project_jdk = project_jdk or os.getenv("JAVA_HOME")
 		if not project_jdk then

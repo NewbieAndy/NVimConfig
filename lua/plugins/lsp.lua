@@ -295,7 +295,16 @@ return {
 					nushell = {},
 					--python
 					-- pyright = { enabled = true },
-					basedpyright = { enabled = true },
+					basedpyright = {
+						enabled = true,
+						settings = {
+							basedpyright = {
+								analysis = {
+									typeCheckingMode = "basic",
+								},
+							},
+						},
+					},
 					ruff = {
 						enabled = true,
 						cmd_env = { RUFF_TRACE = "messages" },
@@ -671,16 +680,24 @@ return {
 		build = ":MasonUpdate",
 		opts_extend = { "ensure_installed" },
 		opts = {
-      ensure_installed = {
-        "stylua",
-        "shfmt",
-        "js-debug-adapter",
-        "vue-language-server",
-        "prettier",
-        --"typescript-language-server",
-        "jdtls",
-        "google-java-format",
-      },
+        ensure_installed = {
+          "stylua",
+          "shfmt",
+          "js-debug-adapter",
+          "vue-language-server",
+          "prettier",
+          --"typescript-language-server",
+          "jdtls",
+          "google-java-format",
+          "lua-language-server",
+          "json-lsp",
+          "marksman",
+          "vtsls",
+          "basedpyright",
+          "ruff",
+          "taplo",
+          "eslint_d",
+        },
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
 		config = function(_, opts)
@@ -711,7 +728,7 @@ return {
 	{
 		"nvimtools/none-ls.nvim",
 		event = { "filetype", "BufReadPost", "BufNewFile", "BufWritePre" },
-		dependencies = { "mason.nvim", "nvim-lua/plenary.nvim" },
+		dependencies = { "mason.nvim", "nvim-lua/plenary.nvim", "nvimtools/none-ls-extras.nvim" },
 		init = function()
 			GlobalUtil.on_very_lazy(function()
 				-- register the formatter with LazyVim
@@ -723,7 +740,17 @@ return {
 						return GlobalUtil.lsp.format({
 							bufnr = buf,
 							filter = function(client)
-								return client.name == "null-ls"
+								local has_null = false
+								for _, c in ipairs(GlobalUtil.lsp.get_clients({ bufnr = buf })) do
+									if c.name == "null-ls" then
+										has_null = true
+										break
+									end
+								end
+								if has_null then
+									return client.name == "null-ls"
+								end
+								return client.supports_method and client.supports_method("textDocument/formatting")
 							end,
 						})
 					end,
@@ -741,13 +768,65 @@ return {
 			local nls = require("null-ls")
 			opts.root_dir = opts.root_dir
 				or require("null-ls.utils").root_pattern(".null-ls-root", ".neoconf.json", "Makefile", ".git")
-			opts.sources = vim.list_extend(opts.sources or {}, {
-				nls.builtins.formatting.fish_indent,
-				nls.builtins.diagnostics.fish,
-				nls.builtins.formatting.stylua,
-				nls.builtins.formatting.shfmt,
-				nls.builtins.formatting.prettier,
-				-- nls.builtins.formatting.prettier.with({
+        opts.sources = vim.list_extend(opts.sources or {}, {
+          nls.builtins.formatting.fish_indent,
+          nls.builtins.diagnostics.fish,
+          nls.builtins.formatting.stylua,
+          nls.builtins.formatting.shfmt,
+          nls.builtins.formatting.prettier.with({
+            filetypes = {
+              "javascript",
+              "typescript",
+              "typescriptreact",
+              "javascriptreact",
+              "json",
+              "jsonc",
+              "css",
+              "scss",
+              "markdown",
+            },
+          }),
+          require("none-ls.diagnostics.eslint_d").with({
+            filetypes = {
+              "javascript",
+              "typescript",
+              "typescriptreact",
+              "javascriptreact",
+              "vue",
+            },
+            condition = function(utils)
+              return utils.root_has_file({
+                ".eslintrc",
+                ".eslintrc.js",
+                ".eslintrc.cjs",
+                ".eslintrc.json",
+                "eslint.config.js",
+                "eslint.config.cjs",
+                "eslint.config.mjs",
+              })
+            end,
+          }),
+          require("none-ls.code_actions.eslint_d").with({
+            filetypes = {
+              "javascript",
+              "typescript",
+              "typescriptreact",
+              "javascriptreact",
+              "vue",
+            },
+            condition = function(utils)
+              return utils.root_has_file({
+                ".eslintrc",
+                ".eslintrc.js",
+                ".eslintrc.cjs",
+                ".eslintrc.json",
+                "eslint.config.js",
+                "eslint.config.cjs",
+                "eslint.config.mjs",
+              })
+            end,
+          }),
+        -- nls.builtins.formatting.prettier.with({
 				-- 	-- 推荐只格式化你关心的文件类型
 				-- 	filetypes = {
 				-- 		"javascript",
