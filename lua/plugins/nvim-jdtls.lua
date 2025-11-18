@@ -6,10 +6,10 @@
 -- 4. Change opts.jdtls_jdk to switch the runtime used for launching jdtls.
 -- 5. Optional Lombok: place lombok.jar path into opts.lombok_jar or install mason package "lombok".
 --关闭JAVA LSP
-if true then
-  return {}
-end
-
+-- if true then
+--   return {}
+-- end
+--
 local M = {
 	"mfussenegger/nvim-jdtls",
 	ft = { "java" },
@@ -103,6 +103,7 @@ local M = {
 				lombok = nil
 			end
 		end
+    vim.notify("lombok jar: " .. tostring(lombok), vim.log.levels.INFO, { title = "nvim-jdtls" })
 
 		-- 使用 JDK21 启动 jdtls（与项目 JDK 无关），可在 opts.jdtls_jdk 中修改
 		local cmd = { opts.jdtls_jdk .. "/bin/java" }
