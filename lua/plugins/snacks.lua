@@ -8,6 +8,11 @@ return {
 			indent = { enabled = true },
 			bigfile = { enabled = true },
 			lazygit = { enabled = true },
+			image = {
+				-- your image configuration comes here
+				-- or leave it empty to use the default settings
+				-- refer to the configuration section below
+			},
 			notifier = {
 				enabled = true,
 				timeout = 3000,

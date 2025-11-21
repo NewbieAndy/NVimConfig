@@ -1,5 +1,9 @@
 -- Sidekick.nvim 配置
 -- GitHub Copilot CLI 的终端助手集成
+if true then
+  return {}
+end
+
 return {
 	{
 		"folke/sidekick.nvim",

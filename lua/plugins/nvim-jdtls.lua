@@ -6,9 +6,9 @@
 -- 4. Change opts.jdtls_jdk to switch the runtime used for launching jdtls.
 -- 5. Optional Lombok: place lombok.jar path into opts.lombok_jar or install mason package "lombok".
 --关闭JAVA LSP
--- if true then
---   return {}
--- end
+if true then
+  return {}
+end
 --
 local M = {
 	"mfussenegger/nvim-jdtls",
