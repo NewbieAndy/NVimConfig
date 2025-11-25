@@ -696,7 +696,6 @@ return {
           "basedpyright",
           "ruff",
           "taplo",
-          "eslint_d",
         },
 		},
 		---@param opts MasonSettings | {ensure_installed: string[]}
@@ -786,46 +785,7 @@ return {
               "markdown",
             },
           }),
-          require("none-ls.diagnostics.eslint_d").with({
-            filetypes = {
-              "javascript",
-              "typescript",
-              "typescriptreact",
-              "javascriptreact",
-              "vue",
-            },
-            condition = function(utils)
-              return utils.root_has_file({
-                ".eslintrc",
-                ".eslintrc.js",
-                ".eslintrc.cjs",
-                ".eslintrc.json",
-                "eslint.config.js",
-                "eslint.config.cjs",
-                "eslint.config.mjs",
-              })
-            end,
-          }),
-          require("none-ls.code_actions.eslint_d").with({
-            filetypes = {
-              "javascript",
-              "typescript",
-              "typescriptreact",
-              "javascriptreact",
-              "vue",
-            },
-            condition = function(utils)
-              return utils.root_has_file({
-                ".eslintrc",
-                ".eslintrc.js",
-                ".eslintrc.cjs",
-                ".eslintrc.json",
-                "eslint.config.js",
-                "eslint.config.cjs",
-                "eslint.config.mjs",
-              })
-            end,
-          }),
+
         -- nls.builtins.formatting.prettier.with({
 				-- 	-- 推荐只格式化你关心的文件类型
 				-- 	filetypes = {
