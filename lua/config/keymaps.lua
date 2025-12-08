@@ -34,7 +34,7 @@ map({ "n", "i" }, "<C-e>", function()
 	vim.cmd("stopinsert")
 end, { desc = "Explorer", remap = true })
 
-map( "n", "<leader>e", function()
+map("n", "<leader>e", function()
 	-- Snacks.explorer.open()
 	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root.root() })
 	vim.cmd("stopinsert")
@@ -113,6 +113,9 @@ map("n", "]q", vim.cmd.cnext, { desc = "Next Quickfix" })
 map({ "n", "v" }, "<leader>cf", function()
 	GlobalUtil.format({ force = true })
 end, { desc = "Format" })
+
+-- 是否打开markdown预览
+map("n", "<leader>om", "<CMD>Markview<CR>", { desc = "Toggles `markview` previews globally." })
 
 -- diagnostic
 local diagnostic_goto = function(next, severity)
