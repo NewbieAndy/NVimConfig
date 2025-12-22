@@ -38,11 +38,11 @@ return {
 				assistant = GlobalUtil.icons.kinds.Copilot, -- Header to use for AI answers
 				tool = GlobalUtil.icons.kinds.Tool, -- Header to use for tool calls
 			},
-      separator = '——',
+			separator = "——",
 			window = {
-        -- layout = 'float',
+				-- layout = 'float',
 				-- width = 0.4,
-        border = 'double'
+				border = "double",
 			},
 
 			prompts = {
