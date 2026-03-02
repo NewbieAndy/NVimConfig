@@ -10,7 +10,7 @@ A lightweight Neovim configuration optimized for low-spec Linux servers. LSP, AI
 - Syntax Highlighting: nvim-treesitter with server-essential parsers only (bash, python, lua, yaml, json, dockerfile, sql, etc.)
 - Formatting: conform.nvim (manual trigger, no background scanning)
 - Files & Search: neo-tree file explorer, grug-far search & replace, Snacks.picker fuzzy finder
-- Git: gitsigns inline diff markers, Snacks.lazygit integration (requires lazygit on server)
+- Git: gitsigns inline diff markers
 - Sessions & Utils: persistence, which-key, todo-comments
 - Terminal: Snacks.terminal floating terminal
 
@@ -50,11 +50,6 @@ sudo yum install -y git gcc make ripgrep
 
 ### 3. Optional tools
 ```sh
-# lazygit — Git TUI (<leader>gg)
-LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-tar xf lazygit.tar.gz lazygit && sudo install lazygit /usr/local/bin
-
 # fd — faster file finder used by the picker
 sudo apt install -y fd-find && ln -sf $(which fdfind) ~/.local/bin/fd
 ```
@@ -69,7 +64,7 @@ rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 
 ### 2. Clone
 ```sh
-git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
+git clone -b linux_server https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
 ```
 
 ### 3. First launch — plugins install automatically
@@ -105,7 +100,6 @@ sudo apt install -y shfmt    # Shell
 | Search & replace | `<leader>fr` |
 | Floating terminal | `<C-/>` |
 | Format file | `<leader>cf` |
-| Lazygit | `<leader>gg` |
 | Git blame | `<leader>gb` |
 | Next / prev buffer | `<S-l>` / `<S-h>` |
 | Close buffer | `<leader>bd` |

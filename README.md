@@ -10,7 +10,7 @@
 - 语法高亮：nvim-treesitter（仅安装服务器常用语言解析器：bash/python/lua/yaml/json 等）
 - 代码格式化：conform.nvim（按需手动触发，不自动扫描）
 - 文件/搜索：neo-tree 文件管理、grug-far 全局搜索替换、Snacks.picker 模糊查找
-- Git：gitsigns 行内 diff 标记、Snacks.lazygit 集成（需服务器安装 lazygit）
+- Git：gitsigns 行内 diff 标记
 - 会话与实用：persistence 会话恢复、which-key 键位提示、todo-comments
 - 终端：Snacks.terminal 浮动终端
 
@@ -49,18 +49,10 @@ sudo apt install -y git gcc make ripgrep
 sudo yum install -y git gcc make ripgrep
 ```
 
-### 3. 安装可选工具
+### 3. Optional tools
 ```sh
-# lazygit（Git TUI，<leader>gg 触发）
-LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
-curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-tar xf lazygit.tar.gz lazygit
-sudo install lazygit /usr/local/bin
-
-# fd（更快的文件查找，picker 使用）
-sudo apt install -y fd-find && ln -sf $(which fdfind) ~/.local/bin/fd   # Debian/Ubuntu
-# 或
-sudo yum install -y fd-find
+# fd — faster file finder used by the picker
+sudo apt install -y fd-find && ln -sf $(which fdfind) ~/.local/bin/fd
 ```
 
 ## 🚀 快速开始
@@ -73,7 +65,7 @@ rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 
 ### 2. 克隆配置
 ```sh
-git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
+git clone -b linux_server https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
 ```
 
 ### 3. 首次启动（自动安装插件）
@@ -110,7 +102,6 @@ Leader 键：`<Space>`
 | 搜索替换 | `<leader>fr` |
 | 浮动终端 | `<C-/>` |
 | 格式化 | `<leader>cf` |
-| Lazygit | `<leader>gg` |
 | Git blame | `<leader>gb` |
 | Buffer 切换 | `<S-h>` / `<S-l>` |
 | 关闭 Buffer | `<leader>bd` |

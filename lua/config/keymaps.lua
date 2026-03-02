@@ -138,16 +138,6 @@ GlobalUtil.format.snacks_toggle(true):map("<leader>oF")
 Snacks.toggle.option("spell", { name = "拼写检查"}):map("<leader>os")
 Snacks.toggle.option("wrap", {name = "自动换行"}):map("<leader>ow")
 Snacks.toggle.option("conceallevel", {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map("<leader>oc")
--- lazygit
-if vim.fn.executable("lazygit") == 1 then
-  map("n", "<leader>gg", function() Snacks.lazygit( { cwd = GlobalUtil.root.git() }) end, { desc = "Lazygit (Root Dir)" })
-  -- map("n", "<leader>gG", function() Snacks.lazygit() end, { desc = "Lazygit (cwd)" })
-  -- map("n", "<leader>gb", function() Snacks.git.blame_line() end, { desc = "Git Blame Line" })
-  -- map("n", "<leader>gB", function() Snacks.gitbrowse() end, { desc = "Git Browse" })
-  -- map("n", "<leader>gh", function() Snacks.lazygit.log_file() end, { desc = "Lazygit Current File History" })
-  -- map("n", "<leader>gl", function() Snacks.lazygit.log({ cwd = GlobalUtil.root.git() }) end, { desc = "Lazygit Log" })
-  -- map("n", "<leader>gL", function() Snacks.lazygit.log() end, { desc = "Lazygit Log (cwd)" })
-end
 
 map("n", "<leader>q", function ()
   GlobalUtil.ui.close()
