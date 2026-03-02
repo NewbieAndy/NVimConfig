@@ -22,7 +22,7 @@ option.fillchars = {
 	eob = " ",
 }
 option.foldlevel = 99
-option.formatexpr = "v:lua.require'utils'.format.formatexpr()"
+option.formatexpr = "v:lua.vim.lsp.formatexpr()"
 -- tcqj
 option.formatoptions = "jcroqlnt"
 option.grepformat = "%f:%l:%c:%m"
@@ -56,13 +56,13 @@ option.splitbelow = true -- Put new windows below current
 option.splitkeep = "screen"
 option.splitright = true -- Put new windows right of current
 
-option.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
+option.statuscolumn = "" -- Use built-in statuscolumn
 option.tabstop = 2 -- Number of spaces tabs count for
 option.termguicolors = true -- True color support
 option.timeoutlen = vim.g.vscode and 1000 or 300 -- Lower than default (1000) to quickly trigger which-key
 option.undofile = true
 option.undolevels = 10000
-option.updatetime = 200 -- Save swap file and trigger CursorHold
+option.updatetime = 500 -- Save swap file and trigger CursorHold
 
 -- Allow cursor to move where there is no text in visual block mode
 option.virtualedit = "block"

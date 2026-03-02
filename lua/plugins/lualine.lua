@@ -137,50 +137,6 @@ return {
 						},
 					},
 					lualine_x = {
-						Snacks.profiler.status(),
-						{
-							function()
-								return "  " .. require("dap").status()
-							end,
-							cond = function()
-								return package.loaded["dap"] and require("dap").status() ~= ""
-							end,
-							color = function()
-								return { fg = Snacks.util.color("Debug") }
-							end,
-						},
-						{
-							-- copilot ICON
-							function()
-								local icon = GlobalUtil.icons.kinds.Copilot
-								local status = require("copilot.status").data
-								return icon .. (status.message or "")
-							end,
-							--加载了copilot显示
-							cond = function()
-								if not package.loaded["copilot"] then
-									return
-								end
-								local ok, clients = pcall(GlobalUtil.lsp.get_clients, { name = "copilot", bufnr = 0 })
-								if not ok then
-									return false
-								end
-								return ok and #clients > 0
-							end,
-							color = function()
-								if not package.loaded["copilot"] then
-									return
-								end
-								--API状态
-								local status = require("copilot.status").data
-								return M.fg(
-									(status == nil and "DiagnosticError")
-										or (status.status == "InProgress" and "DiagnosticWarn")
-										or (status.status == "Warning" and "DiagnosticError")
-										or "Special"
-								)
-							end,
-						},
 						{
 							"diff",
 							symbols = {

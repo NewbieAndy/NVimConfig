@@ -131,7 +131,7 @@ return {
 			hide_gitignored = false,
 			bind_to_cwd = false,
 			follow_current_file = { enabled = true },
-			use_libuv_file_watcher = true,
+			use_libuv_file_watcher = false,
 			window = {
 				mappings = {
 					["/"] = "fuzzy_finder",

@@ -24,7 +24,7 @@ local M = setmetatable({}, {
 --- 2. {".git", "lua"} - 查找包含这些文件/目录的父目录
 --- 3. "cwd" - 使用当前工作目录
 ---@type LazyRootSpec[]
-M.spec = { "lsp", { ".git", "lua" }, "cwd" }
+M.spec = { { ".git", "lua" }, "cwd" }
 
 --- 根目录检测器集合
 M.detectors = {}
@@ -52,49 +52,11 @@ function M.detectors.cwd()
 	return { vim.uv.cwd() }
 end
 
---- LSP 工作目录检测器
---- 从附加到缓冲区的 LSP 客户端获取根目录
+--- LSP 工作目录检测器（在 Linux 简化版中已禁用 LSP，保留此函数以防兼容性调用）
 --- @param buf number 缓冲区编号
---- @return string[] 返回检测到的根目录列表
----
---- 优化点：
---- 1. 添加了空值检查
---- 2. 简化了过滤逻辑
+--- @return string[] 返回空列表
 function M.detectors.lsp(buf)
-	local bufpath = M.bufpath(buf)
-	if not bufpath then
-		return {}
-	end
-
-	local roots = {} ---@type string[]
-	local clients = GlobalUtil.lsp.get_clients({ bufnr = buf })
-
-	-- 过滤掉被忽略的 LSP 客户端
-	clients = vim.tbl_filter(function(client)
-		return not vim.tbl_contains(vim.g.root_lsp_ignore or {}, client.name)
-	end, clients)
-
-	-- 收集所有客户端的根目录
-	for _, client in pairs(clients) do
-		-- 从 workspace_folders 获取
-		local workspace = client.config.workspace_folders
-		if workspace then
-			for _, ws in pairs(workspace) do
-				roots[#roots + 1] = vim.uri_to_fname(ws.uri)
-			end
-		end
-
-		-- 从 root_dir 获取
-		if client.root_dir then
-			roots[#roots + 1] = client.root_dir
-		end
-	end
-
-	-- 过滤出包含当前文件的根目录
-	return vim.tbl_filter(function(path)
-		path = GlobalUtil.norm(path)
-		return path and bufpath:find(path, 1, true) == 1
-	end, roots)
+	return {}
 end
 
 --- 文件模式检测器

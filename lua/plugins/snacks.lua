@@ -5,14 +5,9 @@ return {
 		lazy = false,
 		---@type snacks.Config
 		opts = {
-			indent = { enabled = true },
+			indent = { enabled = false },
 			bigfile = { enabled = true },
 			lazygit = { enabled = true },
-			image = {
-				-- your image configuration comes here
-				-- or leave it empty to use the default settings
-				-- refer to the configuration section below
-			},
 			notifier = {
 				enabled = true,
 				timeout = 3000,
@@ -26,15 +21,9 @@ return {
 				enabled = true,
 				cwd = GlobalUtil.root.root(),
 				ui_select = true,
-				actions = {
-					sidekick_send = function(...)
-						return require("sidekick.cli.snacks").send(...)
-					end,
-				},
 				win = {
 					input = {
 						keys = {
-							["<a-a>"] = { "sidekick_send", mode = { "n", "i" } },
 							["<c-b>"] = { "preview_scroll_up", mode = { "i", "n" } },
 							["<c-f>"] = { "preview_scroll_down", mode = { "i", "n" } },
 						},
@@ -85,8 +74,8 @@ return {
 				-- },
 			},
 			quickfile = { enabled = true },
-			statuscolumn = { enabled = true },
-			words = { enabled = true },
+			statuscolumn = { enabled = false },
+			words = { enabled = false },
 			terminal = {
 				-- win = { position = "float" },
 			},
@@ -321,20 +310,6 @@ return {
 					Snacks.picker.colorschemes()
 				end,
 				desc = "Colorschemes",
-			},
-			{
-				"<leader>ss",
-				function()
-					Snacks.picker.lsp_symbols()
-				end,
-				desc = "LSP Symbols",
-			},
-			{
-				"<leader>sS",
-				function()
-					Snacks.picker.lsp_workspace_symbols()
-				end,
-				desc = "LSP Workspace Symbols",
 			},
 		},
 

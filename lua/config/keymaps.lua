@@ -114,9 +114,6 @@ map({ "n", "v" }, "<leader>cf", function()
 	GlobalUtil.format({ force = true })
 end, { desc = "Format" })
 
--- 是否打开markdown预览
-map("n", "<leader>om", "<CMD>Markview<CR>", { desc = "Toggles `markview` previews globally." })
-
 -- diagnostic
 local diagnostic_goto = function(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
@@ -141,10 +138,6 @@ GlobalUtil.format.snacks_toggle(true):map("<leader>oF")
 Snacks.toggle.option("spell", { name = "拼写检查"}):map("<leader>os")
 Snacks.toggle.option("wrap", {name = "自动换行"}):map("<leader>ow")
 Snacks.toggle.option("conceallevel", {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map("<leader>oc")
-if vim.lsp.inlay_hint then
-  Snacks.toggle.inlay_hints():map("<leader>oh")
-end
-
 -- lazygit
 if vim.fn.executable("lazygit") == 1 then
   map("n", "<leader>gg", function() Snacks.lazygit( { cwd = GlobalUtil.root.git() }) end, { desc = "Lazygit (Root Dir)" })

@@ -24,14 +24,9 @@ M.actions = {
       return true
     end
   end,
-  --- 接受 Copilot 内联建议（仅在可见时处理）
+  --- 接受 AI 内联建议（已禁用 Copilot，始终返回 false）
   ai_accept = function()
-    local ok, sug = pcall(function() return require("copilot.suggestion") end)
-    if ok and sug.is_visible() then
-      GlobalUtil.create_undo()
-      sug.accept()
-      return true
-    end
+    return false
   end,
 }
 

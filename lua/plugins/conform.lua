@@ -56,7 +56,6 @@ M.has_prettier_parser = GlobalUtil.memoize(M.has_prettier_parser)
 
 return {
 	"stevearc/conform.nvim",
-	dependencies = { "mason.nvim" },
 	lazy = true,
 	cmd = "ConformInfo",
 	init = function()

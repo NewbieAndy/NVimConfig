@@ -28,15 +28,15 @@ require("lazy").setup({
 		{ import = "plugins" },
 	},
 	install = { colorscheme = { "tokyonight", "habamax" } }, -- automatically check for plugin updates
-	checker = { enabled = true, notify = false },
+	checker = { enabled = false },
 	performance = {
 		rtp = {
 			-- disable some rtp plugins
 			disabled_plugins = {
 				"gzip",
-				-- "matchit",
-				-- "matchparen",
-				-- "netrwPlugin",
+				"matchit",
+				"matchparen",
+				"netrwPlugin",
 				"tarPlugin",
 				"tohtml",
 				"tutor",
