@@ -1,103 +1,147 @@
-# 🚀 NVimConfig | Neovim 配置
+# 🚀 NVimConfig | Neovim 配置（Linux 服务器版）
 
-一个现代、开箱即用的 Neovim 配置，涵盖 LSP、调试、测试、格式化、Git、AI 助手与 VSCode 集成等。基于 lazy.nvim，启动快、可维护、可扩展。
+专为低配 Linux 服务器优化的 Neovim 配置。去掉了 LSP、AI、调试等重量级功能，保留语法高亮、文件管理、Git、搜索、格式化等日常开发必备工具。基于 lazy.nvim，资源占用低、启动快。
 
-- 适合：多语言开发者、希望从 VSCode 平滑过渡到 Neovim 的用户
-- 要求：Neovim >= 0.9，Nerd Font，基础构建工具
+- 适合：需要在 2 核 2G 及以上 Linux 服务器上流畅使用 Neovim 的开发者
+- 要求：Neovim >= 0.9，Git，C 编译器（treesitter 需要）
 
 ## ✨ 功能特性
-- 性能与体验：lazy.nvim 按需加载、tokyonight 主题、lualine 状态栏、bufferline 标签栏、noice 增强 UI、Snacks 状态列/终端/工具集
-- 语言与补全：mason/mason-lspconfig + nvim-lspconfig，blink.cmp 补全，friendly-snippets 片段
-- 语法与文本：nvim-treesitter、ts-autotag、ts-comments、todo-comments
-- 代码质量：conform.nvim（格式化）、nvim-lint（诊断）
-- 调试与测试：nvim-dap + ui + virtual-text、dap-python、neotest（含 python 与 vitest）
-- 文件/搜索：neo-tree 文件管理，grug-far 全局搜索替换
-- Git：gitsigns，内置 Snacks.lazygit 集成
-- AI：GitHub Copilot 与 CopilotChat（对话/解释/评审/修复）
-- 会话与实用：persistence 会话恢复，which-key 键位提示，venv-selector 虚拟环境
-- VSCode：支持在 VSCode Neovim 扩展中使用（自动选择 vscode-config）
-- macOS 小工具：自动切换中英输入法（需 Hammerspoon，可选）
+- 性能与体验：lazy.nvim 按需加载、tokyonight 主题、lualine 状态栏、bufferline 标签栏
+- 语法高亮：nvim-treesitter（仅安装服务器常用语言解析器：bash/python/lua/yaml/json 等）
+- 代码格式化：conform.nvim（按需手动触发，不自动扫描）
+- 文件/搜索：neo-tree 文件管理、grug-far 全局搜索替换、Snacks.picker 模糊查找
+- Git：gitsigns 行内 diff 标记、Snacks.lazygit 集成（需服务器安装 lazygit）
+- 会话与实用：persistence 会话恢复、which-key 键位提示、todo-comments
+- 终端：Snacks.terminal 浮动终端
 
-## 📦 必备依赖
-- Neovim >= 0.9.0
-- Git
-- Nerd Font（推荐 JetBrains Mono Nerd Font）
-- C 编译工具链（treesitter 需要）
+> 本配置已移除：LSP / 自动补全 / AI Copilot / 调试(DAP) / 测试(neotest) / noice UI / macOS 相关功能
 
-可选：Node.js、Python、Lazygit、ripgrep、fd、Hammerspoon(macOS)
+## 📦 服务器依赖安装
 
-示例（macOS/Homebrew）：
+### 1. 安装 Neovim（>= 0.9）
+
+**方式 A：使用预编译包（推荐，最快）**
 ```sh
-brew install neovim git make ripgrep fd lazygit node python
-brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+# 下载最新稳定版
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+# 添加到 PATH（写入 ~/.bashrc 或 ~/.zshrc）
+echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**方式 B：包管理器（版本可能较旧）**
+```sh
+# Ubuntu/Debian（推荐加 PPA 获取新版）
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt update && sudo apt install -y neovim
+
+# CentOS/RHEL
+sudo yum install -y neovim
+```
+
+### 2. 安装必备工具
+```sh
+# Ubuntu/Debian
+sudo apt install -y git gcc make ripgrep
+
+# CentOS/RHEL
+sudo yum install -y git gcc make ripgrep
+```
+
+### 3. 安装可选工具
+```sh
+# lazygit（Git TUI，<leader>gg 触发）
+LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+tar xf lazygit.tar.gz lazygit
+sudo install lazygit /usr/local/bin
+
+# fd（更快的文件查找，picker 使用）
+sudo apt install -y fd-find && ln -sf $(which fdfind) ~/.local/bin/fd   # Debian/Ubuntu
+# 或
+sudo yum install -y fd-find
 ```
 
 ## 🚀 快速开始
-1) 备份/清理旧配置（二选一）
+
+### 1. 备份或清理旧配置
 ```sh
-# 备份
-mv ~/.config/nvim{,.bak}; mv ~/.local/share/nvim{,.bak}; mv ~/.local/state/nvim{,.bak}; mv ~/.cache/nvim{,.bak}
-# 或删除
-rm -rf ~/.config/nvim ~/.cache/nvim ~/.local/share/nvim ~/.local/state/nvim
+mv ~/.config/nvim{,.bak} 2>/dev/null
+rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 ```
-2) 克隆到配置目录
+
+### 2. 克隆配置
 ```sh
 git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
 ```
-3) 启动 Neovim 并等待插件自动安装
+
+### 3. 首次启动（自动安装插件）
 ```sh
 nvim
 ```
-4) 可选：安装所需 LSP/格式化/调试工具
-```
-:Mason
-```
-推荐 LSP：lua-language-server, typescript-language-server, pyright, rust-analyzer, gopls, clangd
-推荐格式化：stylua, prettier, shfmt, black
+首次启动会自动下载并安装所有插件（需要网络，约 1~3 分钟）。安装完成后重启 nvim 即可正常使用。
 
-5) 可选：登录 Copilot
+> **提示**：在没有图形界面的纯终端服务器上，确保终端支持 256 色或 TrueColor（推荐使用 tmux + 支持 TrueColor 的终端连接）。
+
+### 4. 确认 TreeSitter 解析器安装
 ```
-:Copilot auth
+:TSInstall bash python lua yaml json
+```
+或直接 `:Lazy sync` 触发自动安装。
+
+### 5. （可选）安装代码格式化工具
+conform.nvim 会调用系统已安装的格式化程序，按需安装：
+```sh
+pip install black isort          # Python
+npm install -g prettier          # JS/TS/JSON/YAML/Markdown
+cargo install stylua             # Lua
+sudo apt install -y shfmt        # Shell
 ```
 
 ## ⌨️ 常用按键
-Leader 键：<Space>
+Leader 键：`<Space>`
 
-- 文件：<leader>e 或 <C-e> 打开/关闭侧边文件树（neo-tree）
-- 窗口：<leader>h/j/k/l 在分屏间移动；<C-箭头> 调整大小；<leader>- / <leader>| 分屏；<leader>wd 关窗
-- Buffer：<S-h>/<S-l> 上/下一个；<leader>bd 关当前；<leader>bo 关其他
-- 搜索替换：<leader>fr 打开 grug-far
-- 终端：<C-/> 浮动终端（Snacks.terminal），终端中 <C-/> 关闭
-- 诊断：<leader>cd 当前行诊断；]d/[d 下/上一条；]e/[e 错误；]w/[w 警告
-- Git（需已安装 lazygit）：<leader>gg 根目录 Lazygit；<leader>gG 当前 cwd；<leader>gb 逐行 blame；<leader>gB 浏览；<leader>gh 文件历史；<leader>gl/gL 日志
-- 其他：<leader>L 打开 Lazy；<leader>fn 新文件；<leader>ft 更改文件类型；<leader>cf 格式化
-- 常见 LSP：gd 定义，gr 引用，gi 实现，K 悬浮文档，<leader>ca Code Action，<leader>rn 重命名
-
-更多按键在 which-key 中查看（按 <leader> 弹出）。
+| 功能 | 按键 |
+|------|------|
+| 文件树 | `<leader>e` / `<C-e>` |
+| 查找文件 | `<leader><space>` |
+| 全局搜索 | `<leader>/` |
+| 搜索替换 | `<leader>fr` |
+| 浮动终端 | `<C-/>` |
+| 格式化 | `<leader>cf` |
+| Lazygit | `<leader>gg` |
+| Git blame | `<leader>gb` |
+| Buffer 切换 | `<S-h>` / `<S-l>` |
+| 关闭 Buffer | `<leader>bd` |
+| 分屏 | `<leader>-` (水平) / `<leader>\|` (垂直) |
+| 窗口移动 | `<leader>h/j/k/l` |
+| Lazy 管理 | `<leader>L` |
+| 键位提示 | `<leader>` （稍等弹出 which-key）|
 
 ## 🧱 目录结构
 ```
 ~/.config/nvim/
-├── init.lua                 # VSCode/Neovim 自动分流入口
+├── init.lua                 # 入口（lazy.nvim 初始化）
 ├── lazy-lock.json           # 插件版本锁定
 └── lua/
     ├── config/              # 核心配置（options/keymaps/autocmds）
     ├── plugins/             # 插件配置（按功能拆分）
     ├── utils/               # 通用工具（root/ui/format 等）
-    ├── vscode-config/       # VSCode Neovim 环境专用配置
     └── types.lua            # 类型定义
 ```
 
 ## 🛠 自定义
-- 主题：编辑 lua/plugins/colorscheme.lua（默认 tokyonight）
-- 选项：编辑 lua/config/options.lua
-- 键位：编辑 lua/config/keymaps.lua
-- 插件：在 lua/plugins/ 新增文件并返回插件表即可
+- 主题：编辑 `lua/plugins/colorscheme.lua`（默认 tokyonight）
+- 选项：编辑 `lua/config/options.lua`
+- 键位：编辑 `lua/config/keymaps.lua`
+- 添加插件：在 `lua/plugins/` 新增文件并返回插件 spec 即可
 
 ## 🐞 故障排查
-- 插件未安装：:Lazy sync / 检查网络代理
-- LSP 异常：:Mason 查看安装，:LspInfo 查看状态，:LspRestart 重启
-- 性能分析：:Lazy profile
+- **插件未安装**：`:Lazy sync` / 检查服务器网络（是否需要代理）
+- **treesitter 报错**：确认 gcc/make 已安装，运行 `:TSUpdate`
+- **性能分析**：`:Lazy profile`
+- **查看启动日志**：`:messages`
 
 ## 📄 许可
 MIT License

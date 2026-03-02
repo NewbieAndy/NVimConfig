@@ -1,92 +1,145 @@
-# NVimConfig | Neovim configuration
+# NVimConfig | Neovim Configuration (Linux Server Edition)
 
-A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formatting, Git, AI assistants, and VSCode integration. Built on lazy.nvim with great performance and modularity.
+A lightweight Neovim configuration optimized for low-spec Linux servers. LSP, AI assistants, debugger, and macOS-specific features have been removed. What remains: syntax highlighting, file management, Git integration, fuzzy search, and formatting — everything you need for productive server-side editing.
 
-- Audience: multi-language developers and users migrating from VSCode
-- Requirements: Neovim >= 0.9, a Nerd Font, and a basic C toolchain
+- Audience: developers editing code on Linux servers (2 cores / 2 GB RAM and above)
+- Requirements: Neovim >= 0.9, Git, a C compiler (for treesitter)
 
 ## ✨ Features
-- Performance & UI: lazy-loaded plugins, tokyonight theme, lualine, bufferline, noice UI, Snacks statuscolumn/terminal/tools
-- Language & Completion: mason(+lspconfig), nvim-lspconfig, blink.cmp, friendly-snippets
-- Syntax & Editing: nvim-treesitter, ts-autotag, ts-comments, todo-comments
-- Code Quality: conform.nvim (formatting), nvim-lint (linting)
-- Debug & Test: nvim-dap + ui + virtual-text, dap-python, neotest (python/vitest)
-- Files & Search: neo-tree file explorer, grug-far search & replace
-- Git: gitsigns, integrated Snacks.lazygit
-- AI: GitHub Copilot and CopilotChat
-- Sessions & Utils: persistence, which-key, venv-selector
-- VSCode: seamless use with VSCode Neovim extension (auto-selects vscode-config)
-- macOS utility: optional auto IME switching via Hammerspoon
+- Performance & UI: lazy-loaded plugins, tokyonight theme, lualine, bufferline
+- Syntax Highlighting: nvim-treesitter with server-essential parsers only (bash, python, lua, yaml, json, dockerfile, sql, etc.)
+- Formatting: conform.nvim (manual trigger, no background scanning)
+- Files & Search: neo-tree file explorer, grug-far search & replace, Snacks.picker fuzzy finder
+- Git: gitsigns inline diff markers, Snacks.lazygit integration (requires lazygit on server)
+- Sessions & Utils: persistence, which-key, todo-comments
+- Terminal: Snacks.terminal floating terminal
 
-## 📦 Requirements
-- Neovim >= 0.9.0, Git, a Nerd Font, C toolchain
-- Optional: Node.js, Python, Lazygit, ripgrep, fd, Hammerspoon (macOS)
+> **Removed from this config:** LSP / auto-completion / AI Copilot / DAP debugger / neotest / noice UI / macOS-specific features
 
-macOS example:
+## 📦 Installing Dependencies on a Linux Server
+
+### 1. Install Neovim (>= 0.9)
+
+**Option A: Pre-built binary (recommended)**
 ```sh
-brew install neovim git make ripgrep fd lazygit node python
-brew tap homebrew/cask-fonts && brew install --cask font-jetbrains-mono-nerd-font
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
+tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+# Add to PATH in ~/.bashrc or ~/.zshrc
+echo 'export PATH="/opt/nvim-linux-x86_64/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+**Option B: Package manager (may be older)**
+```sh
+# Ubuntu/Debian — add PPA for a recent version
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo apt update && sudo apt install -y neovim
+
+# CentOS/RHEL
+sudo yum install -y neovim
+```
+
+### 2. Required tools
+```sh
+# Ubuntu/Debian
+sudo apt install -y git gcc make ripgrep
+
+# CentOS/RHEL
+sudo yum install -y git gcc make ripgrep
+```
+
+### 3. Optional tools
+```sh
+# lazygit — Git TUI (<leader>gg)
+LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+tar xf lazygit.tar.gz lazygit && sudo install lazygit /usr/local/bin
+
+# fd — faster file finder used by the picker
+sudo apt install -y fd-find && ln -sf $(which fdfind) ~/.local/bin/fd
 ```
 
 ## 🚀 Getting Started
-1) Backup or remove your old config
+
+### 1. Back up / remove old config
 ```sh
-mv ~/.config/nvim{,.bak}; mv ~/.local/share/nvim{,.bak}; mv ~/.local/state/nvim{,.bak}; mv ~/.cache/nvim{,.bak}
-# or
-rm -rf ~/.config/nvim ~/.cache/nvim ~/.local/share/nvim ~/.local/state/nvim
+mv ~/.config/nvim{,.bak} 2>/dev/null
+rm -rf ~/.local/share/nvim ~/.local/state/nvim ~/.cache/nvim
 ```
-2) Clone
+
+### 2. Clone
 ```sh
 git clone https://github.com/NewbieAndy/NVimConfig.git ~/.config/nvim
 ```
-3) Start Neovim and wait for auto-install
+
+### 3. First launch — plugins install automatically
 ```sh
 nvim
 ```
-4) (Optional) Install tools via Mason
-```
-:Mason
-```
-Suggested LSP: lua-language-server, typescript-language-server, pyright, rust-analyzer, gopls, clangd
-Suggested formatters: stylua, prettier, shfmt, black
+On the first start, lazy.nvim downloads and installs all plugins (needs network, ~1–3 min). Restart nvim once the install completes.
 
-5) (Optional) Copilot login
+> **Tip:** Make sure your terminal connection supports 256-color or TrueColor. Using tmux with a TrueColor-capable terminal is recommended.
+
+### 4. Verify TreeSitter parsers
 ```
-:Copilot auth
+:TSInstall bash python lua yaml json
+```
+Or just `:Lazy sync` to trigger auto-install.
+
+### 5. (Optional) Install formatters
+conform.nvim calls system-installed formatters — install only what you need:
+```sh
+pip install black isort      # Python
+npm install -g prettier      # JS/JSON/YAML/Markdown
+cargo install stylua         # Lua
+sudo apt install -y shfmt    # Shell
 ```
 
-## ⌨️ Keymaps (Leader = Space)
-- Files: <leader>e or <C-e> → toggle neo-tree
-- Windows: <leader>h/j/k/l move; <C-arrows> resize; <leader>- / <leader>| split; <leader>wd close
-- Buffers: <S-h>/<S-l> prev/next; <leader>bd delete; <leader>bo delete others
-- Search & Replace: <leader>fr grug-far
-- Terminal: <C-/> floating terminal (Snacks.terminal); in terminal, <C-/> closes
-- Diagnostics: <leader>cd line diag; ]d/[d next/prev; ]e/[e error; ]w/[w warn
-- Git (lazygit): <leader>gg root; <leader>gG cwd; <leader>gb blame; <leader>gB browse; <leader>gh file history; <leader>gl/gL log
-- Misc: <leader>L Lazy; <leader>fn new file; <leader>ft change filetype; <leader>cf format
-- Common LSP: gd/gr/gi, K, <leader>ca, <leader>rn
+## ⌨️ Keymaps (Leader = `<Space>`)
+
+| Action | Key |
+|--------|-----|
+| Toggle file tree | `<leader>e` / `<C-e>` |
+| Find file | `<leader><space>` |
+| Global search | `<leader>/` |
+| Search & replace | `<leader>fr` |
+| Floating terminal | `<C-/>` |
+| Format file | `<leader>cf` |
+| Lazygit | `<leader>gg` |
+| Git blame | `<leader>gb` |
+| Next / prev buffer | `<S-l>` / `<S-h>` |
+| Close buffer | `<leader>bd` |
+| Split horizontal / vertical | `<leader>-` / `<leader>\|` |
+| Move between windows | `<leader>h/j/k/l` |
+| Open Lazy | `<leader>L` |
+| Which-key hints | `<leader>` (wait briefly) |
 
 ## 🧱 Layout
 ```
 ~/.config/nvim/
-├── init.lua
-├── lazy-lock.json
-└── lua/{config,plugins,utils,vscode-config,types.lua}
+├── init.lua              # Entry point (lazy.nvim bootstrap)
+├── lazy-lock.json        # Plugin version lock
+└── lua/
+    ├── config/           # Core settings (options/keymaps/autocmds)
+    ├── plugins/          # Plugin specs (one file per plugin/group)
+    ├── utils/            # Shared utilities (root detection, UI helpers, etc.)
+    └── types.lua         # Type definitions
 ```
 
-## 🛠 Customize
-- Theme: edit lua/plugins/colorscheme.lua (default: tokyonight)
-- Options: edit lua/config/options.lua
-- Keymaps: edit lua/config/keymaps.lua
-- Plugins: add a file under lua/plugins/ that returns your plugin spec
+## 🛠 Customizing
+- Theme: edit `lua/plugins/colorscheme.lua` (default: tokyonight)
+- Options: edit `lua/config/options.lua`
+- Keymaps: edit `lua/config/keymaps.lua`
+- Add a plugin: create a new file under `lua/plugins/` returning a lazy.nvim plugin spec
 
 ## 🐞 Troubleshooting
-- Plugins not installing: :Lazy sync (check network/proxy)
-- LSP issues: :Mason to install, :LspInfo to check, :LspRestart to restart
-- Performance: :Lazy profile
+- **Plugins not installing**: `:Lazy sync` — check server network / proxy settings
+- **Treesitter errors**: make sure `gcc` and `make` are installed, then run `:TSUpdate`
+- **Performance profiling**: `:Lazy profile`
+- **View startup messages**: `:messages`
 
 ## 📄 License
 MIT
 
 ## 🙏 Acknowledgments
-Neovim community; inspirations from LazyVim, NvChad, AstroNvim.
+Neovim community; inspired by LazyVim, NvChad, and AstroNvim.
