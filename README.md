@@ -78,7 +78,7 @@ nvim
 
 ### 4. 确认 TreeSitter 解析器安装
 ```
-:TSInstall bash python lua yaml json
+:TSInstall bash python lua yaml json dockerfile
 ```
 或直接 `:Lazy sync` 触发自动安装。
 

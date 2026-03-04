@@ -77,7 +77,7 @@ On the first start, lazy.nvim downloads and installs all plugins (needs network,
 
 ### 4. Verify TreeSitter parsers
 ```
-:TSInstall bash python lua yaml json
+:TSInstall bash python lua yaml json dockerfile
 ```
 Or just `:Lazy sync` to trigger auto-install.
 
