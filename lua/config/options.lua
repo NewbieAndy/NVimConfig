@@ -73,8 +73,7 @@ option.winminwidth = 5
 -- Disable line wrap
 option.wrap = false
 option.smoothscroll = true
-option.foldexpr = "v:lua.require'utils'.ui.foldexpr()"
-option.foldmethod = "expr"
+option.foldmethod = "indent"
 option.foldtext = ""
 
 -- Fix markdown indentation settings

@@ -48,7 +48,7 @@ return {
 				}, -- pattern or table of patterns, used for highlighting (vim regex)
 				--pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
 
-				comments_only = true, -- uses treesitter to match keywords in comments only
+				comments_only = false, -- highlight TODOs anywhere, not just in comments
 				max_line_len = 400, -- ignore lines longer than this
 				exclude = {}, -- list of file types to exclude highlighting
 			},
