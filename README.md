@@ -1,20 +1,19 @@
 # 🚀 NVimConfig | Neovim 配置（Linux 服务器版）
 
-专为低配 Linux 服务器优化的 Neovim 配置。去掉了 LSP、AI、调试等重量级功能，保留语法高亮、文件管理、Git、搜索、格式化等日常开发必备工具。基于 lazy.nvim，资源占用低、启动快。
+专为低配 Linux 服务器优化的 Neovim 配置。去掉了 LSP、AI、调试、treesitter 等重量级功能，保留文件管理、Git、搜索、格式化等日常开发必备工具。基于 lazy.nvim，资源占用低、启动快。
 
 - 适合：需要在 2 核 2G 及以上 Linux 服务器上流畅使用 Neovim 的开发者
-- 要求：Neovim >= 0.9，Git，C 编译器（treesitter 需要）
+- 要求：Neovim >= 0.9，Git
 
 ## ✨ 功能特性
 - 性能与体验：lazy.nvim 按需加载、tokyonight 主题、lualine 状态栏、bufferline 标签栏
-- 语法高亮：nvim-treesitter（仅安装服务器常用语言解析器：bash/python/lua/yaml/json 等）
 - 代码格式化：conform.nvim（按需手动触发，不自动扫描）
 - 文件/搜索：neo-tree 文件管理、grug-far 全局搜索替换、Snacks.picker 模糊查找
 - Git：gitsigns 行内 diff 标记
 - 会话与实用：persistence 会话恢复、which-key 键位提示、todo-comments
 - 终端：Snacks.terminal 浮动终端
 
-> 本配置已移除：LSP / 自动补全 / AI Copilot / 调试(DAP) / 测试(neotest) / noice UI / macOS 相关功能
+> 本配置已移除：LSP / 自动补全 / AI Copilot / 调试(DAP) / 测试(neotest) / treesitter / noice UI / macOS 相关功能
 
 ## 📦 服务器依赖安装
 
@@ -43,10 +42,10 @@ sudo yum install -y neovim
 ### 2. 安装必备工具
 ```sh
 # Ubuntu/Debian
-sudo apt install -y git gcc make ripgrep
+sudo apt install -y git ripgrep
 
 # CentOS/RHEL
-sudo yum install -y git gcc make ripgrep
+sudo yum install -y git ripgrep
 ```
 
 ### 3. Optional tools
@@ -76,13 +75,7 @@ nvim
 
 > **提示**：在没有图形界面的纯终端服务器上，确保终端支持 256 色或 TrueColor（推荐使用 tmux + 支持 TrueColor 的终端连接）。
 
-### 4. 确认 TreeSitter 解析器安装
-```
-:TSInstall bash python lua yaml json dockerfile
-```
-或直接 `:Lazy sync` 触发自动安装。
-
-### 5. （可选）安装代码格式化工具
+### 4. （可选）安装代码格式化工具
 conform.nvim 会调用系统已安装的格式化程序，按需安装：
 ```sh
 pip install black isort          # Python
@@ -130,7 +123,6 @@ Leader 键：`<Space>`
 
 ## 🐞 故障排查
 - **插件未安装**：`:Lazy sync` / 检查服务器网络（是否需要代理）
-- **treesitter 报错**：确认 gcc/make 已安装，运行 `:TSUpdate`
 - **性能分析**：`:Lazy profile`
 - **查看启动日志**：`:messages`
 

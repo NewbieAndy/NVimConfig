@@ -1,20 +1,19 @@
 # NVimConfig | Neovim Configuration (Linux Server Edition)
 
-A lightweight Neovim configuration optimized for low-spec Linux servers. LSP, AI assistants, debugger, and macOS-specific features have been removed. What remains: syntax highlighting, file management, Git integration, fuzzy search, and formatting — everything you need for productive server-side editing.
+A lightweight Neovim configuration optimized for low-spec Linux servers. LSP, AI assistants, debugger, treesitter, and macOS-specific features have been removed. What remains: file management, Git integration, fuzzy search, and formatting — everything you need for productive server-side editing.
 
 - Audience: developers editing code on Linux servers (2 cores / 2 GB RAM and above)
-- Requirements: Neovim >= 0.9, Git, a C compiler (for treesitter)
+- Requirements: Neovim >= 0.9, Git
 
 ## ✨ Features
 - Performance & UI: lazy-loaded plugins, tokyonight theme, lualine, bufferline
-- Syntax Highlighting: nvim-treesitter with server-essential parsers only (bash, python, lua, yaml, json, dockerfile, sql, etc.)
 - Formatting: conform.nvim (manual trigger, no background scanning)
 - Files & Search: neo-tree file explorer, grug-far search & replace, Snacks.picker fuzzy finder
 - Git: gitsigns inline diff markers
 - Sessions & Utils: persistence, which-key, todo-comments
 - Terminal: Snacks.terminal floating terminal
 
-> **Removed from this config:** LSP / auto-completion / AI Copilot / DAP debugger / neotest / noice UI / macOS-specific features
+> **Removed from this config:** LSP / auto-completion / AI Copilot / DAP debugger / neotest / treesitter / noice UI / macOS-specific features
 
 ## 📦 Installing Dependencies on a Linux Server
 
@@ -42,10 +41,10 @@ sudo yum install -y neovim
 ### 2. Required tools
 ```sh
 # Ubuntu/Debian
-sudo apt install -y git gcc make ripgrep
+sudo apt install -y git ripgrep
 
 # CentOS/RHEL
-sudo yum install -y git gcc make ripgrep
+sudo yum install -y git ripgrep
 ```
 
 ### 3. Optional tools
@@ -75,13 +74,7 @@ On the first start, lazy.nvim downloads and installs all plugins (needs network,
 
 > **Tip:** Make sure your terminal connection supports 256-color or TrueColor. Using tmux with a TrueColor-capable terminal is recommended.
 
-### 4. Verify TreeSitter parsers
-```
-:TSInstall bash python lua yaml json dockerfile
-```
-Or just `:Lazy sync` to trigger auto-install.
-
-### 5. (Optional) Install formatters
+### 4. (Optional) Install formatters
 conform.nvim calls system-installed formatters — install only what you need:
 ```sh
 pip install black isort      # Python
@@ -128,7 +121,6 @@ sudo apt install -y shfmt    # Shell
 
 ## 🐞 Troubleshooting
 - **Plugins not installing**: `:Lazy sync` — check server network / proxy settings
-- **Treesitter errors**: make sure `gcc` and `make` are installed, then run `:TSUpdate`
 - **Performance profiling**: `:Lazy profile`
 - **View startup messages**: `:messages`
 
