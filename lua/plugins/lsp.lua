@@ -242,6 +242,8 @@ return {
 				},
 				-- LSP Server Settings
 				servers = {
+					-- jdtls 由 nvim-jdtls 插件独立管理，禁止 mason-lspconfig 自动启用
+					jdtls = { enabled = false },
 					lua_ls = {
 						settings = {
 							Lua = {
@@ -455,6 +457,10 @@ return {
 					end,
 					--- @deprecated -- tsserver renamed to ts_ls but not yet released, so keep this for now
 					--- the proper approach is to check the nvim-lspconfig release version when it's released to determine the server name dynamically
+					-- jdtls 由 nvim-jdtls 插件独立管理，禁止 lspconfig 重复启动
+					jdtls = function()
+						return true
+					end,
 					tsserver = function()
 						-- disable tsserver
 						return true
