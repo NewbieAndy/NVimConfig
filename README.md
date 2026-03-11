@@ -1,8 +1,8 @@
 # 🚀 NVimConfig | Neovim 配置
 
-一个现代、开箱即用的 Neovim 配置，涵盖 LSP、调试、测试、格式化、Git、AI 助手与 VSCode 集成等。基于 lazy.nvim，启动快、可维护、可扩展。
+一个现代、开箱即用的 Neovim 配置，涵盖 LSP、调试、测试、格式化、Git 与 AI 助手。基于 lazy.nvim，启动快、可维护、可扩展。
 
-- 适合：多语言开发者、希望从 VSCode 平滑过渡到 Neovim 的用户
+- 适合：多语言开发者
 - 要求：Neovim >= 0.9，Nerd Font，基础构建工具
 
 ## ✨ 功能特性
@@ -15,7 +15,6 @@
 - Git：gitsigns，内置 Snacks.lazygit 集成
 - AI：GitHub Copilot 与 CopilotChat（对话/解释/评审/修复）
 - 会话与实用：persistence 会话恢复，which-key 键位提示，venv-selector 虚拟环境
-- VSCode：支持在 VSCode Neovim 扩展中使用（自动选择 vscode-config）
 - macOS 小工具：自动切换中英输入法（需 Hammerspoon，可选）
 
 ## 📦 必备依赖
@@ -78,13 +77,12 @@ Leader 键：<Space>
 ## 🧱 目录结构
 ```
 ~/.config/nvim/
-├── init.lua                 # VSCode/Neovim 自动分流入口
+├── init.lua                 # 入口
 ├── lazy-lock.json           # 插件版本锁定
 └── lua/
     ├── config/              # 核心配置（options/keymaps/autocmds）
     ├── plugins/             # 插件配置（按功能拆分）
     ├── utils/               # 通用工具（root/ui/format 等）
-    ├── vscode-config/       # VSCode Neovim 环境专用配置
     └── types.lua            # 类型定义
 ```
 

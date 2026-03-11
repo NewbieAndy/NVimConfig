@@ -1,8 +1,8 @@
 # NVimConfig | Neovim configuration
 
-A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formatting, Git, AI assistants, and VSCode integration. Built on lazy.nvim with great performance and modularity.
+A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formatting, Git, and AI assistants. Built on lazy.nvim with great performance and modularity.
 
-- Audience: multi-language developers and users migrating from VSCode
+- Audience: multi-language developers
 - Requirements: Neovim >= 0.9, a Nerd Font, and a basic C toolchain
 
 ## ✨ Features
@@ -15,7 +15,6 @@ A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formattin
 - Git: gitsigns, integrated Snacks.lazygit
 - AI: GitHub Copilot and CopilotChat
 - Sessions & Utils: persistence, which-key, venv-selector
-- VSCode: seamless use with VSCode Neovim extension (auto-selects vscode-config)
 - macOS utility: optional auto IME switching via Hammerspoon
 
 ## 📦 Requirements
@@ -71,7 +70,7 @@ Suggested formatters: stylua, prettier, shfmt, black
 ~/.config/nvim/
 ├── init.lua
 ├── lazy-lock.json
-└── lua/{config,plugins,utils,vscode-config,types.lua}
+└── lua/{config,plugins,utils,types.lua}
 ```
 
 ## 🛠 Customize

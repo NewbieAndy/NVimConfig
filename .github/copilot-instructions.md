@@ -2,15 +2,13 @@
 
 ## 项目简介
 
-基于 **lazy.nvim** 的个人 Neovim 配置，纯 Lua 编写。支持双模式运行：独立 Neovim 或通过 VSCode Neovim 扩展嵌入 VSCode。涵盖 LSP、DAP、测试、格式化、Git 和 AI 助手。
+基于 **lazy.nvim** 的个人 Neovim 配置，纯 Lua 编写。涵盖 LSP、DAP、测试、格式化、Git 和 AI 助手。
 
 ## 架构
 
-### 入口与双模式分支
+### 入口
 
-`init.lua` 检测 `vim.g.vscode`，路由到：
-- `lua/config/` — 完整 Neovim 配置
-- `lua/vscode-config/` — VSCode Neovim 扩展的精简配置
+`init.lua` 直接加载 `lua/config/`。
 
 ### 启动顺序（`lua/config/init.lua`）
 
