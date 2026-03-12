@@ -11,7 +11,7 @@
 -- 4. 打开 .java 文件后 jdtls 自动启动，运行 :LspInfo 确认状态
 -- 5. 可选 Lombok：优先取 .nvim/java.json 的 lombok_jar → opts.lombok_jar → mason 包 "lombok" 自动检测
 if true then
-	return false
+	return {}
 end
 local M = {
 	"mfussenegger/nvim-jdtls",
