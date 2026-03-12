@@ -125,6 +125,8 @@ local diagnostic_goto = function(next, severity)
 		go({ severity = severity })
 	end
 end
+
+
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
 map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
@@ -169,10 +171,10 @@ map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
 -- floating terminal
 map("n", "<c-/>",      function() 
-  Snacks.terminal(nil, { cwd = GlobalUtil.root.root() }) 
+  Snacks.terminal(nil, { cwd = GlobalUtil.root.root() })
 end, { desc = "Terminal (Root Dir)" })
 map("n", "<c-_>",      function() 
-  Snacks.terminal(nil, { cwd = GlobalUtil.root.root() }) 
+  Snacks.terminal(nil, { cwd = GlobalUtil.root.root() })
 end, { desc = "Terminal (Root Dir)" })
 -- Terminal Mappings
 map("t", "<c-/>", "<cmd>close<cr>", { desc = "Close Terminal" })

@@ -1,0 +1,9 @@
+{
+    "diagnostics.disable": [
+        "inject-field",
+        "missing-parameter",
+        "param-type-mismatch",
+        "unused-local",
+        "undefined-field"
+    ]
+}

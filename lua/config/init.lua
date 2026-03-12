@@ -56,6 +56,7 @@ require("config.keymaps")
 --获取打开的参数
 local path = vim.fn.getcwd()
 -- 遍历参数列表
+--[[@diagnostic disable-next-line: param-type-mismatch]]
 for _, arg in ipairs(vim.fn.argv()) do
 	if arg == "." then
 		break
