@@ -61,8 +61,8 @@ for _, arg in ipairs(vim.fn.argv()) do
 	if arg == "." then
 		break
 	end
-	-- 使用 vim.loop.fs_stat 函数检查是否是目录
-	local stat = vim.loop.fs_stat(arg)
+	-- 使用 vim.uv.fs_stat 函数检查是否是目录
+	local stat = vim.uv.fs_stat(arg)
 	if stat and stat.type == "directory" then
 		if string.sub(arg, 1, 1) ~= "/" then
 			path = path .. '/' .. arg

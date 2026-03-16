@@ -197,8 +197,7 @@ function M.format(opts)
 	if not formatted and opts and opts.force then
 		GlobalUtil.warn("没有可用的格式化器", { title = "LazyVim" })
 	end
---- 注意：可通过 GlobalUtil.format.snacks_toggle() 绑定到状态栏或快捷键以快速切换
-
+	-- 可通过 GlobalUtil.format.snacks_toggle() 绑定到状态栏或快捷键以快速切换
 end
 
 --- 创建 Snacks 切换开关

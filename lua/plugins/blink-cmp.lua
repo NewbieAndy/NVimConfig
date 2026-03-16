@@ -189,7 +189,7 @@ return {
 		vim.api.nvim_set_hl(0, "BlinkCmpGhostText", { link = "Comment", default = true })
 
 		-- 诊断：简单时序日志，定位弹窗延迟瓶颈（可在复现后移除）
-		if vim.g.blink_diag ~= false then
+		if vim.g.blink_diag == true then
 			local logfile = "/tmp/blink_diag.log"
 			local function log(msg)
 				pcall(vim.fn.writefile, { os.date("%H:%M:%S ") .. msg }, logfile, "a")

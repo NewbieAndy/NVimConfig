@@ -386,11 +386,11 @@ function M.get_pkg_path(pkg, path, opts)
 end
 
 --- 重写默认的通知函数，添加自定义标题
---- 为 info、warn、error 三个级别的通知添加 "LazyVim" 标题
+--- 为 info、warn、error 三个级别的通知添加 "Config" 标题
 for _, level in ipairs({ "info", "warn", "error" }) do
 	M[level] = function(msg, opts)
 		opts = opts or {}
-		opts.title = opts.title or "LazyVim"
+		opts.title = opts.title or "Config"
 		return LazyUtil[level](msg, opts)
 	end
 end

@@ -79,6 +79,7 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
 
 -- 换行不自动注释
 vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("no_auto_comment"),
 	pattern = "*",
 	callback = function()
 		vim.opt_local.formatoptions:append("c")

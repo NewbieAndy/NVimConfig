@@ -13,7 +13,7 @@ return {
 		-- FIX: use `autocmd` for lazy-loading neo-tree instead of directly requiring it,
 		-- because `cwd` is not set up properly.
 		vim.api.nvim_create_autocmd("BufEnter", {
-			group = vim.api.nvim_create_augroup("Neotree_start_directory", { clear = true }),
+			group = vim.api.nvim_create_augroup("custom_neotree_start_directory", { clear = true }),
 			desc = "Start Neo-tree with directory",
 			once = true,
 			callback = function()

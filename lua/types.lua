@@ -4,7 +4,7 @@
 vim.g = {}
 
 _G.lazyvim_docs = true
-_G.GlobalUtil = require("lua.utils.init")
+_G.GlobalUtil = require("utils")
 
 ---@class vim.api.create_autocmd.callback.args
 ---@field id number

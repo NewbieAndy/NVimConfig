@@ -24,7 +24,6 @@ return {
 			picker = {
 				prompt = GlobalUtil.icons.kinds.Apple,
 				enabled = true,
-				cwd = GlobalUtil.root.root(),
 				ui_select = true,
 				actions = {
 					sidekick_send = function(...)

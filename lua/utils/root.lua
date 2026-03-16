@@ -129,8 +129,6 @@ function M.detectors.pattern(buf, patterns)
 end
 
 --- 获取缓冲区的真实文件路径
---- @param buf number 缓冲区编号
---- @return string|nil 返回规范化的文件路径，如果无效则返回 nil
 --- 安全获取缓冲区的规范化文件路径；无文件名则返回 nil
 --- @param buf number|nil 缓冲区编号，nil/0 表示当前缓冲区
 --- @return string|nil 规范化后的路径，若为空缓冲区则返回 nil

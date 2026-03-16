@@ -19,27 +19,14 @@ local M = {}
 --- 1. 简化了条件判断逻辑
 --- 2. 提前返回，避免不必要的过滤操作
 function M.get_clients(opts)
-  local clients = {} ---@type vim.lsp.Client[]
-  
-  -- 使用新 API 或回退到旧 API
-  if vim.lsp.get_clients then
-    clients = vim.lsp.get_clients(opts)
-  else
-    ---@diagnostic disable-next-line: deprecated
-    clients = vim.lsp.get_active_clients(opts)
-    -- 旧 API 不支持 method 过滤，需要手动过滤
-    if opts and opts.method then
-      clients = vim.tbl_filter(function(client)
-        return client.supports_method(opts.method, { bufnr = opts.bufnr })
-      end, clients)
-    end
-  end
-  
+  -- 使用 vim.lsp.get_clients（Neovim 0.10+ 统一 API）
+  local clients = vim.lsp.get_clients(opts) ---@type vim.lsp.Client[]
+
   -- 应用自定义过滤器
   if opts and opts.filter then
     return vim.tbl_filter(opts.filter, clients)
   end
-  
+
   return clients
 end
 
