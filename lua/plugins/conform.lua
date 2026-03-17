@@ -12,6 +12,7 @@ M.formatters_by_ft = {
 	javascript = { "prettier" },
 	javascriptreact = { "prettier" },
 	json = { "prettier", "jq" },
+	json5 = { "prettier" },
 	jsonc = { "prettier" },
 	less = { "prettier" },
 	scss = { "prettier" },
