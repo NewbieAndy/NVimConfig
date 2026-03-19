@@ -168,7 +168,6 @@ map("n", "Q", "<cmd>qa<cr>", { desc = "Quit All" })
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })
 map("n", "<leader>uI", "<cmd>InspectTree<cr>", { desc = "Inspect Tree" })
 
-
 -- floating terminal
 map("n", "<c-/>",      function() 
   Snacks.terminal(nil, { cwd = GlobalUtil.root.root() })
