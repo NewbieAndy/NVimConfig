@@ -87,7 +87,7 @@ return {
 			statuscolumn = { enabled = true },
 			words = { enabled = true },
 			terminal = {
-				win = { position = "float" },
+				win = { position = "float", border = "rounded" },
 			},
 			-- styles = {
 			-- 	notification = {
