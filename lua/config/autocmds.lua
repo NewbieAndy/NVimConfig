@@ -228,3 +228,50 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
   end,
 })
+
+-- 切换项目（如 Snacks.picker.projects）时同步根目录缓存和目录树
+vim.api.nvim_create_autocmd("DirChanged", {
+  group = augroup("sync_root_on_dir_change"),
+  callback = function()
+    -- 清除缓冲区级根目录缓存，确保下次 M.get() 重新检测
+    GlobalUtil.root.cache = {}
+    -- 直接更新 root_path，不再调用 chdir（避免循环触发 DirChanged）
+    local new_cwd = vim.uv.cwd()
+    GlobalUtil.root.root_path = GlobalUtil.root.realpath(new_cwd)
+    -- 若 neo-tree 已加载且有可见窗口，导航到新根目录
+    if package.loaded["neo-tree"] then
+      vim.schedule(function()
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local buf = vim.api.nvim_win_get_buf(win)
+          if vim.bo[buf].filetype == "neo-tree" then
+            require("neo-tree.command").execute({
+              action = "focus",
+              source = "filesystem",
+              dir = GlobalUtil.root.root_path,
+            })
+            break
+          end
+        end
+      end)
+    end
+  end,
+})
+
+-- 自动清除目录 buffer（Snacks.picker.projects 等切换项目后残留的目录 buffer）
+-- BufEnter 每次进入 buffer 都触发，用 nvim_buf_get_name 取名最可靠
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = augroup("kill_dir_buf"),
+  callback = function(ev)
+    local path = vim.api.nvim_buf_get_name(ev.buf)
+    if path == "" or vim.fn.isdirectory(path) ~= 1 then
+      return
+    end
+    -- 若 neo-tree 已加载，导航到该目录；否则仅清理 buffer
+    if package.loaded["neo-tree"] then
+      require("neo-tree.command").execute({ action = "focus", source = "filesystem", dir = path })
+    end
+    vim.schedule(function()
+      pcall(vim.api.nvim_buf_delete, ev.buf, { force = true })
+    end)
+  end,
+})
