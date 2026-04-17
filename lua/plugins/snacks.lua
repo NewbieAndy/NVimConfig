@@ -13,14 +13,59 @@ return {
 				timeout = 3000,
 			},
 			explorer = {
-				enabled = false,
-				replace_netrw = true, -- Replace netrw with Snacks Explorer
+				enabled = true,
+				replace_netrw = true, -- 禁用自动打开（手动用 <C-e> / <leader>e 打开）
 			},
 			picker = {
 				prompt = GlobalUtil.icons.kinds.Apple,
 				enabled = true,
 				cwd = GlobalUtil.root.root(),
 				ui_select = true,
+				actions = {
+					-- 复制文件完整路径到系统剪贴板
+					custom_copy_path = function(picker)
+						local selected = picker:selected({ fallback = true })
+						local target = selected and selected[1]
+						if not target or not target.file then
+							return
+						end
+						vim.fn.setreg("+", target.file, "c")
+						vim.notify("已复制路径: " .. target.file, vim.log.levels.INFO, { title = "explorer" })
+					end,
+					-- 删除文件/文件夹，但禁止删除当前项目根目录
+					custom_explorer_del = function(picker, item)
+						local selected = picker:selected({ fallback = true })
+						if not selected or #selected == 0 then
+							return
+						end
+						local root = GlobalUtil.root.root()
+						for _, target in ipairs(selected) do
+							local target_path = target.file
+							if target_path then
+								target_path = GlobalUtil.root.realpath(target_path) or target_path
+								if root and target_path == root then
+									vim.notify(
+										"不能删除当前项目根目录: " .. vim.fn.fnamemodify(root, ":~"),
+										vim.log.levels.WARN,
+										{ title = "explorer" }
+									)
+									return
+								end
+							end
+						end
+						picker:action("explorer_del")
+					end,
+					-- 导航上级目录并同步项目根目录
+					custom_explorer_up = function(picker, item)
+						picker:action("explorer_up")
+						vim.schedule(function()
+							local cwd = vim.uv.cwd()
+							if cwd then
+								GlobalUtil.root.reload_root_path(cwd)
+							end
+						end)
+					end,
+				},
 				win = {
 					input = {
 						keys = {
@@ -31,31 +76,52 @@ return {
 				},
 				sources = {
 					explorer = {
-						enabled = false,
+						ignored = true, -- 默认显示 gitignore 文件
 						win = {
 							list = {
 								keys = {
-									["<BS>"] = "explorer_up",
-									["<CR>"] = "explorer_focus",
-									["o"] = "confirm",
-									["l"] = "confirm",
-									["h"] = "explorer_close", -- close directory
-									["a"] = "explorer_add",
-									["d"] = "explorer_del",
-									["r"] = "explorer_rename",
-									["c"] = "explorer_copy",
-									["m"] = "explorer_move",
-									["<c-o>"] = "explorer_open", -- open with system application
-									["P"] = "toggle_preview",
-									["y"] = { "explorer_yank", mode = { "n", "x" } },
-									["p"] = "explorer_paste",
-									["u"] = "explorer_update",
-									["<c-c>"] = "tcd",
-									["<leader>/"] = "picker_grep",
-									["<c-t>"] = "terminal",
-									["I"] = "toggle_ignored",
-									["."] = "toggle_hidden",
+									-- ESC 在 list 窗口中禁用（防止关闭 explorer）
+									["<Esc>"] = false,
+									-- ── 导航 ──────────────────────────────────────────
+									["<BS>"] = "custom_explorer_up",      -- 退回上级目录（同步根目录）
+									["<CR>"] = "explorer_focus",          -- 进入目录并设为 cwd
+									["<2-LeftMouse>"] = "confirm",        -- 双击打开文件
+									["o"] = "confirm",                    -- 打开文件
+									["l"] = "confirm",                    -- 打开文件（同 o）
+									["h"] = "explorer_close",             -- 折叠目录
+									["s"] = "edit_split",                 -- 水平分割打开
+									["v"] = "edit_vsplit",                -- 垂直分割打开
+									["O"] = "explorer_open",              -- 用系统应用打开
+									-- ── 搜索 / 过滤 ───────────────────────────────────
+									["/"] = "focus_input",                -- 聚焦顶部搜索框进行实时过滤
+									-- ── 文件操作 ──────────────────────────────────────
+									["a"] = "explorer_add",               -- 新建文件（名称末尾加 / 则建目录）
+									["A"] = "explorer_add",               -- 同上（保留 neo-tree 肌肉记忆）
+									["d"] = "custom_explorer_del",        -- 移入回收站（禁止删除项目根目录）
+									["r"] = "explorer_rename",            -- 重命名
+									["y"] = { "explorer_yank", mode = { "n", "x" } }, -- 复制到剪贴板
+									["Y"] = "custom_copy_path",           -- 复制完整路径到系统剪贴板
+									["x"] = { "explorer_yank", mode = { "n", "x" } }, -- 剪切（配合 p 粘贴）
+									["p"] = "explorer_paste",             -- 粘贴
+									["c"] = "explorer_copy",              -- 复制文件
+									["m"] = "explorer_move",              -- 移动文件
+									-- ── 视图 ──────────────────────────────────────────
+									["z"] = "explorer_close_all",         -- 折叠所有目录
 									["Z"] = "explorer_close_all",
+									["R"] = "explorer_update",            -- 刷新
+									["u"] = "explorer_update",
+									["<tab>"] = "toggle_preview",         -- 切换预览
+									["P"] = "toggle_preview",
+									["<C-f>"] = { "preview_scroll_down", mode = { "n", "x" } },
+									["<C-b>"] = { "preview_scroll_up", mode = { "n", "x" } },
+									["I"] = "toggle_ignored",             -- 切换显示 gitignore 文件
+									["."] = "toggle_hidden",              -- 切换显示隐藏文件
+									-- ── 其他 ──────────────────────────────────────────
+									["<c-o>"] = "explorer_open",          -- 系统应用打开（备用）
+									["<c-c>"] = "tcd",                    -- 设置 tab 工作目录
+									["<leader>/"] = "picker_grep",        -- 在当前目录 grep
+									["<c-t>"] = "terminal",               -- 在当前目录打开终端
+									-- ── Git / 诊断跳转 ────────────────────────────────
 									["]g"] = "explorer_git_next",
 									["[g"] = "explorer_git_prev",
 									["]d"] = "explorer_diagnostic_next",
@@ -64,6 +130,7 @@ return {
 									["[w"] = "explorer_warn_prev",
 									["]e"] = "explorer_error_next",
 									["[e"] = "explorer_error_prev",
+									["?"] = "toggle_help_list",           -- 显示快捷键帮助
 								},
 							},
 						},
@@ -161,13 +228,21 @@ return {
 				end,
 				desc = "Notification History",
 			},
-			-- {
-			-- 	"<leader>e",
-			-- 	function()
-			-- 		Snacks.explorer()
-			-- 	end,
-			-- 	desc = "File Explorer",
-			-- },
+			{
+				"<leader>e",
+				function()
+					Snacks.explorer()
+				end,
+				desc = "File Explorer",
+			},
+			{
+				"<C-e>",
+				function()
+					Snacks.explorer()
+				end,
+				mode = { "n", "i" },
+				desc = "File Explorer",
+			},
 			-- find
 			{
 				"<leader>fb",

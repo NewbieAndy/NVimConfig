@@ -29,15 +29,12 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 map({ "n", "i" }, "<C-e>", function()
-	-- Snacks.explorer.open()
-	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root.root() })
+	Snacks.explorer()
 	vim.cmd("stopinsert")
 end, { desc = "Explorer", remap = true })
 
 map("n", "<leader>e", function()
-	-- Snacks.explorer.open()
-	require("neo-tree.command").execute({ toggle = true, dir = GlobalUtil.root.root() })
-	vim.cmd("stopinsert")
+	Snacks.explorer()
 end, { desc = "Explorer", remap = true })
 
 -- buffers
