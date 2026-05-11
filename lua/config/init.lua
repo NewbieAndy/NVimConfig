@@ -48,7 +48,7 @@ require("lazy").setup({
 		-- 尝试使用 https 协议，通常比 ssh 在代理环境下更稳定
 		filter = true,
 	},
-	concurrency = 5, -- [关键] 限制同时下载的数量，2 个最稳，不会挤死带宽
+	concurrency = 15, -- [关键] 限制同时下载的数量，2 个最稳，不会挤死带宽
 	ui = {
 		-- 界面优化
 		border = "rounded",
