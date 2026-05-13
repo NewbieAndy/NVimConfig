@@ -237,7 +237,14 @@ return {
 				if not self.opts.inline and self.hidden and #self:wins() > 0 then
 					self.hidden = false
 				end
-				return update(self)
+				local ok, err = pcall(update, self)
+				if not ok then
+					-- 静默忽略无效图片文件（如损坏的 PNG 或伪装成图片的文本文件）
+					if type(err) == "string" and err:find("Not a valid PNG") then
+						return
+					end
+					error(err, 2)
+				end
 			end
 		end,
 		keys = {
