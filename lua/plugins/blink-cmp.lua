@@ -185,6 +185,17 @@ return {
 				["<C-b>"] = { "scroll_documentation_up", "fallback" },
 				["<C-f>"] = { "scroll_documentation_down", "fallback" },
 
+				-- 方向键与 <C-n>/<C-p>：在补全菜单中上下导航候选项。
+				-- blink 自定义 keymap 不附带默认导航键，必须显式声明；
+				-- 若不声明，按键会 fallback 到 Neovim 原生行为（光标移行），
+				-- 导致 blink 的 context 因 cursor 位置变化而失效、菜单意外关闭，
+				-- 同时 auto_insert 预填的文本（尤其是 Copilot 多行补全）留在 buffer，
+				-- 表现为"选到第二个就自动选中"。
+				["<Down>"] = { "select_next", "fallback" },
+				["<Up>"] = { "select_prev", "fallback" },
+				["<C-n>"] = { "select_next", "fallback" },
+				["<C-p>"] = { "select_prev", "fallback" },
+
 				-- <ESC>：先关闭补全菜单，再退出插入模式。
 				-- 直接 fallback 会导致 blink 内部状态未清理时 Neovim 报 E785 错误，
 				-- 因此手动实现两步逻辑
