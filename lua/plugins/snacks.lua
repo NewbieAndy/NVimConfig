@@ -18,18 +18,9 @@ return {
 					max_height = 40,
 				},
 				-- ![[image.png]] Obsidian wikilink 格式路径解析
-				-- 仅处理无路径分隔符的裸文件名，在整个 vault 内递归查找
-				-- 有路径的 src（如 ./img/foo.png）返回 nil，交给 snacks 默认逻辑处理
-				resolve = function(_, src)
-					if src:find("/") or src:find("\\") then
-						return nil
-					end
-					local vault_path = require("miniobsidian").config.vault_path
-					if not vault_path or vault_path == "" then
-						return nil
-					end
-					local found = vim.fs.find(src, { path = vault_path, type = "file", limit = 1 })
-					return found[1]
+				-- 用闭包延迟 require，避免 snacks spec 解析时提前加载 miniobsidian.image
+				resolve = function(ctx, src)
+					return require("miniobsidian.image").resolve_for_snacks(ctx, src)
 				end,
 			},
 			styles = {

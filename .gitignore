@@ -42,3 +42,4 @@ luac.out
 lua/vscode-config/.DS_Store
 */.DS_Store
 .DS_Store
+/.sisyphus/*

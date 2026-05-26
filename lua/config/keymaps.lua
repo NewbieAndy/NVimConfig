@@ -37,11 +37,6 @@ map("n", "<leader>e", function()
 	Snacks.explorer()
 end, { desc = "Explorer", remap = true })
 
--- 设置当前 buffer 所属项目为全局根目录
-map("n", "<leader>P", function()
-	GlobalUtil.root.set_current_buffer_root()
-end, { desc = "设置当前文件项目为根目录" })
-
 -- 命令支持
 vim.api.nvim_create_user_command("SetProjectRoot", function()
 	GlobalUtil.root.set_current_buffer_root()
@@ -170,6 +165,9 @@ map("n", "<leader>q", function ()
 end, { desc = "Close" })
 -- quit
 map("n", "Q", "<cmd>qa<cr>", { desc = "Quit All" })
+
+-- 将当前 buffer 的项目根目录设为全局 cwd，并刷新 explorer
+map("n", "<leader>P", function() GlobalUtil.root.set_current_buffer_root() end, { desc = "设置根目录（当前 Buffer）" })
 
 -- highlights under cursor
 map("n", "<leader>ui", vim.show_pos, { desc = "Inspect Pos" })

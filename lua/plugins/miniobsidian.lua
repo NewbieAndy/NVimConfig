@@ -1,35 +1,24 @@
 return {
 	{
-	  "andy-neoaira/miniobsidian.nvim",
+		"andy-neoaira/miniobsidian.nvim",
 		-- dev = true,   -- 从 ~/github/miniobsidian.nvim 加载本地源码
 		lazy = true,
 		ft = "markdown",
 		keys = {
 			-- 全局操作（无需在 vault 内，keys 触发保证任意时刻可用）
 			{
-				"<leader>nR",
-				function()
-					local cfg = require("miniobsidian").config
-					local vault_path = cfg and cfg.vault_path
-					if not vault_path or vault_path == "" then
-						GlobalUtil.warn("miniobsidian vault 未初始化", { title = "Obsidian Root" })
-						return
-					end
-					GlobalUtil.root.reload_root_path(vault_path)
-					GlobalUtil.root.refresh_explorer(vault_path)
-					GlobalUtil.info(
-						"根目录已切换至: " .. vim.fn.fnamemodify(vault_path, ":~"),
-						{ title = "Obsidian Root" }
-					)
-				end,
-				desc = "Obsidian: 设置笔记根目录",
-			},
-			{
 				"<leader>nn",
 				function()
 					require("miniobsidian.note").new_note()
 				end,
 				desc = "Obsidian: 新建笔记",
+			},
+			{
+				"<leader>nN",
+				function()
+					require("miniobsidian.note").new_note(nil, { switch_root = true })
+				end,
+				desc = "Obsidian: 新建笔记（切换根目录）",
 			},
 			{
 				"<leader>na",
@@ -72,6 +61,13 @@ return {
 					require("miniobsidian.daily").open_today()
 				end,
 				desc = "Obsidian: 创建日记",
+			},
+			{
+				"<leader>nD",
+				function()
+					require("miniobsidian.daily").open_today({ switch_root = true })
+				end,
+				desc = "Obsidian: 创建日记（切换根目录）",
 			},
 			{
 				"<leader>nT",
@@ -117,11 +113,26 @@ return {
 			},
 		},
 		config = function()
+			-- 切换 Obsidian vault 根目录并刷新 explorer
+			local function switch_obsidian_root(vault_path)
+				GlobalUtil.root.reload_root_path(vault_path)
+				GlobalUtil.root.refresh_explorer(vault_path)
+				GlobalUtil.info("根目录已切换至: " .. vim.fn.fnamemodify(vault_path, ":~"), { title = "Obsidian Root" })
+			end
+
 			require("miniobsidian").setup({
 				vaults_parent = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents",
 				default_vault = "XRXS",
-        notes_subdir = "",
-        checkbox_states = { " ", "/", "x" }
+				notes_subdir = "",
+				checkbox_states = { " ", "/", "x" },
+				on_vault_switch = function(_, path)
+					switch_obsidian_root(path)
+				end,
+				after_note_open = function(_, opts)
+					if opts and opts.switch_root then
+						switch_obsidian_root(require("miniobsidian").config.vault_path)
+					end
+				end,
 			})
 		end,
 	},

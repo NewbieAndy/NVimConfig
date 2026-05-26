@@ -37,13 +37,13 @@ M.root_path = nil
 ---
 --- 优化点：添加了路径验证
 function M.reload_root_path(path)
-	-- 验证路径是否存在
 	if path and vim.uv.fs_stat(path) then
 		M.root_path = M.realpath(path)
 	else
 		M.root_path = M.realpath(vim.uv.cwd())
 	end
-	vim.uv.chdir(M.root_path)
+	-- nvim_set_current_dir 触发 DirChanged，保持 Neovim 内部 cwd 与 root_path 一致
+	pcall(vim.api.nvim_set_current_dir, M.root_path)
 end
 
 --- 当前工作目录检测器
@@ -327,15 +327,27 @@ function M.refresh_explorer(path)
 	if not (Snacks and Snacks.picker) then
 		return
 	end
+	local prev_win = vim.api.nvim_get_current_win()
 	vim.schedule(function()
-		local explorers = Snacks.picker.get({ source = "explorer" })
-		if explorers and #explorers > 0 then
+		local ok, explorers = pcall(function()
+			return Snacks.picker.get({ source = "explorer" })
+		end)
+		if ok and explorers and #explorers > 0 then
 			local explorer = explorers[1]
-			-- 更新 explorer 的工作目录到新的根目录
-			explorer:set_cwd(path)
-			-- 触发 find 重新加载目录内容（Tree:get 会自动扫描新目录）
-			explorer:find({ refresh = true })
+			if explorer.set_cwd then
+				pcall(explorer.set_cwd, explorer, path)
+			end
+			if explorer.find then
+				pcall(explorer.find, explorer, { refresh = true })
+			end
 		end
+		-- 延迟 50ms 再恢复焦点：给 iCloud 等慢速文件系统的 explorer 内部异步操作留出充裕时间，
+		-- 避免 set_cwd/find 触发的回调尚未结束就抢先恢复焦点
+		vim.defer_fn(function()
+			if vim.api.nvim_win_is_valid(prev_win) then
+				vim.api.nvim_set_current_win(prev_win)
+			end
+		end, 50)
 	end)
 end
 
@@ -343,7 +355,6 @@ end
 --- 同时更新 cwd、root_path，并自动刷新已打开的 snacks explorer
 function M.set_current_buffer_root()
 	local buf = vim.api.nvim_get_current_buf()
-	-- 清除当前 buffer 的缓存，确保重新检测（避免 cwd 变化导致缓存失效）
 	M.cache[buf] = nil
 	local buf_root = M.get({ buf = buf })
 	if not buf_root then
@@ -351,8 +362,8 @@ function M.set_current_buffer_root()
 		return
 	end
 
-	M.root_path = buf_root
-	vim.uv.chdir(buf_root)
+	-- nvim_set_current_dir 会触发 DirChanged，由 autocmd 统一更新 root_path 和 cache
+	pcall(vim.api.nvim_set_current_dir, buf_root)
 	M.refresh_explorer(buf_root)
 
 	GlobalUtil.info("项目根目录已更新: " .. vim.fn.fnamemodify(buf_root, ":~"), { title = "Root" })
