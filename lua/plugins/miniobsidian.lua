@@ -4,6 +4,18 @@ return {
 		-- dev = true,   -- 从 ~/github/miniobsidian.nvim 加载本地源码
 		lazy = true,
 		ft = "markdown",
+		cmd = {
+			"ObsidianNew",
+			"ObsidianNewHere",
+			"ObsidianSwitch",
+			"ObsidianSearch",
+			"ObsidianSwitchVault",
+			"ObsidianTemplate",
+			"ObsidianNewTemplate",
+			"ObsidianPasteImg",
+			"ObsidianToday",
+			"ObsidianSetup",
+		},
 		keys = {
 			-- 全局操作（无需在 vault 内，keys 触发保证任意时刻可用）
 			{
