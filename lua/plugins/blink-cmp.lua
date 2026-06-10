@@ -7,7 +7,7 @@
 --           config 函数在 opts 基础上执行 setup 并附加高亮/诊断逻辑。
 -- 依赖关系：
 --   • saghen/blink.cmp       —— 补全引擎本体（Rust + Lua）
---   • fang2hou/blink-copilot —— Copilot 菜单式补全 source 适配器
+--   • milanglacier/minuet-ai.nvim —— AI 补全 source
 --   • rafamadriz/friendly-snippets —— 各语言通用 snippet 片段库（仅数据）
 --   • GlobalUtil（utils/）   —— 全局工具：图标、create_undo、cmp actions
 -- ============================================================
@@ -22,9 +22,6 @@ return {
 	lazy = false,
 
 	dependencies = {
-		-- Copilot 菜单式补全 source（将 Copilot 建议作为普通候选项展示在菜单中）
-		-- 注意：这与 copilot.vim 的幽灵文本模式互补，不重复集成
-		"fang2hou/blink-copilot",
 		-- friendly-snippets：仅提供 JSON/YAML 格式的片段数据库，
 		-- 不包含引擎逻辑，由 blink.cmp 的 snippets source 读取并展开
 		"rafamadriz/friendly-snippets",
@@ -157,9 +154,8 @@ return {
 					},
 				},
 
-				-- 幽灵文本（ghost text）：在光标后以灰色预览候选内容
-				-- 关闭原因：与 Copilot 的幽灵文本共存时视觉混乱；
-				-- 且 auto_insert = true 已提供类似的"预填"体验
+				-- 幽灵文本（ghost text）：在光标后以灰色预览候选内容。
+				-- 当前由 Minuet 的 virtual text 负责 AI inline 预览。
 				ghost_text = { enabled = false },
 
 				-- 接受（confirm）行为
@@ -189,7 +185,7 @@ return {
 				-- blink 自定义 keymap 不附带默认导航键，必须显式声明；
 				-- 若不声明，按键会 fallback 到 Neovim 原生行为（光标移行），
 				-- 导致 blink 的 context 因 cursor 位置变化而失效、菜单意外关闭，
-				-- 同时 auto_insert 预填的文本（尤其是 Copilot 多行补全）留在 buffer，
+				-- 同时 auto_insert 预填的文本（尤其是 AI 多行补全）留在 buffer，
 				-- 表现为"选到第二个就自动选中"。
 				["<Down>"] = { "select_next", "fallback" },
 				["<Up>"] = { "select_prev", "fallback" },
@@ -241,11 +237,11 @@ return {
 				},
 
 				-- <Tab>：AI 接受 → 补全确认 → snippet 跳转 → 触发补全 → 缩进（fallback）
-				-- 这是最复杂的键位，覆盖了 Copilot + blink + snippet 三者的协作
+				-- 这是最复杂的键位，覆盖了 Minuet + blink + snippet 三者的协作
 				["<Tab>"] = {
 					function(cmp)
 						GlobalUtil.create_undo()
-						-- 1. 优先接受 Copilot 幽灵文本建议（如果有）
+						-- 1. 优先接受 Minuet virtual text 建议（如果有）
 						if GlobalUtil.cmp.actions.ai_accept() then
 							return true
 						-- 2. 补全菜单可见时确认当前候选
@@ -296,9 +292,12 @@ return {
 			-- ── 补全源配置 ─────────────────────────────────────
 			sources = {
 				-- 默认激活的 source 列表（按优先级排列，score_offset 会进一步调整）：
-				-- lsp → path → snippets → buffer → copilot
+				-- lsp → path → snippets → buffer → minuet
 				-- 其他插件（如 miniobsidian）通过各自的 lazy spec 追加到此列表
-				default = { "lsp", "path", "snippets", "buffer", "copilot" },
+				default = { "lsp", "path", "snippets", "buffer", "minuet" },
+				per_filetype = {
+					codecompanion = { "codecompanion" },
+				},
 
 				providers = {
 					-- LSP source：调用当前 buffer 关联的 LSP 服务器获取补全
@@ -321,17 +320,15 @@ return {
 						min_keyword_length = 2,
 					},
 
-					-- Copilot source（via blink-copilot 适配器）：
-					-- 将 Copilot 的建议作为普通候选项插入菜单
-					copilot = {
-						name = "copilot",
-						module = "blink-copilot",
-					-- only enable copilot source when not in markdown files
-					enabled = function() return vim.bo.filetype ~= "markdown" end,
-						-- score_offset = 100：大幅提高排序分数，确保 Copilot 建议始终靠前显示；
-						-- blink 的最终排序 = 基础分 + score_offset，100 足以超过 LSP/buffer
+					-- Minuet source：将 AI 补全作为普通候选项插入菜单。
+					minuet = {
+						name = "minuet",
+						module = "minuet.blink",
+						enabled = function()
+							return not vim.tbl_contains({ "codecompanion", "markdown", "help", "gitcommit" }, vim.bo.filetype)
+						end,
 						score_offset = 100,
-						-- async = true：Copilot 网络请求异步进行，不阻塞补全菜单渲染
+						timeout_ms = 3000,
 						async = true,
 					},
 

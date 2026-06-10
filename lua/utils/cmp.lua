@@ -10,31 +10,35 @@ local M = {}
 --- 动作集合：与补全引擎解耦的通用动作（供键位链式调用）
 --- 返回 true 表示已处理，返回 false/nil 表示未处理，交由下一个分支或 fallback
 M.actions = {
-  --- 片段前进跳转
-  snippet_forward = function()
-    if vim.snippet and vim.snippet.active({ direction = 1 }) then
-      vim.schedule(function() vim.snippet.jump(1) end)
-      return true
-    end
-  end,
-  --- 片段后退跳转
-  snippet_backward = function()
-    if vim.snippet and vim.snippet.active({ direction = -1 }) then
-      vim.schedule(function() vim.snippet.jump(-1) end)
-      return true
-    end
-  end,
-  --- 接受 Copilot 内联建议（仅在可见时处理）
-  ai_accept = function()
-    local ok, sug = pcall(function() return require("copilot.suggestion") end)
-    if ok and sug.is_visible() then
-      GlobalUtil.create_undo()
-      sug.accept()
-      return true
-    end
-  end,
+	--- 片段前进跳转
+	snippet_forward = function()
+		if vim.snippet and vim.snippet.active({ direction = 1 }) then
+			vim.schedule(function()
+				vim.snippet.jump(1)
+			end)
+			return true
+		end
+	end,
+	--- 片段后退跳转
+	snippet_backward = function()
+		if vim.snippet and vim.snippet.active({ direction = -1 }) then
+			vim.schedule(function()
+				vim.snippet.jump(-1)
+			end)
+			return true
+		end
+	end,
+	--- 接受 Minuet virtual text 内联建议（仅在可见时处理）
+	ai_accept = function()
+		local ok, virtualtext = pcall(require, "minuet.virtualtext")
+		local action = ok and virtualtext.action
+		if action and action.is_visible() then
+			GlobalUtil.create_undo()
+			action.accept()
+			return true
+		end
+	end,
 }
-
 
 ---@alias Placeholder {n:number, text:string}
 

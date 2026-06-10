@@ -85,11 +85,8 @@ Pull Request / Commit 建议
 - 小而频繁的提交；每次提交只做一件事（修复、功能、样式）。
 - 提交信息使用中文简短前缀，例如 `feat(...)`, `fix(...)`, `chore(...)` 并在正文简述为什么要改动。
 
-Copilot / Cursor 规则
----------------------
-- Copilot 指令文件：仓库包含 `.github/copilot-instructions.md`，主要内容摘要：
-  - 该配置的注释以中文为主；入口 `init.lua`；插件文件必须返回 lazy.nvim 插件 spec；工具模块使用元表懒加载；使用 EmmyLua 注解；格式化通过 `GlobalUtil.format.register(...)` 注册。
-  - 位置：`.github/copilot-instructions.md`（请遵循其中的关键约定）。
+Cursor 规则
+-----------
 - Cursor 规则：在仓库中未发现 `.cursor/rules/` 或 `.cursorrules`，因此没有额外的 Cursor-specific 指令需要包含。
 
 行为准则（agent 专用）
@@ -111,4 +108,3 @@ Copilot / Cursor 规则
 - `lua/config/*`（启动配置）
 - `lua/plugins/*`（插件配置，必须返回 lazy spec）
 - `lua/utils/init.lua`（全局工具与懒加载实现）
-- `.github/copilot-instructions.md`（Copilot 规则）

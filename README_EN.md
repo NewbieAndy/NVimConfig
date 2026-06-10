@@ -13,7 +13,7 @@ A modern, batteries-included Neovim setup featuring LSP, DAP, testing, formattin
 - Debug & Test: nvim-dap + ui + virtual-text, dap-python, neotest (python/vitest)
 - Files & Search: neo-tree file explorer, grug-far search & replace
 - Git: gitsigns, integrated Snacks.lazygit
-- AI: GitHub Copilot and CopilotChat
+- AI: minuet-ai.nvim for code completion and CodeCompanion.nvim for chat/review/fixes
 - Sessions & Utils: persistence, which-key, venv-selector
 - macOS utility: optional auto IME switching via Hammerspoon
 
@@ -49,10 +49,11 @@ nvim
 Suggested LSP: lua-language-server, typescript-language-server, pyright, rust-analyzer, gopls, clangd
 Suggested formatters: stylua, prettier, shfmt, black
 
-5) (Optional) Copilot login
+5) (Optional) Configure a Kimi API key
 ```
-:Copilot auth
+export NVIM_AI_API_KEY="your-kimi-api-key"
 ```
+Use the raw API key only, without a `Bearer ` prefix.
 
 ## ⌨️ Keymaps (Leader = Space)
 - Files: <leader>e or <C-e> → toggle neo-tree
