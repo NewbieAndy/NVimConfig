@@ -4,15 +4,19 @@ end
 
 local function ai_api_key()
 	local key = vim.env.NVIM_AI_API_KEY
-	if type(key) ~= "string" then
-		return nil
+	if type(key) ~= "string" or key == "" then
+		return ""
 	end
-	return key:gsub("^%s*[Bb]earer%s+", ""):gsub("%s+$", "")
+	key = key:gsub("^%s*[Bb]earer%s+", ""):gsub("%s+$", "")
+	return key
 end
 
 return {
 	{
 		"milanglacier/minuet-ai.nvim",
+		cond = function()
+			return ai_api_key() ~= ""
+		end,
 		event = "InsertEnter",
 		cmd = "Minuet",
 		opts = function()
