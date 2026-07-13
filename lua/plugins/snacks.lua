@@ -14,8 +14,9 @@ return {
 					enabled = true,
 					inline = true,
 					float = true,
-					max_width = 80,
-					max_height = 40,
+					-- 增大尺寸以适配 Mermaid 图表（终端 174×46 格），原值 80/40 太小
+					max_width = 140,
+					max_height = 55,
 				},
 				-- ![[image.png]] Obsidian wikilink 格式路径解析
 				-- 用闭包延迟 require，避免 snacks spec 解析时提前加载 miniobsidian.image
