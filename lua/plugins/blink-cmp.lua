@@ -105,9 +105,11 @@ return {
 						-- 其他上下文保持 true（虚拟预览体验不变）。
 						auto_insert = function(_ctx)
 							local line = vim.api.nvim_get_current_line()
-							local col  = vim.api.nvim_win_get_cursor(0)[2]
+							local col = vim.api.nvim_win_get_cursor(0)[2]
 							local before = line:sub(1, col)
-							if before:match("^%s*[-*+][%s]*%[$") then return false end
+							if before:match("^%s*[-*+][%s]*%[$") then
+								return false
+							end
 							return true
 						end,
 					},
@@ -176,6 +178,9 @@ return {
 			-- 某项返回 true 则停止，返回 false 则继续下一项，
 			-- "fallback" 表示将按键透传给 Neovim（执行默认行为）
 			keymap = {
+				-- Ctrl-Space 由系统用于切换输入法，不在 Neovim 中占用。
+				["<C-Space>"] = false,
+
 				-- 在文档浮窗内上下翻页（不影响菜单选择）
 				-- "fallback" 确保没有文档时 <C-b>/<C-f> 仍执行页面滚动
 				["<C-b>"] = { "scroll_documentation_up", "fallback" },
@@ -261,9 +266,21 @@ return {
 					"fallback",
 				},
 
-				-- <F13>：手动触发补全菜单（用于映射 ctrl+enter 等快捷键的终端转义码）
-				-- 某些终端无法发送 <C-Space>，通过终端配置将其映射为 F13 后在此处理
-				["<F13>"] = { "show", "fallback" },
+				-- <F13>：手动触发补全菜单，不占用系统的 Ctrl-Space 输入法切换快捷键。
+				["<F13>"] = {
+					function(cmp)
+						pcall(vim.fn.writefile, {
+							os.date("%Y-%m-%d %H:%M:%S ") .. ("F13 ft=%s mode=%s line=%d col=%d"):format(
+								vim.bo.filetype,
+								vim.api.nvim_get_mode().mode,
+								vim.fn.line("."),
+								vim.fn.col(".")
+							),
+						}, "/tmp/minuet_diag.log", "a")
+						cmp.show()
+						return true
+					end,
+				},
 			},
 
 			-- ── Snippet（代码片段）配置 ────────────────────────
@@ -325,10 +342,13 @@ return {
 						name = "minuet",
 						module = "minuet.blink",
 						enabled = function()
-							return not vim.tbl_contains({ "codecompanion", "markdown", "help", "gitcommit" }, vim.bo.filetype)
+							return not vim.tbl_contains(
+								{ "codecompanion", "markdown", "help", "gitcommit" },
+								vim.bo.filetype
+							)
 						end,
 						score_offset = 100,
-						timeout_ms = 3000,
+						timeout_ms = 8000,
 						async = true,
 					},
 
