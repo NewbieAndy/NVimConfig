@@ -135,7 +135,7 @@ return {
 			require("miniobsidian").setup({
 				-- 零配置测试：vaults_parent 留空，auto_discover 自动从 Obsidian 官方配置发现 vault
 				-- vaults_parent = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents",
-				default_vault = "XRXS",
+				default_vault = "AndyObsidian",
 				notes_subdir = "",
 				checkbox_states = { " ", "/", "x" },
 				on_vault_switch = function(_, path)
