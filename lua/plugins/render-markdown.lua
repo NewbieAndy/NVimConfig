@@ -24,11 +24,12 @@ return {
 				default = vim.o.conceallevel,
 				rendered = 2,
 			},
-			-- 设为 "" 避免 conceal 遮盖 snacks.nvim 渲染的 Mermaid/图片
-			-- 原值 "nc" 导致光标在代码块上时图片被隐藏，只有进入 Insert 才可见
+			-- Normal/Command 模式下保持光标行 conceal，避免 Checkbox 的列表符号和
+			-- 右方括号因原始语法显露而残留。Insert 模式不 conceal，仍可编辑原文。
+			-- Mermaid 已由下方 code.disable 排除，不会受此设置影响。
 			concealcursor = {
 				default = vim.o.concealcursor,
-				rendered = "",
+				rendered = "nc",
 			},
 		},
 		heading = {

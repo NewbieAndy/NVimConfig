@@ -100,13 +100,16 @@ return {
 						-- preselect = true：菜单弹出时自动高亮第一个候选（方便直接 <CR> 确认）
 						preselect = true,
 						-- auto_insert：高亮候选时立即将其文本插入 buffer（虚拟预览）。
-						-- checkbox 补全上下文（- [）禁用，避免导航时预插入内容触发
-						-- TextChangedI → 新 context.id → 选择状态重置的 re-query 循环；
+						-- checkbox（- [）和未闭合的 Wikilink（[[...）补全中禁用，避免
+						-- 导航时预插入内容触发 TextChangedI → 新 context.id → 菜单关闭。
 						-- 其他上下文保持 true（虚拟预览体验不变）。
-						auto_insert = function(_ctx)
-							local line = vim.api.nvim_get_current_line()
-							local col = vim.api.nvim_win_get_cursor(0)[2]
+						auto_insert = function(ctx)
+							local line = ctx.line or vim.api.nvim_get_current_line()
+							local col = ctx.cursor and ctx.cursor[2] or vim.api.nvim_win_get_cursor(0)[2]
 							local before = line:sub(1, col)
+							if before:match("%[%[[^%]]*$") then
+								return false
+							end
 							if before:match("^%s*[-*+][%s]*%[$") then
 								return false
 							end

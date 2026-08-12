@@ -1,7 +1,7 @@
 return {
 	{
 		"andy-neoaira/miniobsidian.nvim",
-		-- dev = true, -- 从 ~/github/miniobsidian.nvim 加载本地源码
+		dev = true, -- 从 ~/github/miniobsidian.nvim 加载本地源码
 		lazy = true,
 		ft = "markdown",
 		cmd = {
@@ -9,6 +9,9 @@ return {
 			"ObsidianNewHere",
 			"ObsidianSwitch",
 			"ObsidianSearch",
+			"ObsidianBacklinks",
+			"ObsidianMove",
+			"ObsidianRename",
 			"ObsidianSwitchVault",
 			"ObsidianTemplate",
 			"ObsidianNewTemplate",
@@ -59,6 +62,14 @@ return {
 					require("miniobsidian.note").search(vim.fn.expand("<cword>"))
 				end,
 				desc = "Obsidian: 搜索当前词",
+			},
+			{
+				"<leader>nb",
+				function()
+					require("miniobsidian.note").backlinks()
+				end,
+				desc = "Obsidian: 当前笔记的反向链接",
+				ft = "markdown",
 			},
 			{
 				"<leader>nv",
@@ -112,6 +123,20 @@ return {
 				end,
 				desc = "Obsidian: 恢复列表项",
 				ft = "markdown",
+			},
+			{
+				"<leader>nm",
+				function()
+					require("miniobsidian.note").move()
+				end,
+				desc = "Obsidian: 移动笔记",
+			},
+			{
+				"<leader>nr",
+				function()
+					require("miniobsidian.note").rename()
+				end,
+				desc = "Obsidian: 重命名笔记",
 			},
 
 			-- <CR>：wiki link 内跳转（vault 内查找，找不到提示创建），否则切换 checkbox
